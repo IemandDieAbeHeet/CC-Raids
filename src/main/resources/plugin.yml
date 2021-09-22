@@ -6,3 +6,9 @@ description: The official CockCity raids plugin, made for cockcity.online by Abe
 author: IemandDieAbeHeet
 website: abevriens.com
 api-version: 1.17
+
+commands:
+  startoutline:
+    description: Start outlining your base.
+    usage: /<command>
+    permission: cockcityraids.startoutline
