@@ -4,6 +4,7 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Faction {
     public String factionName;
@@ -12,10 +13,10 @@ public class Faction {
 
     public List<CC_Player> players;
 
-    public Player owner;
+    public UUID ownerUUID;
 
-    public Faction(Player _owner, String _factionName) {
-        owner = _owner;
+    public Faction(UUID _ownerUUID, String _factionName) {
+        ownerUUID = _ownerUUID;
         factionName = _factionName;
     }
 }

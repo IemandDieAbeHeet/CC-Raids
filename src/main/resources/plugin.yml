@@ -12,3 +12,7 @@ commands:
     description: Start outlining your base.
     usage: /<command>
     permission: cockcityraids.startoutline
+  factions:
+    description: All faction commands.
+    usage: /<command> <action> <arguments>
+    permission: cockcityraids.factions

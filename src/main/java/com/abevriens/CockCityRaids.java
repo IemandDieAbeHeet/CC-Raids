@@ -9,18 +9,16 @@ import java.util.UUID;
 public class CockCityRaids extends JavaPlugin {
     public static CockCityRaids instance;
 
-    private MongoDBHandler dbHandler;
+    public MongoDBHandler dbHandler;
 
     @Override
     public void onEnable() {
         instance = this;
         dbHandler = new MongoDBHandler();
         this.getCommand("startoutline").setExecutor(new StartBaseOutline());
+        this.getCommand("factions").setExecutor(new FactionCommandHandler());
 
-        if(dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false")) {
-            Faction newFaction = new Faction((Player) Bukkit.getOfflinePlayer(UUID.randomUUID()), "Poep");
-            dbHandler.insertFaction(newFaction);
-        }
+        dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
     }
 
     @Override
