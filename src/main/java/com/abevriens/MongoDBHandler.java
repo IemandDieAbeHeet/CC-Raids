@@ -1,6 +1,5 @@
 package com.abevriens;
 
-import static com.mongodb.client.model.Aggregates.limit;
 import static com.mongodb.client.model.Filters.eq;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -8,24 +7,25 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReturnDocument;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Projections;
 
+import org.bson.conversions.Bson;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class MongoDBHandler {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
-    private MongoCollection<Faction> factionCollection;
+    public MongoCollection<POJO_Player> playerCollection;
+    public MongoCollection<POJO_Faction> factionCollection;
 
     public boolean connect(String _connectionUri) {
         ConnectionString connectionString = new ConnectionString(_connectionUri);
@@ -42,7 +42,8 @@ public class MongoDBHandler {
         try {
             mongoClient = MongoClients.create(clientSettings);
             mongoDatabase = mongoClient.getDatabase("CockCityData");
-            factionCollection = mongoDatabase.getCollection("factions", Faction.class);
+            playerCollection = mongoDatabase.getCollection("players", POJO_Player.class);
+            factionCollection = mongoDatabase.getCollection("factions", POJO_Faction.class);
             CockCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
             return true;
         } catch(MongoException e) {
@@ -55,11 +56,26 @@ public class MongoDBHandler {
         mongoClient.close();
     }
 
-    public void insertFaction(Faction faction) {
-        factionCollection.insertOne(faction);
+    public void insertPlayer(POJO_Player POJOPlayer) { playerCollection.insertOne(POJOPlayer); }
+
+    public void updatePlayer(POJO_Player POJOPlayer) {
+        FindOneAndReplaceOptions returnDocAfterReplace = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
+        playerCollection.findOneAndReplace((Bson) POJOPlayer, POJOPlayer, returnDocAfterReplace);
     }
 
-    public Faction findFaction(String _factionName) {
+    public void insertFaction(POJO_Faction POJOFaction) {
+        factionCollection.insertOne(POJOFaction);
+    }
+
+    public CC_Player findPlayer(String _playerUUID) {
+        return PlayerManager.POJOToCCPlayer(playerCollection.find(eq("uuid", _playerUUID)).first());
+    }
+
+    public POJO_Faction findFactionByName(String _factionName) {
         return factionCollection.find(eq("factionName", _factionName)).first();
+    }
+
+    public POJO_Faction findFactionByPlayer(String _playerUUID) {
+        return factionCollection.find(eq("players", Document.parse("{ uuid: ") + _playerUUID +  " }")).first();
     }
 }
