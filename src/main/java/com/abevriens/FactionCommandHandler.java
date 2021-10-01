@@ -14,7 +14,6 @@ public class FactionCommandHandler implements CommandExecutor {
             Player player = (Player) sender;
             PlayerManager playerManager = CockCityRaids.instance.playerManager;
             final POJO_Player pojo_player = playerManager.getPOJOPlayer(player);
-            CC_Player cc_player = playerManager.getCCPlayer(player);
             switch (args[0]) {
                 case "create":
                     Faction faction = new Faction(
@@ -25,14 +24,12 @@ public class FactionCommandHandler implements CommandExecutor {
 
                     POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
 
-                    cc_player.currentFaction = faction;
-                    pojo_player.faction = pojo_faction;
+                    pojo_player.factionName = faction.factionName;
                     CockCityRaids.instance.dbHandler.insertFaction(pojo_faction);
                     CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
 
                 case "info":
-                    player.sendMessage(cc_player.currentFaction.factionName);
-                    player.sendMessage(cc_player.currentFaction.factionOwner.displayName);
+
             };
             return  true;
         } else {

@@ -3,12 +3,13 @@ package com.abevriens;
 import org.bukkit.entity.Player;
 
 public class CC_Player {
-    public Player player;
+    public String displayName;
+    public String uuid;
+    public String factionName;
 
-    public Faction currentFaction;
-
-    public CC_Player(Player _player, Faction _faction) {
-        player = _player;
-        currentFaction = _faction;
+    public CC_Player(String _displayName, String _uuid, String _factionName) {
+        displayName = _displayName;
+        uuid = _uuid;
+        factionName = _factionName;
     }
 }

@@ -11,16 +11,20 @@ public class PlayerJoinListener implements Listener {
         PlayerManager playerManager = CockCityRaids.instance.playerManager;
         Player player = event.getPlayer();
 
-        CC_Player cc_player = playerManager.getCCPlayer(player);
+        if (playerManager.playerExists(player)) return;
 
-        if(cc_player != null) {
-            CockCityRaids.instance.getLogger().info(cc_player.currentFaction.factionName);
-        } else {
-            POJO_Player pojo_player = new POJO_Player();
-            pojo_player.faction = null;
-            pojo_player.displayName = player.getDisplayName();
-            pojo_player.uuid = player.getUniqueId().toString();
-            CockCityRaids.instance.dbHandler.insertPlayer(pojo_player);
-        }
+        POJO_Player pojo_player = new POJO_Player();
+        pojo_player.factionName = "Empty";
+        pojo_player.displayName = player.getDisplayName();
+        pojo_player.uuid = player.getUniqueId().toString();
+
+        CC_Player cc_player = new CC_Player(
+                player.getDisplayName(),
+                player.getUniqueId().toString(),
+                "Empty"
+        );
+
+        playerManager.addPlayer(player, pojo_player, cc_player);
+        CockCityRaids.instance.dbHandler.insertPlayer(pojo_player);
     }
 }

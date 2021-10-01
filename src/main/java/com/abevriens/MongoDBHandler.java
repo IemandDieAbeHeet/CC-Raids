@@ -8,6 +8,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.ReturnDocument;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -59,23 +60,11 @@ public class MongoDBHandler {
     public void insertPlayer(POJO_Player POJOPlayer) { playerCollection.insertOne(POJOPlayer); }
 
     public void updatePlayer(POJO_Player POJOPlayer) {
-        FindOneAndReplaceOptions returnDocAfterReplace = new FindOneAndReplaceOptions().returnDocument(ReturnDocument.AFTER);
-        playerCollection.findOneAndReplace((Bson) POJOPlayer, POJOPlayer, returnDocAfterReplace);
+        ReplaceOptions opts = new ReplaceOptions().upsert(true);
+        playerCollection.replaceOne(eq("uuid", POJOPlayer.uuid), POJOPlayer, opts);
     }
 
     public void insertFaction(POJO_Faction POJOFaction) {
         factionCollection.insertOne(POJOFaction);
-    }
-
-    public CC_Player findPlayer(String _playerUUID) {
-        return PlayerManager.POJOToCCPlayer(playerCollection.find(eq("uuid", _playerUUID)).first());
-    }
-
-    public POJO_Faction findFactionByName(String _factionName) {
-        return factionCollection.find(eq("factionName", _factionName)).first();
-    }
-
-    public POJO_Faction findFactionByPlayer(String _playerUUID) {
-        return factionCollection.find(eq("players", Document.parse("{ uuid: ") + _playerUUID +  " }")).first();
     }
 }

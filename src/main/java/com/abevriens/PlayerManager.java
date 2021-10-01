@@ -1,66 +1,63 @@
 package com.abevriens;
 
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import static com.mongodb.client.model.Filters.eq;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerManager {
-    private HashMap<Player, CC_Player> CCPlayerHashMap = new HashMap<>();
-    private Map<Player, POJO_Player> POJOplayerHashMap = new HashMap<>();
-
-    public CC_Player getCCPlayer(Player player) {
-        return CCPlayerHashMap.get(player);
-    }
-
-    public POJO_Player getPOJOPlayer(Player player) {
-        return POJOplayerHashMap.get(player);
-    }
+    private HashMap<OfflinePlayer, CC_Player> CCPlayerHashMap = new HashMap<>();
+    private HashMap<OfflinePlayer, POJO_Player> POJOPlayerHashMap = new HashMap<>();
 
     public void LoadPlayers() {
-        try {
-            Iterable<POJO_Player> players = CockCityRaids.instance.dbHandler.playerCollection.find();
+        MongoCursor<POJO_Player> cursor = CockCityRaids.instance.dbHandler.playerCollection.find().iterator();
+        while (cursor.hasNext()) {
+            POJO_Player pojo_player = cursor.next();
+            CC_Player cc_player = POJOToCC(pojo_player);
+            OfflinePlayer player = POJOToPlayer(pojo_player);
 
-            for (POJO_Player player : players) {
-                CCPlayerHashMap.put(POJOToPlayer(player), POJOToCCPlayer(player));
-            }
-        } catch(CodecConfigurationException e) {
-            CockCityRaids.instance.getLogger().info(e.getMessage());
-            CockCityRaids.instance.getLogger().info(ChatColor.RED + "Couldn't load players from database, a database entry might be corrupted.");
+            POJOPlayerHashMap.put(player, pojo_player);
+            CCPlayerHashMap.put(player, cc_player);
         }
     }
 
-    public static CC_Player POJOToCCPlayer(POJO_Player pojo_player) {
+    public boolean playerExists(Player player) {
+        if (getPOJOPlayer(player) != null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void addPlayer(Player player, POJO_Player pojo_player, CC_Player cc_player) {
+        CCPlayerHashMap.put(player, cc_player);
+        POJOPlayerHashMap.put(player, pojo_player);
+    }
+
+    public POJO_Player getPOJOPlayer(OfflinePlayer player) {
+        return POJOPlayerHashMap.get(player);
+    }
+
+    public static OfflinePlayer POJOToPlayer(POJO_Player pojo_player) {
+        return Bukkit.getOfflinePlayer(UUID.fromString(pojo_player.uuid));
+    }
+
+    public static CC_Player POJOToCC(POJO_Player pojo_player) {
         CC_Player cc_player = new CC_Player(
-                POJOToPlayer(pojo_player),
-                FactionManager.POJOToFaction(pojo_player.faction)
+            pojo_player.displayName,
+            pojo_player.uuid,
+            pojo_player.factionName
         );
+
         return cc_player;
-    }
-
-    public static Player POJOToPlayer(POJO_Player pojo_player) {
-        return Bukkit.getPlayer(pojo_player.uuid);
-    }
-
-    public static POJO_Player PlayerToPOJO(Player player, CC_Player cc_player) {
-        POJO_Player pojo_player = new POJO_Player();
-
-        pojo_player.faction = FactionManager.FactionToPOJO(cc_player.currentFaction);
-        pojo_player.uuid = player.getUniqueId().toString();
-        pojo_player.displayName = player.getDisplayName();
-
-        return pojo_player;
-    }
-
-    public static POJO_Player PlayerToPOJO(Player player) {
-        POJO_Player pojo_player = new POJO_Player();
-
-        pojo_player.uuid = player.getUniqueId().toString();
-        pojo_player.displayName = player.getDisplayName();
-
-        return pojo_player;
     }
 }

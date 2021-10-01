@@ -27,6 +27,7 @@ public class CockCityRaids extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
         dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
+
         factionManager.LoadFactions();
         playerManager.LoadPlayers();
     }

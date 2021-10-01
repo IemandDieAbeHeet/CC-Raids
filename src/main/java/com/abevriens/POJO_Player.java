@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 public class POJO_Player {
     public String uuid;
     public String displayName;
-    public POJO_Faction faction;
+    public String factionName;
 
     public POJO_Player() {
     }
