@@ -31,7 +31,7 @@ public class PlayerManager {
     }
 
     public boolean playerExists(Player player) {
-        if (getPOJOPlayer(player) != null) {
+        if (getPOJOPlayer(player) == null) {
             return false;
         } else {
             return true;
@@ -39,12 +39,32 @@ public class PlayerManager {
     }
 
     public void addPlayer(Player player, POJO_Player pojo_player, CC_Player cc_player) {
-        CCPlayerHashMap.put(player, cc_player);
-        POJOPlayerHashMap.put(player, pojo_player);
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+        CCPlayerHashMap.put(offlinePlayer, cc_player);
+        POJOPlayerHashMap.put(offlinePlayer, pojo_player);
     }
 
-    public POJO_Player getPOJOPlayer(OfflinePlayer player) {
-        return POJOPlayerHashMap.get(player);
+    public POJO_Player getPOJOPlayer(Player player) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+        return POJOPlayerHashMap.get(offlinePlayer);
+    }
+
+    public CC_Player getCCPlayer(Player player) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+        return CCPlayerHashMap.get(offlinePlayer);
+    }
+
+    public void setPlayerFaction(Player player, Faction faction) {
+        POJO_Player pojo_player = getPOJOPlayer(player);
+        CC_Player cc_player = getCCPlayer(player);
+
+        cc_player.faction = faction;
+        pojo_player.factionName = faction.factionName;
+
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
+        CCPlayerHashMap.put(offlinePlayer, cc_player);
+        POJOPlayerHashMap.put(offlinePlayer, pojo_player);
+        CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
     }
 
     public static OfflinePlayer POJOToPlayer(POJO_Player pojo_player) {
@@ -52,10 +72,11 @@ public class PlayerManager {
     }
 
     public static CC_Player POJOToCC(POJO_Player pojo_player) {
+        Faction faction = CockCityRaids.instance.factionManager.getFaction(pojo_player.factionName);
         CC_Player cc_player = new CC_Player(
             pojo_player.displayName,
             pojo_player.uuid,
-            pojo_player.factionName
+            faction
         );
 
         return cc_player;

@@ -28,6 +28,8 @@ public class CockCityRaids extends JavaPlugin {
 
         dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
 
+        //Always load factions before players. LoadPlayers converts POJO_Players
+        //to CC_Players which requires factions to be loaded
         factionManager.LoadFactions();
         playerManager.LoadPlayers();
     }

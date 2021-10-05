@@ -14,14 +14,14 @@ public class PlayerJoinListener implements Listener {
         if (playerManager.playerExists(player)) return;
 
         POJO_Player pojo_player = new POJO_Player();
-        pojo_player.factionName = "Empty";
+        pojo_player.factionName = FactionManager.emptyFaction.factionName;
         pojo_player.displayName = player.getDisplayName();
         pojo_player.uuid = player.getUniqueId().toString();
 
         CC_Player cc_player = new CC_Player(
                 player.getDisplayName(),
                 player.getUniqueId().toString(),
-                "Empty"
+                FactionManager.emptyFaction
         );
 
         playerManager.addPlayer(player, pojo_player, cc_player);

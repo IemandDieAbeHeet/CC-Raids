@@ -4,6 +4,9 @@ import com.mongodb.client.MongoCollection;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +14,7 @@ import java.util.List;
 
 public class FactionManager {
     public List<Faction> factionList = new ArrayList<>();
-    public HashMap<Faction, POJO_Faction> factionHashMap = new HashMap<>();
+    public List<String> factionNameList = new ArrayList<>();
 
     public void LoadFactions() {
         try {
@@ -19,6 +22,7 @@ public class FactionManager {
 
             for (POJO_Faction faction : factions) {
                 factionList.add(POJOToFaction(faction));
+                factionNameList.add(faction.factionName);
             }
         } catch(CodecConfigurationException e) {
             CockCityRaids.instance.getLogger().info(e.getMessage());
@@ -26,21 +30,26 @@ public class FactionManager {
         }
     }
 
+    public Faction getFaction(String factionName) {
+        for(Faction faction : factionList) {
+            if(faction.factionName.equals(factionName)) {
+                return faction;
+            }
+        }
+        return emptyFaction;
+    }
+
     public static Faction emptyFaction = new Faction(null, "None", null, null);
 
-    public static Faction POJOToFaction(POJO_Faction pojo_faction) {
+    public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
 
-        if(pojo_faction != null) {
-            faction = new Faction(
-                    pojo_faction.factionOwner,
-                    pojo_faction.factionName,
-                    pojo_faction.players,
-                    pojo_faction.occupiedChunks
-            );
-        } else {
-            faction = emptyFaction;
-        }
+        faction = new Faction(
+                pojo_faction.factionOwner,
+                pojo_faction.factionName,
+                pojo_faction.players,
+                pojo_faction.occupiedChunks
+        );
 
         return faction;
     }

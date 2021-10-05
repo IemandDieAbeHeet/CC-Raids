@@ -16,3 +16,4 @@ commands:
     description: All faction commands.
     usage: /<command> <action> <arguments>
     permission: cockcityraids.factions
+    aliases: [f]
