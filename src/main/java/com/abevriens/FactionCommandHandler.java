@@ -30,7 +30,17 @@ public class FactionCommandHandler implements CommandExecutor {
             if(args.length > 0) {
                 switch (args[0]) {
                     case "create":
-                        command_Create(args[1]);
+                        if(args.length > 1) {
+                            command_Create(args[1]);
+                        } else {
+                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
+                                    "Geen faction naam opgegeven, gebruik het commando als volgt:\n");
+
+                            TextComponent commandText = new TextComponent("/factions create [naam]");
+                            commandText.setBold(true);
+
+                            player.spigot().sendMessage(components.append(commandText).create());
+                        }
                         break;
                     case "info":
                         command_Info();
@@ -43,6 +53,9 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "leave":
                         command_Leave();
+                        break;
+                    case "list":
+                        command_List();
                         break;
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
@@ -60,13 +73,11 @@ public class FactionCommandHandler implements CommandExecutor {
         Faction faction = cc_player.faction;
 
         if(faction.factionName == FactionManager.emptyFaction.factionName) {
-            TextComponent errorText = new TextComponent("Je zit nog niet in een faction, gebruik /factions join om er een te joinen.");
-            errorText.setColor(ChatColor.AQUA);
-            errorText.setBold(true);
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen.");
 
-            player.spigot().sendMessage(errorText);
+            player.spigot().sendMessage(errorMsg.create());
         } else {
-
             TextComponent messageHeader = new TextComponent("===================  Info  ====================");
             messageHeader.setColor(ChatColor.AQUA);
             messageHeader.setBold(true);
@@ -157,7 +168,31 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_List() {
+        TextComponent messageHeader = new TextComponent("===================  List  ====================");
+        messageHeader.setColor(ChatColor.AQUA);
+        messageHeader.setBold(true);
+        TextComponent messageFooter = new TextComponent("=============================================");
+        messageFooter.setColor(ChatColor.AQUA);
+        messageFooter.setBold(true);
+        TextComponent newLine = new TextComponent("\n\n");
 
+        ComponentBuilder componentBuilder = new ComponentBuilder().append(messageHeader);
+
+        int i = 1;
+        for(Faction faction : CockCityRaids.instance.factionManager.factionList) {
+            componentBuilder.append(newLine);
+            TextComponent nameInfo = new TextComponent(i + ": " + faction.factionName + " - " + faction.players.size());
+            nameInfo.setBold(false);
+            nameInfo.setColor(ChatColor.GOLD);
+            componentBuilder.append(nameInfo);
+            componentBuilder.append(newLine);
+            i++;
+        }
+
+        componentBuilder.append(newLine)
+                .append(messageFooter);
+
+        player.spigot().sendMessage(componentBuilder.create());
     }
 
     private void command_Help(String error) {
