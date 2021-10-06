@@ -78,13 +78,8 @@ public class FactionCommandHandler implements CommandExecutor {
 
             player.spigot().sendMessage(errorMsg.create());
         } else {
-            TextComponent messageHeader = new TextComponent("===================  Info  ====================");
-            messageHeader.setColor(ChatColor.AQUA);
-            messageHeader.setBold(true);
-            TextComponent messageFooter = new TextComponent("=============================================");
-            messageFooter.setColor(ChatColor.AQUA);
-            messageFooter.setBold(true);
-            TextComponent newLine = new TextComponent("\n\n");
+            ComponentBuilder header = TextUtil.GenerateHeaderMsg("Info");
+            ComponentBuilder footer = TextUtil.GenerateFooterMsg();
 
             BaseComponent[] nameInfo = new ComponentBuilder("Naam: ")
                     .color(ChatColor.GOLD).bold(true)
@@ -97,13 +92,13 @@ public class FactionCommandHandler implements CommandExecutor {
                         .color(ChatColor.WHITE).bold(false).create();
 
             BaseComponent[] components = new ComponentBuilder()
-                    .append(messageHeader)
-                    .append(newLine)
+                    .append(header.create())
+                    .append(TextUtil.newLine)
                     .append(nameInfo)
-                    .append(newLine)
+                    .append(TextUtil.newLine)
                     .append(ownerInfo)
-                    .append(newLine)
-                    .append(messageFooter).create();
+                    .append(TextUtil.newLine)
+                    .append(footer.create()).create();
 
             player.spigot().sendMessage(components);
         }
@@ -126,7 +121,6 @@ public class FactionCommandHandler implements CommandExecutor {
                     new ArrayList<Chunk>());
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
-
             pojo_player.factionName = faction.factionName;
             cc_player.faction = faction;
             CockCityRaids.instance.dbHandler.insertFaction(pojo_faction);
@@ -181,10 +175,15 @@ public class FactionCommandHandler implements CommandExecutor {
         int i = 1;
         for(Faction faction : CockCityRaids.instance.factionManager.factionList) {
             componentBuilder.append(newLine);
-            TextComponent nameInfo = new TextComponent(i + ": " + faction.factionName + " - " + faction.players.size());
-            nameInfo.setBold(false);
-            nameInfo.setColor(ChatColor.GOLD);
-            componentBuilder.append(nameInfo);
+            ComponentBuilder nameInfo = new ComponentBuilder();
+            TextComponent factionNumber = new TextComponent(i + ": ");
+            factionNumber.setColor(ChatColor.GOLD);
+            factionNumber.setBold(true);
+            TextComponent factionInfo = new TextComponent(faction.factionName + " - " + faction.players.size());
+            factionInfo.setBold(false);
+
+            componentBuilder.append(factionNumber);
+            componentBuilder.append(factionInfo);
             componentBuilder.append(newLine);
             i++;
         }
@@ -202,12 +201,12 @@ public class FactionCommandHandler implements CommandExecutor {
         TextComponent helpClick = new TextComponent("hier");
         helpClick.setBold(true);
         helpClick.setUnderlined(true);
-        TextComponent helpText2 = new TextComponent(" voor hulp.");
+        TextComponent helpText2 = new TextComponent(" voor alle commands.");
         helpText2.setBold(false);
         helpText2.setUnderlined(false);
 
         helpClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions help"));
-        helpClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Help")));
+        helpClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Alle commands")));
 
         BaseComponent[] components = new ComponentBuilder()
                 .append(errorMessage)
