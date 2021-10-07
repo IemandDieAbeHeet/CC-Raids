@@ -10,7 +10,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.4</version>
         <configuration>
-          <outputDirectory>../../Desktop/Minecraft Test Server/plugins</outputDirectory>
+          <outputDirectory>C:\Users\abevr\Desktop\Minecraft Test Server/plugins</outputDirectory>
         </configuration>
       </plugin>
       <plugin>
