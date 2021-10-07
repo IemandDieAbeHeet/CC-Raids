@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.font.TextMeasurer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class FactionCommandHandler implements CommandExecutor {
     @NotNull Player player;
@@ -22,6 +23,7 @@ public class FactionCommandHandler implements CommandExecutor {
     @NotNull CC_Player cc_player;
     @NotNull PlayerManager playerManager = CockCityRaids.instance.playerManager;
     @NotNull FactionManager factionManager = CockCityRaids.instance.factionManager;
+    int LIST_CHAT_SIZE = 8;
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player) {
@@ -29,7 +31,7 @@ public class FactionCommandHandler implements CommandExecutor {
             cc_player = playerManager.getCCPlayer(player);
             pojo_player = playerManager.getPOJOPlayer(player);
             if(args.length > 0) {
-                switch (args[0]) {
+                switch (args[0].toLowerCase()) {
                     case "create":
                         if(args.length > 1) {
                             command_Create(args[1]);
@@ -171,21 +173,34 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_List(int page) {
-        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List");
-        ComponentBuilder footer = TextUtil.GenerateFooterMsg();
-
-        ComponentBuilder componentBuilder = new ComponentBuilder().append(header.create());
-
-        int i = 1;
         ArrayList<Faction> list = (ArrayList<Faction>) CockCityRaids.instance.factionManager.factionList;
 
-        for(int j = (page-1) * 5; j < 5 + (page-1) * 5; j++) {
-            if(list.get(j) == null) {
+        int lastPage = (int)Math.ceil((double) list.size() / LIST_CHAT_SIZE);
+
+        if(page > lastPage) {
+            page = lastPage;
+        } else if(page < 1) {
+            page = 1;
+        }
+
+        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List [" + page + "/" + lastPage + "]");
+        ComponentBuilder footer = TextUtil.GenerateFooterButtonMsg("/factions list " + (page-1),
+                "/factions list " + (page+1),
+                "Ga een pagina terug",
+                "Ga een pagina verder");
+
+        header.append(TextUtil.newLine);
+
+        ComponentBuilder componentBuilder = new ComponentBuilder().append(TextUtil.newLine);
+
+        componentBuilder.append(header.create());
+
+        for(int j = (page-1) * LIST_CHAT_SIZE; j < LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE; j++) {
+            if(list.size()-1 < j) {
                 break;
             }
 
-            componentBuilder.append(TextUtil.newLine);
-            TextComponent factionNumber = new TextComponent(i + ": ");
+            TextComponent factionNumber = new TextComponent(j + 1 + ": ");
             factionNumber.setColor(ChatColor.GOLD);
             factionNumber.setBold(true);
             TextComponent factionInfo = new TextComponent(list.get(j).factionName + " - " + list.get(j).players.size());
@@ -194,13 +209,10 @@ public class FactionCommandHandler implements CommandExecutor {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
             componentBuilder.append(TextUtil.newLine);
-            i++;
         }
 
-        componentBuilder.append(TextUtil.newLine)
-                .append(footer.create());
-
         player.spigot().sendMessage(componentBuilder.create());
+        player.spigot().sendMessage(footer.create());
     }
 
     private void command_Help(String error) {
@@ -230,24 +242,16 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Help() {
-        TextComponent messageHeader = new TextComponent("===================  Help  ====================");
-        messageHeader.setColor(ChatColor.AQUA);
-        messageHeader.setBold(true);
-        TextComponent messageFooter = new TextComponent("=============================================");
-        messageFooter.setColor(ChatColor.AQUA);
-        messageFooter.setBold(true);
-        TextComponent newLine = new TextComponent("\n\n");
-
         TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O");
         helpText.setBold(false);
         helpText.setColor(ChatColor.GREEN);
 
         BaseComponent[] components = new ComponentBuilder()
-                .append(messageHeader)
-                .append(newLine)
+                .append(TextUtil.GenerateHeaderMsg("Help").create())
+                .append(TextUtil.newLine)
                 .append(helpText)
-                .append(newLine)
-                .append(messageFooter).create();
+                .append(TextUtil.newLine)
+                .append(TextUtil.GenerateFooterMsg().create()).create();
 
         player.spigot().sendMessage(components);
     }

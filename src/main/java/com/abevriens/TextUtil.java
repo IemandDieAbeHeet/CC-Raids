@@ -1,9 +1,9 @@
 package com.abevriens;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import org.apache.commons.lang.NotImplementedException;
 
 public class TextUtil {
     public static ChatColor footerColor = ChatColor.AQUA;
@@ -23,7 +23,7 @@ public class TextUtil {
     }
 
     public static ComponentBuilder GenerateHeaderMsg(String headerString) {
-        String header = "";
+        String header = "\n";
 
         int k = 0;
         if(headerString.length() % 2 == 0) k = 1;
@@ -50,7 +50,7 @@ public class TextUtil {
         return components;
     }
 
-    public static  ComponentBuilder GenerateFooterMsg() {
+    public static ComponentBuilder GenerateFooterMsg() {
         TextComponent footerText = new TextComponent("=============================================");
         footerText.setBold(true);
         footerText.setColor(footerColor);
@@ -59,5 +59,36 @@ public class TextUtil {
                 .append(footerText);
 
         return components;
+    }
+
+    public static ComponentBuilder GenerateFooterButtonMsg(String cmd1, String cmd2, String h1, String h2) {
+        ComponentBuilder footer = new ComponentBuilder();
+
+        TextComponent start = new TextComponent("= ");
+
+        start.setColor(TextUtil.footerColor);
+        start.setBold(true);
+
+        TextComponent middle = new TextComponent(" ==================================== ");
+        TextComponent end = new TextComponent(" =");
+
+        TextComponent backButton = new TextComponent("[<]");
+        TextComponent nextButton = new TextComponent("[>]");
+        backButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(h1)));
+        backButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd1));
+        nextButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(h2)));
+        nextButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd2));
+
+        footer.append(start)
+                .append(backButton)
+                .append(middle)
+                .event((ClickEvent) null)
+                .event((HoverEvent) null)
+                .append(nextButton)
+                .append(end)
+                .event((ClickEvent) null)
+                .event((HoverEvent) null);
+
+        return footer;
     }
 }
