@@ -64,6 +64,8 @@ public class MongoDBHandler {
         playerCollection.replaceOne(eq("uuid", POJOPlayer.uuid), POJOPlayer, opts);
     }
 
+    public void deleteFaction(String factionName) { factionCollection.deleteOne(eq("factionName" == factionName)); }
+
     public void insertFaction(POJO_Faction POJOFaction) {
         factionCollection.insertOne(POJOFaction);
     }

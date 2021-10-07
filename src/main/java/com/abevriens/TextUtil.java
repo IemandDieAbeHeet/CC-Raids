@@ -9,12 +9,23 @@ public class TextUtil {
     public static ChatColor footerColor = ChatColor.AQUA;
     public static ChatColor headerColor = ChatColor.AQUA;
     public static ChatColor errorColor = ChatColor.RED;
+    public static ChatColor successColor = ChatColor.GREEN;
 
     public static TextComponent newLine = new TextComponent("\n\n");
 
     public static ComponentBuilder GenerateErrorMsg(String errorString) {
         TextComponent errorText = new TextComponent(errorString);
         errorText.setColor(errorColor);
+
+        ComponentBuilder components = new ComponentBuilder()
+                .append(errorText);
+
+        return components;
+    }
+
+    public static ComponentBuilder GenerateSuccessMsg(String succesString) {
+        TextComponent errorText = new TextComponent(succesString);
+        errorText.setColor(successColor);
 
         ComponentBuilder components = new ComponentBuilder()
                 .append(errorText);

@@ -2,7 +2,6 @@ package com.abevriens;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Chunk;
 import org.bukkit.command.Command;
@@ -11,11 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-import java.awt.font.TextMeasurer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 
 public class FactionCommandHandler implements CommandExecutor {
     @NotNull Player player;
@@ -53,7 +48,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     case "help":
-                        command_Help();
+                        if(args.length > 1) {
+                            command_Help(Integer.parseInt(args[1]));
+                        } else {
+                            command_Help(1);
+                        }
                         break;
                     case "join":
                         command_Join(args[1]);
@@ -68,11 +67,14 @@ public class FactionCommandHandler implements CommandExecutor {
                             command_List(1);
                         }
                         break;
+                    case "delete":
+                        command_Delete();
+                        break;
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
                 }
             } else {
-                command_Help();
+                command_Help(1);
             }
             return  true;
         } else {
@@ -85,7 +87,8 @@ public class FactionCommandHandler implements CommandExecutor {
 
         if(faction.factionName == FactionManager.emptyFaction.factionName) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
-                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen.");
+                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
+                            "faction aan te maken.");
 
             player.spigot().sendMessage(errorMsg.create());
         } else {
@@ -144,9 +147,35 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
+    public void command_Delete() {
+        if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
+                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jouw owner geeft.");
+            player.spigot().sendMessage(errorMessage.create());
+        } else {
+            factionManager.factionList.remove(cc_player.faction);
+            factionManager.factionNameList.remove(cc_player.faction.factionName);
+            CockCityRaids.instance.dbHandler.deleteFaction(cc_player.faction.factionName);
+
+            pojo_player.factionName = FactionManager.emptyFaction.factionName;
+            CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            cc_player.faction = FactionManager.emptyFaction;
+
+            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
+            player.spigot().sendMessage(successMessage.create());
+        }
+    }
+
     private void command_Leave() {
         if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName) {
-            TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction join om een faction te joinen.");
+            TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction" +
+                    " join om een faction te joinen.");
+            errorMessage.setColor(ChatColor.RED);
+            player.spigot().sendMessage(errorMessage);
+        } else if(cc_player.faction.factionOwner.uuid == cc_player.uuid) {
+            TextComponent errorMessage = new TextComponent("Je bent de owner van deze faction, gebruik /faction delete om" +
+                    " de faction te verwijderen of /faction setOwner" +
+                    " om iemand anders owner te maken.");
             errorMessage.setColor(ChatColor.RED);
             player.spigot().sendMessage(errorMessage);
         } else {
@@ -226,7 +255,7 @@ public class FactionCommandHandler implements CommandExecutor {
         helpText2.setBold(false);
         helpText2.setUnderlined(false);
 
-        helpClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions help"));
+        helpClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions help 1"));
         helpClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Alle commands")));
 
         BaseComponent[] components = new ComponentBuilder()
@@ -241,7 +270,7 @@ public class FactionCommandHandler implements CommandExecutor {
         player.spigot().sendMessage(components);
     }
 
-    private void command_Help() {
+    private void command_Help(int page) {
         TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O");
         helpText.setBold(false);
         helpText.setColor(ChatColor.GREEN);
