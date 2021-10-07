@@ -22,7 +22,6 @@ public class CockCityRaids extends JavaPlugin {
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
 
-        this.getCommand("startoutline").setExecutor(new StartBaseOutline());
         this.getCommand("factions").setExecutor(new FactionCommandHandler());
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 

@@ -8,10 +8,6 @@ website: abevriens.com
 api-version: 1.17
 
 commands:
-  startoutline:
-    description: Start outlining your base.
-    usage: /<command>
-    permission: cockcityraids.startoutline
   factions:
     description: All faction commands.
     usage: /<command> <action> <arguments>
