@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.font.TextMeasurer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FactionCommandHandler implements CommandExecutor {
     @NotNull Player player;
@@ -43,7 +44,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     case "info":
-                        command_Info();
+                        if(args.length > 1) {
+                            command_Info(args[1]);
+                        } else {
+                            command_Info(cc_player.faction.factionName);
+                        }
                         break;
                     case "help":
                         command_Help();
@@ -55,7 +60,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         command_Leave();
                         break;
                     case "list":
-                        command_List();
+                        if(args.length > 1) {
+                            command_List(Integer.parseInt(args[1]));
+                        } else {
+                            command_List(1);
+                        }
                         break;
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
@@ -69,8 +78,8 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
-    private void command_Info() {
-        Faction faction = cc_player.faction;
+    private void command_Info(String factionName) {
+        Faction faction = CockCityRaids.instance.factionManager.getFaction(factionName);
 
         if(faction.factionName == FactionManager.emptyFaction.factionName) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -161,35 +170,35 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
-    private void command_List() {
-        TextComponent messageHeader = new TextComponent("===================  List  ====================");
-        messageHeader.setColor(ChatColor.AQUA);
-        messageHeader.setBold(true);
-        TextComponent messageFooter = new TextComponent("=============================================");
-        messageFooter.setColor(ChatColor.AQUA);
-        messageFooter.setBold(true);
-        TextComponent newLine = new TextComponent("\n\n");
+    private void command_List(int page) {
+        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List");
+        ComponentBuilder footer = TextUtil.GenerateFooterMsg();
 
-        ComponentBuilder componentBuilder = new ComponentBuilder().append(messageHeader);
+        ComponentBuilder componentBuilder = new ComponentBuilder().append(header.create());
 
         int i = 1;
-        for(Faction faction : CockCityRaids.instance.factionManager.factionList) {
-            componentBuilder.append(newLine);
-            ComponentBuilder nameInfo = new ComponentBuilder();
+        ArrayList<Faction> list = (ArrayList<Faction>) CockCityRaids.instance.factionManager.factionList;
+
+        for(int j = (page-1) * 5; j < 5 + (page-1) * 5; j++) {
+            if(list.get(j) == null) {
+                break;
+            }
+
+            componentBuilder.append(TextUtil.newLine);
             TextComponent factionNumber = new TextComponent(i + ": ");
             factionNumber.setColor(ChatColor.GOLD);
             factionNumber.setBold(true);
-            TextComponent factionInfo = new TextComponent(faction.factionName + " - " + faction.players.size());
+            TextComponent factionInfo = new TextComponent(list.get(j).factionName + " - " + list.get(j).players.size());
             factionInfo.setBold(false);
 
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
-            componentBuilder.append(newLine);
+            componentBuilder.append(TextUtil.newLine);
             i++;
         }
 
-        componentBuilder.append(newLine)
-                .append(messageFooter);
+        componentBuilder.append(TextUtil.newLine)
+                .append(footer.create());
 
         player.spigot().sendMessage(componentBuilder.create());
     }
