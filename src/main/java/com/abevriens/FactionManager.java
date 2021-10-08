@@ -1,15 +1,10 @@
 package com.abevriens;
 
-import com.mongodb.client.MongoCollection;
 import org.bson.codecs.configuration.CodecConfigurationException;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FactionManager {
@@ -18,15 +13,15 @@ public class FactionManager {
 
     public void LoadFactions() {
         try {
-            Iterable<POJO_Faction> factions = CockCityRaids.instance.dbHandler.factionCollection.find();
+            Iterable<POJO_Faction> factions = CrackCityRaids.instance.dbHandler.factionCollection.find();
 
             for (POJO_Faction faction : factions) {
                 factionList.add(POJOToFaction(faction));
                 factionNameList.add(faction.factionName);
             }
         } catch(CodecConfigurationException e) {
-            CockCityRaids.instance.getLogger().info(e.getMessage());
-            CockCityRaids.instance.getLogger().info(ChatColor.RED + "Couldn't load factions from database, a database entry might be corrupted.");
+            CrackCityRaids.instance.getLogger().info(e.getMessage());
+            CrackCityRaids.instance.getLogger().info(ChatColor.RED + "Couldn't load factions from database, a database entry might be corrupted.");
         }
     }
 

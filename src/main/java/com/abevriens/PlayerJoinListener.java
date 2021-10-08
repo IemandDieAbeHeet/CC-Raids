@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        PlayerManager playerManager = CockCityRaids.instance.playerManager;
+        PlayerManager playerManager = CrackCityRaids.instance.playerManager;
         Player player = event.getPlayer();
 
         if (playerManager.playerExists(player)) return;
@@ -25,6 +25,6 @@ public class PlayerJoinListener implements Listener {
         );
 
         playerManager.addPlayer(player, pojo_player, cc_player);
-        CockCityRaids.instance.dbHandler.insertPlayer(pojo_player);
+        CrackCityRaids.instance.dbHandler.insertPlayer(pojo_player);
     }
 }

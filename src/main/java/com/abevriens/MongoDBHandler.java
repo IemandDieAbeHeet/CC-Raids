@@ -7,10 +7,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.ReturnDocument;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
@@ -19,7 +16,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import org.bson.conversions.Bson;
 import org.bukkit.ChatColor;
 
 public class MongoDBHandler {
@@ -45,10 +41,10 @@ public class MongoDBHandler {
             mongoDatabase = mongoClient.getDatabase("CockCityData");
             playerCollection = mongoDatabase.getCollection("players", POJO_Player.class);
             factionCollection = mongoDatabase.getCollection("factions", POJO_Faction.class);
-            CockCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
+            CrackCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
             return true;
         } catch(MongoException e) {
-            CockCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
+            CrackCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
             return false;
         }
     }
