@@ -23,8 +23,8 @@ public class TextUtil {
                 .append(errorText);
     }
 
-    public static ComponentBuilder GenerateSuccessMsg(String succesString) {
-        TextComponent errorText = new TextComponent(succesString);
+    public static ComponentBuilder GenerateSuccessMsg(String successString) {
+        TextComponent errorText = new TextComponent(successString);
         errorText.setColor(successColor);
 
         return new ComponentBuilder()
