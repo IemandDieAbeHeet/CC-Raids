@@ -19,48 +19,42 @@ public class TextUtil {
         TextComponent errorText = new TextComponent(errorString);
         errorText.setColor(errorColor);
 
-        ComponentBuilder components = new ComponentBuilder()
+        return new ComponentBuilder()
                 .append(errorText);
-
-        return components;
     }
 
     public static ComponentBuilder GenerateSuccessMsg(String succesString) {
         TextComponent errorText = new TextComponent(succesString);
         errorText.setColor(successColor);
 
-        ComponentBuilder components = new ComponentBuilder()
+        return new ComponentBuilder()
                 .append(errorText);
-
-        return components;
     }
 
     public static ComponentBuilder GenerateHeaderMsg(String headerString) {
-        String header = "\n";
+        StringBuilder header = new StringBuilder("\n");
 
         int k = 0;
         if(headerString.length() % 2 == 0) k = 1;
 
         for (int j = 0; j < 22 - k - (int)Math.ceil((double)headerString.length()/2.0); j++) {
-            header += "=";
+            header.append("=");
         }
 
-        header += "  ";
-        header += headerString;
-        header += "  ";
+        header.append("  ");
+        header.append(headerString);
+        header.append("  ");
 
         for (int j = 0; j < 22 - (int)Math.ceil((double)headerString.length()/2.0); j++) {
-            header += "=";
+            header.append("=");
         }
 
-        TextComponent headerText = new TextComponent(header);
+        TextComponent headerText = new TextComponent(header.toString());
         headerText.setBold(true);
         headerText.setColor(headerColor);
 
-        ComponentBuilder components = new ComponentBuilder()
+        return new ComponentBuilder()
                 .append(headerText);
-
-        return components;
     }
 
     public static ComponentBuilder GenerateFooterMsg() {
@@ -68,10 +62,8 @@ public class TextUtil {
         footerText.setBold(true);
         footerText.setColor(footerColor);
 
-        ComponentBuilder components = new ComponentBuilder()
+        return new ComponentBuilder()
                 .append(footerText);
-
-        return components;
     }
 
     public static ComponentBuilder GenerateFooterButtonMsg(String cmd1, String cmd2, String h1, String h2) {
