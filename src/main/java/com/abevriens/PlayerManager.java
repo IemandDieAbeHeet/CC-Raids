@@ -25,11 +25,7 @@ public class PlayerManager {
     }
 
     public boolean playerExists(Player player) {
-        if (getPOJOPlayer(player) == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return getPOJOPlayer(player) != null;
     }
 
     public void addPlayer(Player player, POJO_Player pojo_player, CC_Player cc_player) {
@@ -67,12 +63,11 @@ public class PlayerManager {
 
     public static CC_Player POJOToCC(POJO_Player pojo_player) {
         Faction faction = CockCityRaids.instance.factionManager.getFaction(pojo_player.factionName);
-        CC_Player cc_player = new CC_Player(
+
+        return new CC_Player(
             pojo_player.displayName,
             pojo_player.uuid,
             faction
         );
-
-        return cc_player;
     }
 }
