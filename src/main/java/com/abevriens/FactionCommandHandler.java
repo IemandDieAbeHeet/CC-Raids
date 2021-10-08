@@ -2,7 +2,6 @@ package com.abevriens;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Chunk;
 import org.bukkit.command.Command;
@@ -14,19 +13,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class FactionCommandHandler implements CommandExecutor {
-    @NotNull Player player;
-    @NotNull POJO_Player pojo_player;
-    @NotNull CC_Player cc_player;
-    @NotNull PlayerManager playerManager = CrackCityRaids.instance.playerManager;
-    @NotNull FactionManager factionManager = CrackCityRaids.instance.factionManager;
+    Player player;
+    POJO_Player pojo_player;
+    CC_Player cc_player;
+    @NotNull PlayerManager playerManager = CockCityRaids.instance.playerManager;
+    @NotNull FactionManager factionManager = CockCityRaids.instance.factionManager;
+    int LIST_CHAT_SIZE = 8;
 
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if(sender instanceof Player) {
             player = (Player) sender;
             cc_player = playerManager.getCCPlayer(player);
             pojo_player = playerManager.getPOJOPlayer(player);
             if(args.length > 0) {
-                switch (args[0]) {
+                switch (args[0].toLowerCase()) {
                     case "create":
                         if(args.length > 1) {
                             command_Create(args[1]);
@@ -48,7 +48,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     case "help":
-                        command_Help();
+                        if(args.length > 1) {
+                            command_Help(Integer.parseInt(args[1]));
+                        } else {
+                            command_Help(1);
+                        }
                         break;
                     case "join":
                         command_Join(args[1]);
@@ -63,11 +67,14 @@ public class FactionCommandHandler implements CommandExecutor {
                             command_List(1);
                         }
                         break;
+                    case "delete":
+                        command_Delete();
+                        break;
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
                 }
             } else {
-                command_Help();
+                command_Help(1);
             }
             return  true;
         } else {
@@ -76,11 +83,12 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Info(String factionName) {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionName);
+        Faction faction = CockCityRaids.instance.factionManager.getFaction(factionName);
 
-        if(faction.factionName == FactionManager.emptyFaction.factionName) {
+        if(factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
-                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen.");
+                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
+                            "faction aan te maken.");
 
             player.spigot().sendMessage(errorMsg.create());
         } else {
@@ -89,7 +97,7 @@ public class FactionCommandHandler implements CommandExecutor {
 
             BaseComponent[] nameInfo = new ComponentBuilder("Naam: ")
                     .color(ChatColor.GOLD).bold(true)
-                    .append(new TextComponent(faction.factionName))
+                    .append(new TextComponent(factionName))
                     .color(ChatColor.WHITE).bold(false).create();
 
             BaseComponent[] ownerInfo = new ComponentBuilder("Owner: ")
@@ -129,8 +137,8 @@ public class FactionCommandHandler implements CommandExecutor {
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
             cc_player.faction = faction;
-            CrackCityRaids.instance.dbHandler.insertFaction(pojo_faction);
-            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            CockCityRaids.instance.dbHandler.insertFaction(pojo_faction);
+            CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
             factionManager.factionNameList.add(faction.factionName);
 
             TextComponent successMessage = new TextComponent("Faction is succesvol aangemaakt!");
@@ -139,9 +147,35 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
+    public void command_Delete() {
+        if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
+                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jou owner geeft.");
+            player.spigot().sendMessage(errorMessage.create());
+        } else {
+            factionManager.factionList.remove(cc_player.faction);
+            factionManager.factionNameList.remove(cc_player.faction.factionName);
+            CockCityRaids.instance.dbHandler.deleteFaction(cc_player.faction.factionName);
+
+            pojo_player.factionName = FactionManager.emptyFaction.factionName;
+            CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            cc_player.faction = FactionManager.emptyFaction;
+
+            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
+            player.spigot().sendMessage(successMessage.create());
+        }
+    }
+
     private void command_Leave() {
-        if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName) {
-            TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction join om een faction te joinen.");
+        if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction" +
+                    " join om een faction te joinen.");
+            errorMessage.setColor(ChatColor.RED);
+            player.spigot().sendMessage(errorMessage);
+        } else if(cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            TextComponent errorMessage = new TextComponent("Je bent de owner van deze faction, gebruik /faction delete om" +
+                    " de faction te verwijderen of /faction setOwner" +
+                    " om iemand anders owner te maken.");
             errorMessage.setColor(ChatColor.RED);
             player.spigot().sendMessage(errorMessage);
         } else {
@@ -155,34 +189,54 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_Join(String factionName) {
         TextComponent errorMessage = new TextComponent();
         errorMessage.setColor(ChatColor.RED);
-        if(cc_player.faction.factionName != FactionManager.emptyFaction.factionName) {
+        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             errorMessage.setText("Je zit al in een faction, gebruik eerst /factions leave om je faction te verlaten.");
             player.spigot().sendMessage(errorMessage);
         } else if(!factionManager.factionNameList.contains(factionName)) {
             errorMessage.setText("De opgegeven faction bestaat niet!");
             player.spigot().sendMessage(errorMessage);
         } else {
-            Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
+            Faction newFaction = CockCityRaids.instance.factionManager.getFaction(factionName);
             playerManager.setPlayerFaction(player, newFaction);
         }
     }
 
     private void command_List(int page) {
-        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List");
-        ComponentBuilder footer = TextUtil.GenerateFooterMsg();
+        ArrayList<Faction> list = (ArrayList<Faction>) CockCityRaids.instance.factionManager.factionList;
 
-        ComponentBuilder componentBuilder = new ComponentBuilder().append(header.create());
+        if(list.size() < 1) {
+            player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +
+                    " faction door /faction create te gebruiken!").create());
 
-        int i = 1;
-        ArrayList<Faction> list = (ArrayList<Faction>) CrackCityRaids.instance.factionManager.factionList;
+            return;
+        }
 
-        for(int j = (page-1) * 5; j < 5 + (page-1) * 5; j++) {
-            if(list.get(j) == null) {
+        int lastPage = (int)Math.ceil((double) list.size() / LIST_CHAT_SIZE);
+
+        if(page > lastPage) {
+            page = lastPage;
+        } else if(page < 1) {
+            page = 1;
+        }
+
+        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List [" + page + "/" + lastPage + "]");
+        ComponentBuilder footer = TextUtil.GenerateFooterButtonMsg("/factions list " + (page-1),
+                "/factions list " + (page+1),
+                "Ga een pagina terug",
+                "Ga een pagina verder");
+
+        header.append(TextUtil.newLine);
+
+        ComponentBuilder componentBuilder = new ComponentBuilder().append(TextUtil.newLine);
+
+        componentBuilder.append(header.create());
+
+        for(int j = (page-1) * LIST_CHAT_SIZE; j < LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE; j++) {
+            if(list.size()-1 < j) {
                 break;
             }
 
-            componentBuilder.append(TextUtil.newLine);
-            TextComponent factionNumber = new TextComponent(i + ": ");
+            TextComponent factionNumber = new TextComponent(j + 1 + ": ");
             factionNumber.setColor(ChatColor.GOLD);
             factionNumber.setBold(true);
             TextComponent factionInfo = new TextComponent(list.get(j).factionName + " - " + list.get(j).players.size());
@@ -191,13 +245,10 @@ public class FactionCommandHandler implements CommandExecutor {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
             componentBuilder.append(TextUtil.newLine);
-            i++;
         }
 
-        componentBuilder.append(TextUtil.newLine)
-                .append(footer.create());
-
         player.spigot().sendMessage(componentBuilder.create());
+        player.spigot().sendMessage(footer.create());
     }
 
     private void command_Help(String error) {
@@ -211,7 +262,7 @@ public class FactionCommandHandler implements CommandExecutor {
         helpText2.setBold(false);
         helpText2.setUnderlined(false);
 
-        helpClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions help"));
+        helpClick.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions help 1"));
         helpClick.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Alle commands")));
 
         BaseComponent[] components = new ComponentBuilder()
@@ -226,25 +277,17 @@ public class FactionCommandHandler implements CommandExecutor {
         player.spigot().sendMessage(components);
     }
 
-    private void command_Help() {
-        TextComponent messageHeader = new TextComponent("===================  Help  ====================");
-        messageHeader.setColor(ChatColor.AQUA);
-        messageHeader.setBold(true);
-        TextComponent messageFooter = new TextComponent("=============================================");
-        messageFooter.setColor(ChatColor.AQUA);
-        messageFooter.setBold(true);
-        TextComponent newLine = new TextComponent("\n\n");
-
-        TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O");
+    private void command_Help(int page) {
+        TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O (miss website) ");
         helpText.setBold(false);
         helpText.setColor(ChatColor.GREEN);
 
         BaseComponent[] components = new ComponentBuilder()
-                .append(messageHeader)
-                .append(newLine)
+                .append(TextUtil.GenerateHeaderMsg("Help").create())
+                .append(TextUtil.newLine)
                 .append(helpText)
-                .append(newLine)
-                .append(messageFooter).create();
+                .append(TextUtil.newLine)
+                .append(TextUtil.GenerateFooterMsg().create()).create();
 
         player.spigot().sendMessage(components);
     }

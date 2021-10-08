@@ -2,8 +2,8 @@ package com.abevriens;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CrackCityRaids extends JavaPlugin {
-    public static CrackCityRaids instance;
+public class CockCityRaids extends JavaPlugin {
+    public static CockCityRaids instance;
 
     public MongoDBHandler dbHandler;
 
@@ -18,7 +18,6 @@ public class CrackCityRaids extends JavaPlugin {
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
 
-        this.getCommand("startoutline").setExecutor(new StartBaseOutline());
         this.getCommand("factions").setExecutor(new FactionCommandHandler());
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
