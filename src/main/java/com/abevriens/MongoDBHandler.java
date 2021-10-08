@@ -1,26 +1,20 @@
 package com.abevriens;
 
-import static com.mongodb.client.model.Filters.eq;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
-import com.mongodb.client.model.FindOneAndReplaceOptions;
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.ReturnDocument;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-import org.bson.conversions.Bson;
+import com.mongodb.client.model.ReplaceOptions;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bukkit.ChatColor;
+
+import static com.mongodb.client.model.Filters.eq;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDBHandler {
     private MongoClient mongoClient;

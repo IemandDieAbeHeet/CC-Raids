@@ -1,15 +1,10 @@
 package com.abevriens;
 
-import com.mongodb.client.MongoCollection;
 import org.bson.codecs.configuration.CodecConfigurationException;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FactionManager {

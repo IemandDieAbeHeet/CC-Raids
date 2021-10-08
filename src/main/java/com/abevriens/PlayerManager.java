@@ -1,17 +1,11 @@
 package com.abevriens;
 
 import com.mongodb.client.MongoCursor;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import static com.mongodb.client.model.Filters.eq;
-
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class PlayerManager {
