@@ -35,12 +35,12 @@ public class MongoDBHandler {
 
         try {
             mongoClient = MongoClients.create(clientSettings);
-            MongoDatabase mongoDatabase = mongoClient.getDatabase("CockCityData");
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("CrackCityData");
             playerCollection = mongoDatabase.getCollection("players", POJO_Player.class);
             factionCollection = mongoDatabase.getCollection("factions", POJO_Faction.class);
-            CockCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
+            CrackCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
         } catch(MongoException e) {
-            CockCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
+            CrackCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
         }
     }
 

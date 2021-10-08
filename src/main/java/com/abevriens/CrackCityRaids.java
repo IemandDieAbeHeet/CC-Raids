@@ -2,8 +2,8 @@ package com.abevriens;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CockCityRaids extends JavaPlugin {
-    public static CockCityRaids instance;
+public class CrackCityRaids extends JavaPlugin {
+    public static CrackCityRaids instance;
 
     public MongoDBHandler dbHandler;
 

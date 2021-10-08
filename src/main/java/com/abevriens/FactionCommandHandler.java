@@ -16,9 +16,9 @@ public class FactionCommandHandler implements CommandExecutor {
     Player player;
     POJO_Player pojo_player;
     CC_Player cc_player;
-    @NotNull PlayerManager playerManager = CockCityRaids.instance.playerManager;
-    @NotNull FactionManager factionManager = CockCityRaids.instance.factionManager;
-    int LIST_CHAT_SIZE = 8;
+    @NotNull PlayerManager playerManager = CrackCityRaids.instance.playerManager;
+    @NotNull FactionManager factionManager = CrackCityRaids.instance.factionManager;
+    final int LIST_CHAT_SIZE = 8;
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if(sender instanceof Player) {
@@ -83,7 +83,7 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Info(String factionName) {
-        Faction faction = CockCityRaids.instance.factionManager.getFaction(factionName);
+        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionName);
 
         if(factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -137,8 +137,8 @@ public class FactionCommandHandler implements CommandExecutor {
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
             cc_player.faction = faction;
-            CockCityRaids.instance.dbHandler.insertFaction(pojo_faction);
-            CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            CrackCityRaids.instance.dbHandler.insertFaction(pojo_faction);
+            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
             factionManager.factionNameList.add(faction.factionName);
 
             TextComponent successMessage = new TextComponent("Faction is succesvol aangemaakt!");
@@ -155,10 +155,10 @@ public class FactionCommandHandler implements CommandExecutor {
         } else {
             factionManager.factionList.remove(cc_player.faction);
             factionManager.factionNameList.remove(cc_player.faction.factionName);
-            CockCityRaids.instance.dbHandler.deleteFaction(cc_player.faction.factionName);
+            CrackCityRaids.instance.dbHandler.deleteFaction(cc_player.faction.factionName);
 
             pojo_player.factionName = FactionManager.emptyFaction.factionName;
-            CockCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
             cc_player.faction = FactionManager.emptyFaction;
 
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
@@ -196,13 +196,13 @@ public class FactionCommandHandler implements CommandExecutor {
             errorMessage.setText("De opgegeven faction bestaat niet!");
             player.spigot().sendMessage(errorMessage);
         } else {
-            Faction newFaction = CockCityRaids.instance.factionManager.getFaction(factionName);
+            Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
             playerManager.setPlayerFaction(player, newFaction);
         }
     }
 
     private void command_List(int page) {
-        ArrayList<Faction> list = (ArrayList<Faction>) CockCityRaids.instance.factionManager.factionList;
+        ArrayList<Faction> list = (ArrayList<Faction>) CrackCityRaids.instance.factionManager.factionList;
 
         if(list.size() < 1) {
             player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +

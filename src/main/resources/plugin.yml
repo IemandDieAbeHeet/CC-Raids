@@ -1,8 +1,8 @@
-name: CockCityRaids
-main: com.abevriens.CockCityRaids
+name: CrackCityRaids
+main: com.abevriens.CrackCityRaids
 version: '1.0.0'
 load: POSTWORLD
-description: The official CockCity raids plugin, made for cockcity.online by Abe Vriens
+description: The official CrackCity raids plugin, made for crackcity.online by Abe Vriens
 author: IemandDieAbeHeet
 website: abevriens.com
 api-version: 1.17
@@ -11,5 +11,5 @@ commands:
   factions:
     description: All faction commands.
     usage: /<command> <action> <arguments>
-    permission: cockcityraids.factions
+    permission: crackcity.factions
     aliases: [f]
