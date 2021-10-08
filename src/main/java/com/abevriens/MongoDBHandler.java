@@ -18,11 +18,10 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDBHandler {
     private MongoClient mongoClient;
-    private MongoDatabase mongoDatabase;
     public MongoCollection<POJO_Player> playerCollection;
     public MongoCollection<POJO_Faction> factionCollection;
 
-    public boolean connect(String _connectionUri) {
+    public void connect(String _connectionUri) {
         ConnectionString connectionString = new ConnectionString(_connectionUri);
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
@@ -36,14 +35,12 @@ public class MongoDBHandler {
 
         try {
             mongoClient = MongoClients.create(clientSettings);
-            mongoDatabase = mongoClient.getDatabase("CockCityData");
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("CockCityData");
             playerCollection = mongoDatabase.getCollection("players", POJO_Player.class);
             factionCollection = mongoDatabase.getCollection("factions", POJO_Faction.class);
             CockCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
-            return true;
         } catch(MongoException e) {
             CockCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
-            return false;
         }
     }
 
@@ -58,7 +55,7 @@ public class MongoDBHandler {
         playerCollection.replaceOne(eq("uuid", POJOPlayer.uuid), POJOPlayer, opts);
     }
 
-    public void deleteFaction(String factionName) { factionCollection.deleteOne(eq("factionName" == factionName)); }
+    public void deleteFaction(String factionName) { factionCollection.deleteOne(eq("factionName", factionName)); }
 
     public void insertFaction(POJO_Faction POJOFaction) {
         factionCollection.insertOne(POJOFaction);
