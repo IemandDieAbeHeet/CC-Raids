@@ -11,16 +11,17 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FactionCommandHandler implements CommandExecutor {
-    @NotNull Player player;
-    @NotNull POJO_Player pojo_player;
-    @NotNull CC_Player cc_player;
+    Player player;
+    POJO_Player pojo_player;
+    CC_Player cc_player;
     @NotNull PlayerManager playerManager = CockCityRaids.instance.playerManager;
     @NotNull FactionManager factionManager = CockCityRaids.instance.factionManager;
     int LIST_CHAT_SIZE = 8;
 
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if(sender instanceof Player) {
             player = (Player) sender;
             cc_player = playerManager.getCCPlayer(player);
@@ -85,7 +86,7 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_Info(String factionName) {
         Faction faction = CockCityRaids.instance.factionManager.getFaction(factionName);
 
-        if(faction.factionName == FactionManager.emptyFaction.factionName) {
+        if(Objects.equals(faction.factionName, FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
                             "faction aan te maken.");
@@ -167,12 +168,12 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Leave() {
-        if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName) {
+        if(Objects.equals(cc_player.faction.factionName, FactionManager.emptyFaction.factionName)) {
             TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction" +
                     " join om een faction te joinen.");
             errorMessage.setColor(ChatColor.RED);
             player.spigot().sendMessage(errorMessage);
-        } else if(cc_player.faction.factionOwner.uuid == cc_player.uuid) {
+        } else if(Objects.equals(cc_player.faction.factionOwner.uuid, cc_player.uuid)) {
             TextComponent errorMessage = new TextComponent("Je bent de owner van deze faction, gebruik /faction delete om" +
                     " de faction te verwijderen of /faction setOwner" +
                     " om iemand anders owner te maken.");
@@ -189,7 +190,7 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_Join(String factionName) {
         TextComponent errorMessage = new TextComponent();
         errorMessage.setColor(ChatColor.RED);
-        if(cc_player.faction.factionName != FactionManager.emptyFaction.factionName) {
+        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             errorMessage.setText("Je zit al in een faction, gebruik eerst /factions leave om je faction te verlaten.");
             player.spigot().sendMessage(errorMessage);
         } else if(!factionManager.factionNameList.contains(factionName)) {
