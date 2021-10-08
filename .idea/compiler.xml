@@ -9,5 +9,8 @@
         <module name="CrackCityRaids" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="CockCityRaids" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

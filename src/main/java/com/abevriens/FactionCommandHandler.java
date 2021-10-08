@@ -140,6 +140,7 @@ public class FactionCommandHandler implements CommandExecutor {
             CrackCityRaids.instance.dbHandler.insertFaction(pojo_faction);
             CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
             factionManager.factionNameList.add(faction.factionName);
+            factionManager.factionList.add(faction);
 
             TextComponent successMessage = new TextComponent("Faction is succesvol aangemaakt!");
             successMessage.setColor(ChatColor.GREEN);
