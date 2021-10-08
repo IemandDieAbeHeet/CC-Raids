@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class FactionCommandHandler implements CommandExecutor {
     Player player;
@@ -86,7 +85,7 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_Info(String factionName) {
         Faction faction = CockCityRaids.instance.factionManager.getFaction(factionName);
 
-        if(Objects.equals(faction.factionName, FactionManager.emptyFaction.factionName)) {
+        if(factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
                             "faction aan te maken.");
@@ -98,7 +97,7 @@ public class FactionCommandHandler implements CommandExecutor {
 
             BaseComponent[] nameInfo = new ComponentBuilder("Naam: ")
                     .color(ChatColor.GOLD).bold(true)
-                    .append(new TextComponent(faction.factionName))
+                    .append(new TextComponent(factionName))
                     .color(ChatColor.WHITE).bold(false).create();
 
             BaseComponent[] ownerInfo = new ComponentBuilder("Owner: ")
@@ -151,7 +150,7 @@ public class FactionCommandHandler implements CommandExecutor {
     public void command_Delete() {
         if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
-                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jouw owner geeft.");
+                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jou owner geeft.");
             player.spigot().sendMessage(errorMessage.create());
         } else {
             factionManager.factionList.remove(cc_player.faction);
@@ -168,12 +167,12 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Leave() {
-        if(Objects.equals(cc_player.faction.factionName, FactionManager.emptyFaction.factionName)) {
+        if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /faction" +
                     " join om een faction te joinen.");
             errorMessage.setColor(ChatColor.RED);
             player.spigot().sendMessage(errorMessage);
-        } else if(Objects.equals(cc_player.faction.factionOwner.uuid, cc_player.uuid)) {
+        } else if(cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
             TextComponent errorMessage = new TextComponent("Je bent de owner van deze faction, gebruik /faction delete om" +
                     " de faction te verwijderen of /faction setOwner" +
                     " om iemand anders owner te maken.");
@@ -204,6 +203,13 @@ public class FactionCommandHandler implements CommandExecutor {
 
     private void command_List(int page) {
         ArrayList<Faction> list = (ArrayList<Faction>) CockCityRaids.instance.factionManager.factionList;
+
+        if(list.size() < 1) {
+            player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +
+                    " faction door /faction create te gebruiken!").create());
+
+            return;
+        }
 
         int lastPage = (int)Math.ceil((double) list.size() / LIST_CHAT_SIZE);
 
@@ -272,7 +278,7 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Help(int page) {
-        TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O");
+        TextComponent helpText = new TextComponent("Deze command moet nog gemaakt worden :O (miss website) ");
         helpText.setBold(false);
         helpText.setColor(ChatColor.GREEN);
 
