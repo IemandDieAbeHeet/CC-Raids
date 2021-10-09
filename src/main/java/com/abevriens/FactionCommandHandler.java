@@ -243,13 +243,25 @@ public class FactionCommandHandler implements CommandExecutor {
             TextComponent factionInfo = new TextComponent(list.get(j).factionName + " - " + list.get(j).players.size());
             factionInfo.setBold(false);
 
+            factionNumber.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Klik voor meer info")));
+            factionNumber.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions info " + list.get(j).factionName));
+
+            TextComponent joinButton = new TextComponent(" [Join]");
+            joinButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Klik hier om de faction te joinen")));
+            joinButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions join " + list.get(j).factionName));
+            joinButton.setColor(ChatColor.DARK_AQUA);
+
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
 
+            if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName) {
+                componentBuilder.append(joinButton);
+            }
+
             if(j == (LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE) - 1 || list.size()-1 == j) {
-                componentBuilder.append("\n");
+                componentBuilder.append("\n").event((ClickEvent) null).event((HoverEvent) null);
             } else {
-                componentBuilder.append(TextUtil.newLine);
+                componentBuilder.append(TextUtil.newLine).event((ClickEvent) null).event((HoverEvent) null);
             }
         }
 
