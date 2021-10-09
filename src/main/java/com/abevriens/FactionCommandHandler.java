@@ -193,7 +193,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                     },
                     new ArrayList<Chunk>(),
-                    JoinStatus.OPEN);
+                    JoinStatus.INVITE);
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
