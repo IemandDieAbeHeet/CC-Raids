@@ -13,6 +13,8 @@ public class Faction {
 
     public POJO_Player factionOwner;
 
+    public boolean joinable;
+
     public Faction(POJO_Player _factionOwner, String _factionName, List<POJO_Player> _players, List<Chunk> _occupiedChunks) {
         factionOwner = _factionOwner;
         factionName = _factionName;
