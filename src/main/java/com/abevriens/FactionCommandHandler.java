@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -90,7 +91,7 @@ public class FactionCommandHandler implements CommandExecutor {
                             ComponentBuilder components = TextUtil.GenerateErrorMsg(
                                     "Geen status opgegeven, gebruik het commando als volgt:\n");
 
-                            TextComponent commandText = new TextComponent("/factions joinstatus [open, invite, close]");
+                            TextComponent commandText = new TextComponent("/factions joinstatus [open, request, close]");
                             commandText.setBold(true);
 
                             player.spigot().sendMessage(components.append(commandText).create());
@@ -100,8 +101,8 @@ public class FactionCommandHandler implements CommandExecutor {
                         if(args[1].equals("open") || args[1].equals("openbaar")) {
                             command_SetJoinStatus(JoinStatus.OPEN);
                             break;
-                        } else if(args[1].equals("invite")) {
-                            command_SetJoinStatus(JoinStatus.INVITE);
+                        } else if(args[1].equals("request")) {
+                            command_SetJoinStatus(JoinStatus.REQUEST);
                             break;
                         } else if(args[1].equals("close") || args[1].equals("closed")) {
                             command_SetJoinStatus(JoinStatus.CLOSED);
@@ -193,7 +194,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                     },
                     new ArrayList<Chunk>(),
-                    JoinStatus.INVITE);
+                    JoinStatus.REQUEST);
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
@@ -264,11 +265,24 @@ public class FactionCommandHandler implements CommandExecutor {
         } else if(faction.joinStatus == JoinStatus.CLOSED) {
             errorMessage.setText("De faction die je probeert te joinen staat op gesloten!");
             player.spigot().sendMessage(errorMessage);
+        } else if(faction.joinStatus == JoinStatus.REQUEST) {
+            faction.playerJoinRequests.add(cc_player);
+            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
+            player.spigot().sendMessage(successMessage.create());
+
+            for(POJO_Player pojo_player : faction.players) {
+                OfflinePlayer pojotoplayer = PlayerManager.POJOToPlayer(pojo_player);
+                if(pojotoplayer.isOnline()) {
+                    TextComponent requestMessage = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction mogen joinen!");
+                    requestMessage.setColor(ChatColor.GOLD);
+                    pojotoplayer.getPlayer().spigot().sendMessage(requestMessage);
+                }
+            }
         } else {
-                Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
-                playerManager.setPlayerFaction(player, newFaction);
-                ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
-                player.spigot().sendMessage(successMessage.create());
+            Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
+            playerManager.setPlayerFaction(player, newFaction);
+            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
+            player.spigot().sendMessage(successMessage.create());
         }
     }
 

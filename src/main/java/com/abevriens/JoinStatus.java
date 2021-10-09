@@ -2,6 +2,6 @@ package com.abevriens;
 
 public enum JoinStatus {
     OPEN,
-    INVITE,
+    REQUEST,
     CLOSED
 }

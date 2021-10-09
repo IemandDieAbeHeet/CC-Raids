@@ -11,6 +11,8 @@ public class Faction {
 
     public List<POJO_Player> players;
 
+    public List<CC_Player> playerJoinRequests;
+
     public POJO_Player factionOwner;
 
     public JoinStatus joinStatus;
