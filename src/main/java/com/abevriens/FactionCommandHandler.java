@@ -245,7 +245,12 @@ public class FactionCommandHandler implements CommandExecutor {
 
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
-            componentBuilder.append(TextUtil.newLine);
+
+            if(j == (LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE) - 1 || list.size()-1 == j) {
+                componentBuilder.append("\n");
+            } else {
+                componentBuilder.append(TextUtil.newLine);
+            }
         }
 
         player.spigot().sendMessage(componentBuilder.create());
