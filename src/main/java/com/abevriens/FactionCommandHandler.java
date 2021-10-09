@@ -28,9 +28,9 @@ public class FactionCommandHandler implements CommandExecutor {
             if(args.length > 0) {
                 switch (args[0].toLowerCase()) {
                     case "create":
-                        if(args.length > 1) {
+                        if(args.length == 2) {
                             command_Create(args[1]);
-                        } else {
+                        } else if(args.length < 2) {
                             ComponentBuilder components = TextUtil.GenerateErrorMsg(
                                     "Geen faction naam opgegeven, gebruik het commando als volgt:\n");
 
@@ -38,6 +38,11 @@ public class FactionCommandHandler implements CommandExecutor {
                             commandText.setBold(true);
 
                             player.spigot().sendMessage(components.append(commandText).create());
+                        } else if(args.length > 2) {
+                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
+                                    "De naam van de faction mag geen spaties bevatten!");
+
+                            player.spigot().sendMessage(components.create());
                         }
                         break;
                     case "info":
@@ -55,7 +60,17 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     case "join":
-                        command_Join(args[1]);
+                        if(args.length >= 2) {
+                            command_Join(args[1]);
+                        } else if(args.length < 2) {
+                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
+                                    "Geen faction naam opgegeven, gebruik het commando als volgt:\n");
+
+                            TextComponent commandText = new TextComponent("/factions join [naam]");
+                            commandText.setBold(true);
+                            components.append(commandText);
+                            player.spigot().sendMessage(components.create());
+                        }
                         break;
                     case "leave":
                         command_Leave();
@@ -70,6 +85,37 @@ public class FactionCommandHandler implements CommandExecutor {
                     case "delete":
                         command_Delete();
                         break;
+                    case "joinstatus":
+                        if(args.length < 2) {
+                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
+                                    "Geen status opgegeven, gebruik het commando als volgt:\n");
+
+                            TextComponent commandText = new TextComponent("/factions joinstatus [open, invite, close]");
+                            commandText.setBold(true);
+
+                            player.spigot().sendMessage(components.append(commandText).create());
+                            break;
+                        }
+
+                        if(args[1].equals("open") || args[1].equals("openbaar")) {
+                            command_SetJoinStatus(JoinStatus.OPEN);
+                            break;
+                        } else if(args[1].equals("invite")) {
+                            command_SetJoinStatus(JoinStatus.INVITE);
+                            break;
+                        } else if(args[1].equals("close") || args[1].equals("closed")) {
+                            command_SetJoinStatus(JoinStatus.CLOSED);
+                            break;
+                        } else {
+                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
+                                    "Incorrecte status opgegeven, gebruik het commando als volgt:\n");
+
+                            TextComponent commandText = new TextComponent("/factions joinstatus [open, privé]");
+                            commandText.setBold(true);
+
+                            player.spigot().sendMessage(components.append(commandText).create());
+                            break;
+                        }
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
                 }
@@ -82,6 +128,19 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
+    private void command_SetJoinStatus(JoinStatus status) {
+        if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
+                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jou owner geeft.");
+            player.spigot().sendMessage(errorMessage.create());
+        } else {
+            cc_player.faction.joinStatus = status;
+            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
+            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Join status van de faction is succesvol aangepast");
+            player.spigot().sendMessage(successMessage.create());
+        }
+    }
+
     private void command_Info(String factionName) {
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionName);
 
@@ -89,7 +148,6 @@ public class FactionCommandHandler implements CommandExecutor {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
                             "faction aan te maken.");
-
             player.spigot().sendMessage(errorMsg.create());
         } else {
             ComponentBuilder header = TextUtil.GenerateHeaderMsg("Info");
@@ -108,9 +166,11 @@ public class FactionCommandHandler implements CommandExecutor {
             BaseComponent[] components = new ComponentBuilder()
                     .append(header.create())
                     .append(TextUtil.newLine)
+                    .append(TextUtil.newLine)
                     .append(nameInfo)
                     .append(TextUtil.newLine)
                     .append(ownerInfo)
+                    .append(TextUtil.newLine)
                     .append(TextUtil.newLine)
                     .append(footer.create()).create();
 
@@ -132,7 +192,8 @@ public class FactionCommandHandler implements CommandExecutor {
                             add(pojo_player);
                         }
                     },
-                    new ArrayList<Chunk>());
+                    new ArrayList<Chunk>(),
+                    JoinStatus.OPEN);
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
@@ -190,15 +251,24 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_Join(String factionName) {
         TextComponent errorMessage = new TextComponent();
         errorMessage.setColor(ChatColor.RED);
+        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionName);
         if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             errorMessage.setText("Je zit al in een faction, gebruik eerst /factions leave om je faction te verlaten.");
             player.spigot().sendMessage(errorMessage);
         } else if(!factionManager.factionNameList.contains(factionName)) {
             errorMessage.setText("De opgegeven faction bestaat niet!");
             player.spigot().sendMessage(errorMessage);
+        } else if(faction.isFull()) {
+            errorMessage.setText("De faction die je probeert te joinen zit vol!");
+            player.spigot().sendMessage(errorMessage);
+        } else if(faction.joinStatus == JoinStatus.CLOSED) {
+            errorMessage.setText("De faction die je probeert te joinen staat op gesloten!");
+            player.spigot().sendMessage(errorMessage);
         } else {
-            Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
-            playerManager.setPlayerFaction(player, newFaction);
+                Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
+                playerManager.setPlayerFaction(player, newFaction);
+                ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
+                player.spigot().sendMessage(successMessage.create());
         }
     }
 
@@ -254,7 +324,7 @@ public class FactionCommandHandler implements CommandExecutor {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
 
-            if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName) {
+            if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName && list.get(j).isJoinable()) {
                 componentBuilder.append(joinButton);
             }
 

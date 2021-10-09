@@ -14,7 +14,7 @@ public class POJO_Faction {
 
     public POJO_Player factionOwner;
 
-    public boolean joinable;
+    public JoinStatus joinStatus;
 
     public POJO_Faction() {
     }

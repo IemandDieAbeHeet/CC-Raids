@@ -13,12 +13,21 @@ public class Faction {
 
     public POJO_Player factionOwner;
 
-    public boolean joinable;
+    public JoinStatus joinStatus;
 
-    public Faction(POJO_Player _factionOwner, String _factionName, List<POJO_Player> _players, List<Chunk> _occupiedChunks) {
+    public Faction(POJO_Player _factionOwner, String _factionName, List<POJO_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
         occupiedChunks = _occupiedChunks;
+        joinStatus = _joinStatus;
+    }
+
+    public boolean isFull() {
+        return players.size() > 3;
+    }
+
+    public boolean isJoinable() {
+        return isFull() && joinStatus != JoinStatus.CLOSED;
     }
 }

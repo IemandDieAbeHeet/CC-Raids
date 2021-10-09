@@ -34,7 +34,7 @@ public class FactionManager {
         return emptyFaction;
     }
 
-    public static Faction emptyFaction = new Faction(null, "None", null, null);
+    public static Faction emptyFaction = new Faction(null, "None", null, null, JoinStatus.OPEN);
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -43,7 +43,8 @@ public class FactionManager {
                 pojo_faction.factionOwner,
                 pojo_faction.factionName,
                 pojo_faction.players,
-                pojo_faction.occupiedChunks
+                pojo_faction.occupiedChunks,
+                pojo_faction.joinStatus
         );
 
         return faction;
@@ -56,6 +57,7 @@ public class FactionManager {
         pojo_faction.factionOwner = faction.factionOwner;
         pojo_faction.occupiedChunks = faction.occupiedChunks;
         pojo_faction.players = faction.players;
+        pojo_faction.joinStatus = faction.joinStatus;
 
         return pojo_faction;
     }

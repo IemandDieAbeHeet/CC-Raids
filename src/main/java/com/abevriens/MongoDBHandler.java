@@ -60,4 +60,9 @@ public class MongoDBHandler {
     public void insertFaction(POJO_Faction POJOFaction) {
         factionCollection.insertOne(POJOFaction);
     }
+
+    public void updateFaction(POJO_Faction POJOFaction) {
+        ReplaceOptions opts = new ReplaceOptions().upsert(true);
+        factionCollection.replaceOne(eq("factionName", POJOFaction.factionName), POJOFaction, opts);
+    }
 }
