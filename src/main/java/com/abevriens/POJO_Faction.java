@@ -12,6 +12,8 @@ public class POJO_Faction {
 
     public List<POJO_Player> players = new ArrayList<>();
 
+    public List<POJO_Player> playerJoinRequests = new ArrayList<>();
+
     public POJO_Player factionOwner;
 
     public JoinStatus joinStatus;

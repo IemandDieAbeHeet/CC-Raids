@@ -70,4 +70,14 @@ public class PlayerManager {
             faction
         );
     }
+
+    public static POJO_Player CCToPOJO(CC_Player cc_player) {
+        POJO_Player pojo_player = new POJO_Player();
+
+        pojo_player.displayName = cc_player.displayName;
+        pojo_player.factionName = cc_player.faction.factionName;
+        pojo_player.uuid = cc_player.uuid;
+
+        return pojo_player;
+    }
 }

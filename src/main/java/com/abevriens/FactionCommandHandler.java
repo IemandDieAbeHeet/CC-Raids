@@ -3,6 +3,7 @@ package com.abevriens;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class FactionCommandHandler implements CommandExecutor {
     Player player;
@@ -160,18 +162,36 @@ public class FactionCommandHandler implements CommandExecutor {
                     .color(ChatColor.WHITE).bold(false).create();
 
             BaseComponent[] ownerInfo = new ComponentBuilder("Owner: ")
-                        .color(ChatColor.GOLD).bold(true)
+                    .color(ChatColor.GOLD).bold(true)
                     .append(new TextComponent(faction.factionOwner.displayName))
-                        .color(ChatColor.WHITE).bold(false).create();
+                    .color(ChatColor.WHITE).bold(false).create();
+
+            ComponentBuilder spelerInfo = new ComponentBuilder("Spelers:\n")
+                    .color(ChatColor.GOLD).bold(true);
+
+            StringBuilder str = new StringBuilder();
+
+            for(int i = 0; i < faction.players.size(); i++) {
+                if(i < faction.players.size()-1) {
+                    str.append((i+1) + ". " + faction.players.get(i).displayName + " - ");
+                } else {
+                    str.append((i+1) + ". " + faction.players.get(i).displayName);
+                }
+            }
+
+            TextComponent spelers = new TextComponent(str.toString());
+            spelers.setColor(ChatColor.AQUA);
+            spelers.setBold(false);
+            spelerInfo.append(spelers);
 
             BaseComponent[] components = new ComponentBuilder()
                     .append(header.create())
-                    .append(TextUtil.newLine)
                     .append(TextUtil.newLine)
                     .append(nameInfo)
                     .append(TextUtil.newLine)
                     .append(ownerInfo)
                     .append(TextUtil.newLine)
+                    .append(spelerInfo.create())
                     .append(TextUtil.newLine)
                     .append(footer.create()).create();
 
@@ -188,13 +208,14 @@ public class FactionCommandHandler implements CommandExecutor {
             Faction faction = new Faction(
                     pojo_player,
                     name,
-                    new ArrayList<POJO_Player>() {
+                    new ArrayList<CC_Player>() {
                         {
-                            add(pojo_player);
+                            add(cc_player);
                         }
                     },
                     new ArrayList<Chunk>(),
-                    JoinStatus.REQUEST);
+                    JoinStatus.REQUEST,
+                    new ArrayList<CC_Player>());
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
@@ -269,13 +290,14 @@ public class FactionCommandHandler implements CommandExecutor {
             faction.playerJoinRequests.add(cc_player);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
             player.spigot().sendMessage(successMessage.create());
+            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
 
-            for(POJO_Player pojo_player : faction.players) {
-                OfflinePlayer pojotoplayer = PlayerManager.POJOToPlayer(pojo_player);
-                if(pojotoplayer.isOnline()) {
+            for(CC_Player cc_member : faction.players) {
+                OfflinePlayer offlinePlayer = Bukkit.getPlayer(UUID.fromString(cc_member.uuid));
+                if(offlinePlayer.isOnline()) {
                     TextComponent requestMessage = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction mogen joinen!");
                     requestMessage.setColor(ChatColor.GOLD);
-                    pojotoplayer.getPlayer().spigot().sendMessage(requestMessage);
+                    offlinePlayer.getPlayer().spigot().sendMessage(requestMessage);
                 }
             }
         } else {

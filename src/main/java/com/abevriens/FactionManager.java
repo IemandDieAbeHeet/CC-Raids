@@ -34,17 +34,29 @@ public class FactionManager {
         return emptyFaction;
     }
 
-    public static Faction emptyFaction = new Faction(null, "None", null, null, JoinStatus.OPEN);
+    public static Faction emptyFaction = new Faction(null, "None", null, null, JoinStatus.OPEN, null);
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
 
+        List<CC_Player> cc_players = new ArrayList<>();
+        List<CC_Player> cc_playerJoinRequests = new ArrayList<>();
+
+        for(POJO_Player pojo_player : pojo_faction.players) {
+            cc_players.add(PlayerManager.POJOToCC(pojo_player));
+        }
+
+        for(POJO_Player pojo_player : pojo_faction.playerJoinRequests) {
+            cc_playerJoinRequests.add(PlayerManager.POJOToCC(pojo_player));
+        }
+
         faction = new Faction(
                 pojo_faction.factionOwner,
                 pojo_faction.factionName,
-                pojo_faction.players,
+                cc_players,
                 pojo_faction.occupiedChunks,
-                pojo_faction.joinStatus
+                pojo_faction.joinStatus,
+                cc_playerJoinRequests
         );
 
         return faction;
@@ -53,11 +65,23 @@ public class FactionManager {
     public static POJO_Faction FactionToPOJO(Faction faction) {
         POJO_Faction pojo_faction = new POJO_Faction();
 
+        List<POJO_Player> pojo_players = new ArrayList<>();
+        List<POJO_Player> pojo_playerJoinRequests = new ArrayList<>();
+
+        for(CC_Player cc_player : faction.players) {
+            pojo_players.add(PlayerManager.CCToPOJO(cc_player));
+        }
+
+        for(CC_Player cc_player : faction.playerJoinRequests) {
+            pojo_playerJoinRequests.add(PlayerManager.CCToPOJO(cc_player));
+        }
+
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
         pojo_faction.occupiedChunks = faction.occupiedChunks;
-        pojo_faction.players = faction.players;
+        pojo_faction.players = pojo_players;
         pojo_faction.joinStatus = faction.joinStatus;
+        pojo_faction.playerJoinRequests = pojo_playerJoinRequests;
 
         return pojo_faction;
     }

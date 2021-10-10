@@ -9,7 +9,7 @@ public class Faction {
 
     public List<Chunk> occupiedChunks;
 
-    public List<POJO_Player> players;
+    public List<CC_Player> players;
 
     public List<CC_Player> playerJoinRequests;
 
@@ -17,12 +17,13 @@ public class Faction {
 
     public JoinStatus joinStatus;
 
-    public Faction(POJO_Player _factionOwner, String _factionName, List<POJO_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus) {
+    public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<CC_Player> _playerJoinRequests) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
         occupiedChunks = _occupiedChunks;
         joinStatus = _joinStatus;
+        playerJoinRequests = _playerJoinRequests;
     }
 
     public boolean isFull() {
