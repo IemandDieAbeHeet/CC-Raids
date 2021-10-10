@@ -16,6 +16,10 @@ public class PlayerManager {
         MongoCursor<POJO_Player> cursor = CrackCityRaids.instance.dbHandler.playerCollection.find().iterator();
         while (cursor.hasNext()) {
             POJO_Player pojo_player = cursor.next();
+            if(!CrackCityRaids.instance.factionManager.factionNameList.contains(pojo_player.factionName)) {
+                pojo_player.factionName = FactionManager.emptyFaction.factionName;
+            }
+            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
             CC_Player cc_player = POJOToCC(pojo_player);
             OfflinePlayer player = POJOToPlayer(pojo_player);
 
