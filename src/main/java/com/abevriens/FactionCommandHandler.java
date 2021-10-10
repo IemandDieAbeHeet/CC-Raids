@@ -3,6 +3,7 @@ package com.abevriens;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -10,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -80,7 +82,14 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "list":
                         if(args.length > 1) {
-                            command_List(Integer.parseInt(args[1]));
+                            if(StringUtils.isNumeric(args[1])) {
+                                command_List(Integer.parseInt(args[1]));
+                            } else {
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Geef een nummer op als tweede " +
+                                        "argument!");
+
+                                player.spigot().sendMessage(errorMsg.create());
+                            }
                         } else {
                             command_List(1);
                         }
