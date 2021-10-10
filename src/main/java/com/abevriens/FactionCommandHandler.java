@@ -360,7 +360,7 @@ public class FactionCommandHandler implements CommandExecutor {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
 
-            if(cc_player.faction.factionName == FactionManager.emptyFaction.factionName && list.get(j).isJoinable()) {
+            if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName) && list.get(j).isJoinable()) {
                 componentBuilder.append(joinButton);
             }
 

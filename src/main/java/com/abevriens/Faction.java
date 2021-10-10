@@ -27,10 +27,14 @@ public class Faction {
     }
 
     public boolean isFull() {
-        return players.size() > 3;
+        return players.size() >= 3;
     }
 
     public boolean isJoinable() {
-        return isFull() && joinStatus != JoinStatus.CLOSED;
+        if(isFull() || joinStatus == JoinStatus.CLOSED) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

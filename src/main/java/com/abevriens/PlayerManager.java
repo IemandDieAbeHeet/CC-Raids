@@ -48,6 +48,14 @@ public class PlayerManager {
         POJO_Player pojo_player = getPOJOPlayer(player);
         CC_Player cc_player = getCCPlayer(player);
 
+        if(faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            cc_player.faction.players.remove(cc_player);
+            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
+        } else {
+            faction.players.add(cc_player);
+            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
+        }
+
         cc_player.faction = faction;
         pojo_player.factionName = faction.factionName;
 
