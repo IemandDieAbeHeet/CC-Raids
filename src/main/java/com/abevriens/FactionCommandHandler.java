@@ -85,7 +85,7 @@ public class FactionCommandHandler implements CommandExecutor {
                             if(StringUtils.isNumeric(args[1])) {
                                 command_List(Integer.parseInt(args[1]));
                             } else {
-                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Geef een nummer op als tweede " +
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Geef een correct nummer op als tweede " +
                                         "argument!");
 
                                 player.spigot().sendMessage(errorMsg.create());
