@@ -1,6 +1,5 @@
 package com.abevriens;
 
-import com.mongodb.client.MongoCursor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,10 +12,8 @@ public class PlayerManager {
     private HashMap<OfflinePlayer, POJO_Player> POJOPlayerHashMap = new HashMap<>();
 
     public void LoadPlayers() {
-        MongoCursor<POJO_Player> cursor = CrackCityRaids.instance.dbHandler.playerCollection.find().iterator();
-        while (cursor.hasNext()) {
-            POJO_Player pojo_player = cursor.next();
-            if(!CrackCityRaids.instance.factionManager.factionNameList.contains(pojo_player.factionName)) {
+        for (POJO_Player pojo_player : CrackCityRaids.instance.dbHandler.playerCollection.find()) {
+            if (!CrackCityRaids.instance.factionManager.factionNameList.contains(pojo_player.factionName)) {
                 pojo_player.factionName = FactionManager.emptyFaction.factionName;
             }
             CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
