@@ -146,7 +146,7 @@ public class FactionCommandHandler implements CommandExecutor {
     private void command_SetJoinStatus(JoinStatus status) {
         if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction, maak een nieuwe faction" +
-                    "met /factions create of join er een via /factions list");
+                    "  met /factions create of join er een via /factions list");
             player.spigot().sendMessage(errorMessage.create());
         } else if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
