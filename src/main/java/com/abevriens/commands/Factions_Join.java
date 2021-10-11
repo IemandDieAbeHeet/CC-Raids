@@ -2,9 +2,15 @@ package com.abevriens.commands;
 
 import com.abevriens.*;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
+import java.util.UUID;
 
 public class Factions_Join extends Factions_Base {
     public String name;
@@ -39,10 +45,27 @@ public class Factions_Join extends Factions_Base {
             player.spigot().sendMessage(successMessage.create());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
 
-            TextComponent requestMessage = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction " +
-                    "mogen joinen!");
-            requestMessage.setColor(ChatColor.GOLD);
-            faction.sendMessageToPlayers(new ComponentBuilder(requestMessage));
+            TextComponent requestMsgText = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction " +
+                    "mogen joinen! ");
+            requestMsgText.setColor(ChatColor.GOLD);
+
+            TextComponent requestMsgButton = new TextComponent("[Accept]");
+            requestMsgButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions accept "
+                    + cc_player.displayName));
+            requestMsgButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new Text("Klik om te accepteren!")));
+
+            for(CC_Player factionMember : faction.players) {
+                OfflinePlayer memberOfflinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid));
+                if(memberOfflinePlayer.isOnline()) {
+                    ComponentBuilder requestMsg = new ComponentBuilder().append(requestMsgText);
+                    if(factionMember.uuid.equals(faction.factionOwner.uuid)) {
+                        requestMsg.append(requestMsgButton);
+                    }
+
+                    memberOfflinePlayer.getPlayer().spigot().sendMessage(requestMsg.create());
+                }
+            }
         } else {
             Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(name);
             playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(player.getUniqueId()), newFaction);
