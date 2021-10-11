@@ -40,14 +40,22 @@ public class PlayerManager {
         return POJOPlayerHashMap.get(offlinePlayer);
     }
 
+    public POJO_Player getPOJOPlayer(OfflinePlayer offlinePlayer) {
+        return POJOPlayerHashMap.get(offlinePlayer);
+    }
+
     public CC_Player getCCPlayer(Player player) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
         return CCPlayerHashMap.get(offlinePlayer);
     }
 
-    public void setPlayerFaction(Player player, Faction faction) {
-        POJO_Player pojo_player = getPOJOPlayer(player);
-        CC_Player cc_player = getCCPlayer(player);
+    public CC_Player getCCPlayer(OfflinePlayer offlinePlayer) {
+        return CCPlayerHashMap.get(offlinePlayer);
+    }
+
+    public void setPlayerFaction(OfflinePlayer offlinePlayer, Faction faction) {
+        POJO_Player pojo_player = getPOJOPlayer(offlinePlayer);
+        CC_Player cc_player = getCCPlayer(offlinePlayer);
 
         if(faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             cc_player.faction.players.remove(cc_player);
@@ -60,7 +68,6 @@ public class PlayerManager {
         cc_player.faction = faction;
         pojo_player.factionName = faction.factionName;
 
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
         CCPlayerHashMap.put(offlinePlayer, cc_player);
         POJOPlayerHashMap.put(offlinePlayer, pojo_player);
         CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);

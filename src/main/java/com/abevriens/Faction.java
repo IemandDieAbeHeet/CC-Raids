@@ -1,8 +1,12 @@
 package com.abevriens;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Faction {
     public String factionName;
@@ -11,13 +15,13 @@ public class Faction {
 
     public List<CC_Player> players;
 
-    public List<CC_Player> playerJoinRequests;
+    public List<String> playerJoinRequests;
 
     public POJO_Player factionOwner;
 
     public JoinStatus joinStatus;
 
-    public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<CC_Player> _playerJoinRequests) {
+    public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<String> _playerJoinRequests) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
@@ -35,6 +39,15 @@ public class Faction {
             return false;
         } else {
             return true;
+        }
+    }
+
+    public void sendMessageToPlayers(ComponentBuilder message) {
+        for(CC_Player cc_player : players) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(cc_player.uuid));
+            if(offlinePlayer.isOnline()) {
+                offlinePlayer.getPlayer().spigot().sendMessage(message.create());
+            }
         }
     }
 }

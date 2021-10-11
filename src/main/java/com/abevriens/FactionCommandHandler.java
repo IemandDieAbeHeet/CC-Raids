@@ -36,13 +36,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         if(args.length == 2) {
                             command_Create(args[1]);
                         } else if(args.length < 2) {
-                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
-                                    "Geen faction naam opgegeven, gebruik het commando als volgt:\n");
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen faction naam opgegeven, gebruik het commando als volgt:",
+                                    "/factions create [naam]");
 
-                            TextComponent commandText = new TextComponent("/factions create [naam]");
-                            commandText.setBold(true);
-
-                            player.spigot().sendMessage(components.append(commandText).create());
+                            player.spigot().sendMessage(errorMsg.create());
                         } else {
                             ComponentBuilder components = TextUtil.GenerateErrorMsg(
                                     "De naam van de faction mag geen spaties bevatten!");
@@ -68,13 +66,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         if(args.length >= 2) {
                             command_Join(args[1]);
                         } else {
-                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
-                                    "Geen faction naam opgegeven, gebruik het commando als volgt:\n");
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen faction naam opgegeven, gebruik het commando als volgt:",
+                                    "/factions join [naam]");
 
-                            TextComponent commandText = new TextComponent("/factions join [naam]");
-                            commandText.setBold(true);
-                            components.append(commandText);
-                            player.spigot().sendMessage(components.create());
+                            player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
                     case "leave":
@@ -85,8 +81,9 @@ public class FactionCommandHandler implements CommandExecutor {
                             if(StringUtils.isNumeric(args[1])) {
                                 command_List(Integer.parseInt(args[1]));
                             } else {
-                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Geef een correct nummer op als" +
-                                        " tweede argument!");
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                        "Incorrect nummer opgegeven als tweede argument, gebruik het commando als volgt:",
+                                        "/factions list [paginanummer]");
 
                                 player.spigot().sendMessage(errorMsg.create());
                             }
@@ -99,13 +96,11 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "joinstatus":
                         if(args.length < 2) {
-                            ComponentBuilder components = TextUtil.GenerateErrorMsg(
-                                    "Geen status opgegeven, gebruik het commando als volgt:\n");
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen status opgegeven, gebruik het commando als volgt:",
+                                    "/factions joinstatus [open, request, close]");
 
-                            TextComponent commandText = new TextComponent("/factions joinstatus [open, request, close]");
-                            commandText.setBold(true);
-
-                            player.spigot().sendMessage(components.append(commandText).create());
+                            player.spigot().sendMessage(errorMsg.create());
                             break;
                         }
 
@@ -122,15 +117,24 @@ public class FactionCommandHandler implements CommandExecutor {
                                 command_SetJoinStatus(JoinStatus.CLOSED);
                                 break label;
                             default:
-                                ComponentBuilder components = TextUtil.GenerateErrorMsg(
-                                        "Incorrecte status opgegeven, gebruik het commando als volgt:\n");
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                        "Incorrecte status opgegeven, gebruik het commando als volgt:",
+                                        "/factions joinstatus [open, privé]");
 
-                                TextComponent commandText = new TextComponent("/factions joinstatus [open, privé]");
-                                commandText.setBold(true);
-
-                                player.spigot().sendMessage(components.append(commandText).create());
+                                player.spigot().sendMessage(errorMsg.create());
                                 break label;
                         }
+                    case "accept":
+                        if(args.length > 1) {
+                            command_Accept(args[1]);
+                        } else {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen spelernaam opgegeven om te accepteren, gebruik het commando als volgt:",
+                                    "/factions accept [naam]");
+
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
                     default:
                         command_Help("Commando argument niet gevonden, probeer iets anders.");
                 }
@@ -143,6 +147,53 @@ public class FactionCommandHandler implements CommandExecutor {
         }
     }
 
+    private void command_Accept(String playerName) {
+        CC_Player cc_requestingplayer = null;
+        OfflinePlayer offlinePlayer = null;
+
+        if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
+                    " join er een met /factions join.");
+            player.spigot().sendMessage(errorMessage.create());
+        } else if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van deze faction, vraag aan" +
+                    cc_player.faction.factionOwner.displayName + " of ze " + playerName + " willen accepteren!");
+
+            player.spigot().sendMessage(errorMessage.create());
+        }
+
+        for(String uuid : cc_player.faction.playerJoinRequests) {
+            offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+            if(offlinePlayer.getName().equals(playerName)) {
+                cc_requestingplayer = CrackCityRaids.instance.playerManager.getCCPlayer(offlinePlayer);
+                break;
+            }
+        }
+
+        if(cc_requestingplayer == null || offlinePlayer == null) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Speler niet gevonden binnen de join requests van " +
+                    "je faction. Zie alle join requests met /factions requests");
+
+            player.spigot().sendMessage(errorMsg.create());
+        } else {
+            cc_player.faction.playerJoinRequests.remove(cc_requestingplayer.uuid);
+
+            ComponentBuilder factionSuccessMsg = TextUtil.GenerateSuccessMsg(
+                    playerName + " is lid geworden van je faction!");
+            cc_player.faction.sendMessageToPlayers(factionSuccessMsg);
+
+            ComponentBuilder playerSuccessMsg = TextUtil.GenerateSuccessMsg(
+                    "Je bent officïeel lid geworden van faction: " + cc_player.faction.factionName);
+
+            if(offlinePlayer.isOnline()) {
+                offlinePlayer.getPlayer().spigot().sendMessage(playerSuccessMsg.create());
+            }
+
+            CrackCityRaids.instance.playerManager.setPlayerFaction(offlinePlayer, cc_player.faction);
+            CrackCityRaids.instance.dbHandler.updatePlayer(PlayerManager.CCToPOJO(cc_requestingplayer));
+        }
+    }
+
     private void command_SetJoinStatus(JoinStatus status) {
         if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction, maak een nieuwe faction" +
@@ -150,7 +201,7 @@ public class FactionCommandHandler implements CommandExecutor {
             player.spigot().sendMessage(errorMessage.create());
         } else if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
-                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jou owner geeft.");
+                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of ze jou owner geven.");
             player.spigot().sendMessage(errorMessage.create());
         } else {
             cc_player.faction.joinStatus = status;
@@ -171,7 +222,7 @@ public class FactionCommandHandler implements CommandExecutor {
         } else if(!CrackCityRaids.instance.factionManager.factionNameList.contains(factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "De faction die je probeert op te zoeken bestaat niet. Je kunt alle factions bekijken met de " +
-                            "command /factions list"
+                             "command /factions list"
             );
             player.spigot().sendMessage(errorMsg.create());
         } else {
@@ -206,15 +257,22 @@ public class FactionCommandHandler implements CommandExecutor {
             spelers.setBold(false);
             spelerInfo.append(spelers);
 
+            BaseComponent[] joinstatusInfo = new ComponentBuilder("Join status: ")
+                    .color(ChatColor.GOLD).bold(true)
+                    .append(new TextComponent(faction.joinStatus.toString()))
+                    .color(ChatColor.WHITE).bold(false).create();
+
             BaseComponent[] components = new ComponentBuilder()
                     .append(header.create())
-                    .append(TextUtil.newLine)
+                    .append("\n")
                     .append(nameInfo)
                     .append(TextUtil.newLine)
                     .append(ownerInfo)
                     .append(TextUtil.newLine)
                     .append(spelerInfo.create())
                     .append(TextUtil.newLine)
+                    .append(joinstatusInfo)
+                    .append("\n")
                     .append(footer.create()).create();
 
             player.spigot().sendMessage(components);
@@ -222,10 +280,14 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     private void command_Create(String name) {
-        if(factionManager.factionNameList.contains(name)) {
-            TextComponent errorMessage = new TextComponent("Een faction met deze naam bestaat al, kies een andere naam.");
-            errorMessage.setColor(ChatColor.RED);
-            player.spigot().sendMessage(errorMessage);
+        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction dus je kunt geen nieuwe " +
+                    "faction aanmaken, verlaat deze met /factions leave.");
+            player.spigot().sendMessage(errorMsg.create());
+        } else if(factionManager.factionNameList.contains(name)) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Een faction met deze naam bestaat al, " +
+                    "kies een andere naam.");
+            player.spigot().sendMessage(errorMsg.create());
         } else {
             Faction faction = new Faction(
                     pojo_player,
@@ -237,7 +299,7 @@ public class FactionCommandHandler implements CommandExecutor {
                     },
                     new ArrayList<Chunk>(),
                     JoinStatus.REQUEST,
-                    new ArrayList<CC_Player>());
+                    new ArrayList<String>());
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             pojo_player.factionName = faction.factionName;
@@ -254,18 +316,29 @@ public class FactionCommandHandler implements CommandExecutor {
     }
 
     public void command_Delete() {
+        String factionName = cc_player.faction.factionName;
+        if(factionName.equals(FactionManager.emptyFaction.factionName)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
+                    " join er een met /factions join.");
+            player.spigot().sendMessage(errorMessage.create());
+        }
         if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
-            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je het echt" +
-                    " graag wilt moet je aan " + cc_player.faction.factionOwner.displayName + " vragen of hij jou owner geeft.");
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je " +
+                    "het echt graag wilt moet je aan " + cc_player.faction.factionOwner.displayName +
+                    " vragen of ze jou owner geven.");
             player.spigot().sendMessage(errorMessage.create());
         } else {
             factionManager.factionList.remove(cc_player.faction);
-            factionManager.factionNameList.remove(cc_player.faction.factionName);
-            CrackCityRaids.instance.dbHandler.deleteFaction(cc_player.faction.factionName);
+            factionManager.factionNameList.remove(factionName);
 
-            pojo_player.factionName = FactionManager.emptyFaction.factionName;
-            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
-            cc_player.faction = FactionManager.emptyFaction;
+            ArrayList<CC_Player> factionMembers = new ArrayList<>(cc_player.faction.players);
+
+            for(CC_Player factionMember : factionMembers) {
+                CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
+                        FactionManager.emptyFaction);
+            }
+
+            CrackCityRaids.instance.dbHandler.deleteFaction(factionName);
 
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
             player.spigot().sendMessage(successMessage.create());
@@ -285,7 +358,7 @@ public class FactionCommandHandler implements CommandExecutor {
             errorMessage.setColor(ChatColor.RED);
             player.spigot().sendMessage(errorMessage);
         } else {
-            playerManager.setPlayerFaction(player, FactionManager.emptyFaction);
+            playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(player.getUniqueId()), FactionManager.emptyFaction);
             TextComponent leaveMessage = new TextComponent("Faction succesvol verlaten.");
             leaveMessage.setColor(ChatColor.GREEN);
             player.spigot().sendMessage(leaveMessage);
@@ -309,22 +382,18 @@ public class FactionCommandHandler implements CommandExecutor {
             errorMessage.setText("De faction die je probeert te joinen staat op gesloten!");
             player.spigot().sendMessage(errorMessage);
         } else if(faction.joinStatus == JoinStatus.REQUEST) {
-            faction.playerJoinRequests.add(cc_player);
+            faction.playerJoinRequests.add(cc_player.uuid);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
             player.spigot().sendMessage(successMessage.create());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
 
-            for(CC_Player cc_member : faction.players) {
-                OfflinePlayer offlinePlayer = Bukkit.getPlayer(UUID.fromString(cc_member.uuid));
-                if(offlinePlayer.isOnline()) {
-                    TextComponent requestMessage = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction mogen joinen!");
-                    requestMessage.setColor(ChatColor.GOLD);
-                    offlinePlayer.getPlayer().spigot().sendMessage(requestMessage);
-                }
-            }
+            TextComponent requestMessage = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction " +
+                    "mogen joinen!");
+            requestMessage.setColor(ChatColor.GOLD);
+            faction.sendMessageToPlayers(new ComponentBuilder(requestMessage));
         } else {
             Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(factionName);
-            playerManager.setPlayerFaction(player, newFaction);
+            playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(player.getUniqueId()), newFaction);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
             player.spigot().sendMessage(successMessage.create());
         }

@@ -23,6 +23,20 @@ public class TextUtil {
                 .append(errorText);
     }
 
+    public static ComponentBuilder GenerateErrorMsg(String errorString, String cmdString) {
+        TextComponent errorText = new TextComponent(errorString);
+        errorText.setColor(errorColor);
+
+        TextComponent cmdText = new TextComponent(cmdString);
+        cmdText.setColor(errorColor);
+        cmdText.setBold(true);
+
+        return new ComponentBuilder()
+                .append(errorText)
+                .append(newLine)
+                .append(cmdText);
+    }
+
     public static ComponentBuilder GenerateSuccessMsg(String successString) {
         TextComponent errorText = new TextComponent(successString);
         errorText.setColor(successColor);
