@@ -1,21 +1,13 @@
 package com.abevriens;
 
 import com.abevriens.commands.*;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.UUID;
 
 public class FactionCommandHandler implements CommandExecutor {
     Player player;
@@ -37,6 +29,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         if(args.length == 2) {
                             new Factions_Create(factions_base, args[1]);
                         } else if(args.length < 2) {
+
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                     "Geen faction naam opgegeven, gebruik het commando als volgt:",
                                     "/factions create [naam]");
