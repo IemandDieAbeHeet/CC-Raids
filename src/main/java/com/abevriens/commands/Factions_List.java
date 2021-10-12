@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import java.util.ArrayList;
 
 public class Factions_List extends Factions_Base {
-    private final int LIST_CHAT_SIZE = 8;
+    private final int CHAT_SIZE = 8;
     public int page;
 
     public Factions_List(Factions_Base factions_base, int _page) {
@@ -35,7 +35,7 @@ public class Factions_List extends Factions_Base {
             return;
         }
 
-        int lastPage = (int)Math.ceil((double) list.size() / LIST_CHAT_SIZE);
+        int lastPage = (int)Math.ceil((double) list.size() / CHAT_SIZE);
 
         if(page > lastPage) {
             page = lastPage;
@@ -55,7 +55,7 @@ public class Factions_List extends Factions_Base {
 
         componentBuilder.append(header.create());
 
-        for(int j = (page-1) * LIST_CHAT_SIZE; j < LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE; j++) {
+        for(int j = (page-1) * CHAT_SIZE; j < CHAT_SIZE + (page-1) * CHAT_SIZE; j++) {
             if(list.size()-1 < j) {
                 break;
             }
@@ -81,7 +81,7 @@ public class Factions_List extends Factions_Base {
                 componentBuilder.append(joinButton);
             }
 
-            if(j == (LIST_CHAT_SIZE + (page-1) * LIST_CHAT_SIZE) - 1 || list.size()-1 == j) {
+            if(j == (CHAT_SIZE + (page-1) * CHAT_SIZE) - 1 || list.size()-1 == j) {
                 componentBuilder.append("\n").event((ClickEvent) null).event((HoverEvent) null);
             } else {
                 componentBuilder.append(TextUtil.newLine).event((ClickEvent) null).event((HoverEvent) null);
