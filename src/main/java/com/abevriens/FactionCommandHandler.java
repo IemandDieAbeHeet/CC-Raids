@@ -129,6 +129,22 @@ public class FactionCommandHandler implements CommandExecutor {
                             player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
+                    case "request":
+                    case "requests":
+                        if(args.length > 1) {
+                            if(StringUtils.isNumeric(args[1])) {
+                                new Factions_Requests(factions_base, Integer.parseInt(args[1]));
+                            } else {
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                        "Incorrect nummer opgegeven als tweede argument, gebruik het commando als volgt:",
+                                        "/factions requests [paginanummer]");
+
+                                player.spigot().sendMessage(errorMsg.create());
+                            }
+                        } else {
+                            new Factions_Requests(factions_base, 1);
+                        }
+                        break;
                     default:
                         new Factions_HelpError(factions_base, "Commando argument niet gevonden, probeer iets anders.");
                 }

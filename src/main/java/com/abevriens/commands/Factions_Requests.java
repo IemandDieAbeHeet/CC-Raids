@@ -29,9 +29,14 @@ public class Factions_Requests extends Factions_Base {
     private void command_Request() {
         List<String> list = cc_player.faction.playerJoinRequests;
 
-        if(list.size() < 1) {
+        if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+           player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Je zit niet in een faction, als je join requests" +
+                   " wil bekijken kun je een faction maken met /factions create").create());
+
+           return;
+        } else if(list.size() < 1) {
             player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen requests gevonden, wacht totdat" +
-                    " iemand je faction joint!").create());
+                    " iemand je faction joinen!").create());
 
             return;
         }
@@ -44,7 +49,7 @@ public class Factions_Requests extends Factions_Base {
             page = 1;
         }
 
-        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List [" + page + "/" + lastPage + "]");
+        ComponentBuilder header = TextUtil.GenerateHeaderMsg("Requests [" + page + "/" + lastPage + "]");
         ComponentBuilder footer = TextUtil.GenerateFooterButtonMsg("/factions requests " + (page-1),
                 "/factions requests " + (page+1),
                 "Ga een pagina terug",
@@ -70,16 +75,18 @@ public class Factions_Requests extends Factions_Base {
             TextComponent playerInfo = new TextComponent(request_cc_player.displayName);
             playerInfo.setBold(false);
 
-            TextComponent joinButton = new TextComponent(" [Accept]");
-            joinButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Klik hier om deze speler te accepteren")));
-            joinButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions join " + list.get(j).factionName));
-            joinButton.setColor(ChatColor.DARK_AQUA);
+            TextComponent acceptButton = new TextComponent(" [Accept]");
+            acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Klik hier om deze " +
+                    "speler te accepteren")));
+            acceptButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions accept "
+                    + request_cc_player.displayName));
+            acceptButton.setColor(ChatColor.DARK_AQUA);
 
             componentBuilder.append(playerNumber);
             componentBuilder.append(playerInfo);
 
-            if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName) && list.get(j).isJoinable()) {
-                componentBuilder.append(joinButton);
+            if(cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+                componentBuilder.append(acceptButton);
             }
 
             if(j == (CHAT_SIZE + (page-1) * CHAT_SIZE) - 1 || list.size()-1 == j) {
