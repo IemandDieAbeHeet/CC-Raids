@@ -35,11 +35,7 @@ public class Faction {
     }
 
     public boolean isJoinable() {
-        if(isFull() || joinStatus == JoinStatus.CLOSED) {
-            return false;
-        } else {
-            return true;
-        }
+        return !isFull() && joinStatus != JoinStatus.CLOSED;
     }
 
     public void sendMessageToPlayers(ComponentBuilder message) {
