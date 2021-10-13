@@ -67,9 +67,20 @@ public class Factions_Info  extends Factions_Base
             spelers.setBold(false);
             spelerInfo.append(spelers);
 
+            TextComponent joinStatusText = new TextComponent();
+
+            switch(faction.joinStatus) {
+                case REQUEST:
+                    joinStatusText.setText("Request");
+                case CLOSED:
+                    joinStatusText.setText("Closed");
+                case OPEN:
+                    joinStatusText.setText("Open");
+            }
+
             BaseComponent[] joinstatusInfo = new ComponentBuilder("Join status: ")
                     .color(ChatColor.GOLD).bold(true)
-                    .append(new TextComponent(faction.joinStatus.toString()))
+                    .append(joinStatusText)
                     .color(ChatColor.WHITE).bold(false).create();
 
             BaseComponent[] components = new ComponentBuilder()
