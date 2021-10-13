@@ -50,7 +50,6 @@ public class Factions_SetOwner extends Factions_Base {
 
             POJO_Player pojo_playerowner = PlayerManager.CCToPOJO(cc_ownerplayer);
             cc_player.faction.factionOwner = pojo_playerowner;
-            OfflinePlayer offlinePlayerOwner = Bukkit.getOfflinePlayer(UUID.fromString(cc_ownerplayer.uuid));
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
             ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg( pojo_playerowner.displayName + " is de owner van " +
                     "de faction geworden!");
