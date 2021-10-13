@@ -43,7 +43,7 @@ public class Factions_List extends Factions_Base {
             page = 1;
         }
 
-        ComponentBuilder header = TextUtil.GenerateHeaderMsg("List [" + page + "/" + lastPage + "]");
+        ComponentBuilder header = TextUtil.GenerateHeaderMsg("Factions [" + page + "/" + lastPage + "]");
         ComponentBuilder footer = TextUtil.GenerateFooterButtonMsg("/factions list " + (page-1),
                 "/factions list " + (page+1),
                 "Ga een pagina terug",
