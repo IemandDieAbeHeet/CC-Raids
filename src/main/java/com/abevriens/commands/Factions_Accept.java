@@ -26,11 +26,18 @@ public class Factions_Accept extends Factions_Base {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             player.spigot().sendMessage(errorMessage.create());
+            return;
         } else if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van deze faction, vraag aan" +
                     cc_player.faction.factionOwner.displayName + " of ze " + name + " willen accepteren!");
 
             player.spigot().sendMessage(errorMessage.create());
+            return;
+        } else if(cc_player.faction.players.size() > 2) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction zit vol!");
+
+            player.spigot().sendMessage(errorMessage.create());
+            return;
         }
 
         for(String uuid : cc_player.faction.playerJoinRequests) {
