@@ -53,7 +53,6 @@ public class Factions_Accept extends Factions_Base {
 
             player.spigot().sendMessage(errorMessage.create());
         } else {
-            cc_player.faction.playerJoinRequests.remove(cc_requestingplayer.uuid);
 
             ComponentBuilder factionSuccessMsg = TextUtil.GenerateSuccessMsg(
                     name + " is lid geworden van je faction!");
@@ -65,6 +64,8 @@ public class Factions_Accept extends Factions_Base {
             if(offlinePlayer.isOnline()) {
                 offlinePlayer.getPlayer().spigot().sendMessage(playerSuccessMsg.create());
             }
+
+            cc_requestingplayer.deleteRequests();
 
             CrackCityRaids.instance.playerManager.setPlayerFaction(offlinePlayer, cc_player.faction);
             CrackCityRaids.instance.dbHandler.updatePlayer(PlayerManager.CCToPOJO(cc_requestingplayer));

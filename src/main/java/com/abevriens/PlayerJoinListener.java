@@ -5,6 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.ArrayList;
+
 public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -21,7 +23,8 @@ public class PlayerJoinListener implements Listener {
         CC_Player cc_player = new CC_Player(
                 player.getDisplayName(),
                 player.getUniqueId().toString(),
-                FactionManager.emptyFaction
+                FactionManager.emptyFaction,
+                new ArrayList<>()
         );
 
         playerManager.addPlayer(player, pojo_player, cc_player);
