@@ -157,6 +157,18 @@ public class FactionCommandHandler implements CommandExecutor {
                             player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
+                    case "kick":
+                        if(args.length > 1) {
+                            new Factions_Kick(factions_base, args[1]);
+                            break;
+                        } else {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen spelernaam opgegeven om te kicken, gebruik het commando als volgt:",
+                                    "/factions setowner [naam]");
+
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
                     default:
                         new Factions_HelpError(factions_base, "Commando argument niet gevonden, probeer iets anders.");
                 }
