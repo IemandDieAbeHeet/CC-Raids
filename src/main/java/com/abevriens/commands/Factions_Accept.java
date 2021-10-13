@@ -68,7 +68,6 @@ public class Factions_Accept extends Factions_Base {
             cc_requestingplayer.deleteRequests();
 
             CrackCityRaids.instance.playerManager.setPlayerFaction(offlinePlayer, cc_player.faction);
-            CrackCityRaids.instance.dbHandler.updatePlayer(PlayerManager.CCToPOJO(cc_requestingplayer));
         }
     }
 }

@@ -145,6 +145,18 @@ public class FactionCommandHandler implements CommandExecutor {
                             new Factions_Requests(factions_base, 1);
                         }
                         break;
+                    case "setowner":
+                        if(args.length > 1) {
+                            new Factions_SetOwner(factions_base, args[1]);
+                            break;
+                        } else {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen spelernaam opgegeven om owner te geven, gebruik het commando als volgt:",
+                                    "/factions setowner [naam]");
+
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
                     default:
                         new Factions_HelpError(factions_base, "Commando argument niet gevonden, probeer iets anders.");
                 }
