@@ -24,23 +24,28 @@ public class Factions_Join extends Factions_Base {
     }
 
     private void command_Join() {
-        TextComponent errorMessage = new TextComponent();
-        errorMessage.setColor(ChatColor.RED);
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(name);
         if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
-            errorMessage.setText("Je zit al in een faction, gebruik eerst /factions leave om je faction te verlaten.");
-            player.spigot().sendMessage(errorMessage);
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction, " +
+                    "gebruik eerst /factions leave om je faction te verlaten.");
+            player.spigot().sendMessage(errorMsg.create());
         } else if(!factionManager.factionNameList.contains(name)) {
-            errorMessage.setText("De opgegeven faction bestaat niet!");
-            player.spigot().sendMessage(errorMessage);
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De opgegeven faction bestaat niet!");
+            player.spigot().sendMessage(errorMsg.create());
+        } else if(faction.joinStatus == JoinStatus.REQUEST && cc_player.pendingRequests.contains(faction.factionName)) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je hebt al een join request open staan bij deze " +
+                    "faction!");
+            player.spigot().sendMessage(errorMsg.create());
         } else if(faction.isFull()) {
-            errorMessage.setText("De faction die je probeert te joinen zit vol!");
-            player.spigot().sendMessage(errorMessage);
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De faction die je probeert te joinen zit vol!");
+            player.spigot().sendMessage(errorMsg.create());
         } else if(faction.joinStatus == JoinStatus.CLOSED) {
-            errorMessage.setText("De faction die je probeert te joinen staat op gesloten!");
-            player.spigot().sendMessage(errorMessage);
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De faction die je probeert te joinen " +
+                    "staat op gesloten!");
+            player.spigot().sendMessage(errorMsg.create());
         } else if(faction.joinStatus == JoinStatus.REQUEST) {
             faction.playerJoinRequests.add(cc_player.uuid);
+            cc_player.pendingRequests.add(faction.factionName);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
             player.spigot().sendMessage(successMessage.create());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));

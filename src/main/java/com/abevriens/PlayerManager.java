@@ -83,7 +83,8 @@ public class PlayerManager {
         return new CC_Player(
             pojo_player.displayName,
             pojo_player.uuid,
-            faction
+            faction,
+            pojo_player.pendingRequests
         );
     }
 
@@ -93,6 +94,7 @@ public class PlayerManager {
         pojo_player.displayName = cc_player.displayName;
         pojo_player.factionName = cc_player.faction.factionName;
         pojo_player.uuid = cc_player.uuid;
+        pojo_player.pendingRequests = cc_player.pendingRequests;
 
         return pojo_player;
     }
