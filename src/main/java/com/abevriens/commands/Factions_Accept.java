@@ -33,11 +33,6 @@ public class Factions_Accept extends Factions_Base {
 
             player.spigot().sendMessage(errorMessage.create());
             return;
-        } else if(cc_player.faction.players.size() > 2) {
-            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction zit vol!");
-
-            player.spigot().sendMessage(errorMessage.create());
-            return;
         }
 
         for(String uuid : cc_player.faction.playerJoinRequests) {
@@ -53,6 +48,10 @@ public class Factions_Accept extends Factions_Base {
                     "je faction. Zie alle join requests met /factions requests");
 
             player.spigot().sendMessage(errorMsg.create());
+        } else if(cc_player.faction.players.size() > 2) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction zit vol!");
+
+            player.spigot().sendMessage(errorMessage.create());
         } else {
             cc_player.faction.playerJoinRequests.remove(cc_requestingplayer.uuid);
 
