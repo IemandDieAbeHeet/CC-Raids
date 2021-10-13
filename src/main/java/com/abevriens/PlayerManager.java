@@ -10,6 +10,7 @@ import java.util.UUID;
 public class PlayerManager {
     private HashMap<OfflinePlayer, CC_Player> CCPlayerHashMap = new HashMap<>();
     private HashMap<OfflinePlayer, POJO_Player> POJOPlayerHashMap = new HashMap<>();
+    private HashMap<String, CC_Player> CCPlayerStringHashMap = new HashMap<>();
 
     public void LoadPlayers() {
         for (POJO_Player pojo_player : CrackCityRaids.instance.dbHandler.playerCollection.find()) {
@@ -22,6 +23,7 @@ public class PlayerManager {
 
             POJOPlayerHashMap.put(player, pojo_player);
             CCPlayerHashMap.put(player, cc_player);
+            CCPlayerStringHashMap.put(cc_player.displayName, cc_player);
         }
     }
 
@@ -33,6 +35,7 @@ public class PlayerManager {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
         CCPlayerHashMap.put(offlinePlayer, cc_player);
         POJOPlayerHashMap.put(offlinePlayer, pojo_player);
+        CCPlayerStringHashMap.put(cc_player.displayName, cc_player);
     }
 
     public POJO_Player getPOJOPlayer(Player player) {
@@ -47,6 +50,10 @@ public class PlayerManager {
     public CC_Player getCCPlayer(Player player) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
         return CCPlayerHashMap.get(offlinePlayer);
+    }
+
+    public CC_Player getCCPlayer(String displayName) {
+        return CCPlayerStringHashMap.get(displayName);
     }
 
     public CC_Player getCCPlayer(OfflinePlayer offlinePlayer) {
@@ -70,6 +77,7 @@ public class PlayerManager {
 
         CCPlayerHashMap.put(offlinePlayer, cc_player);
         POJOPlayerHashMap.put(offlinePlayer, pojo_player);
+        CCPlayerStringHashMap.put(cc_player.displayName, cc_player);
         CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
     }
 
