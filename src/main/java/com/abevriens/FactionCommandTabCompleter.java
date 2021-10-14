@@ -85,16 +85,29 @@ public class FactionCommandTabCompleter implements TabCompleter {
                 } else {
                     return normalFactionCommands;
                 }
+            } else if(args.length == 2) {
+                return GetOfflinePlayerNames();
             }
 
             return names;
         }
 
+        return GetOnlinePlayerNames();
+    }
+
+    public List<String> GetOnlinePlayerNames() {
         List<String> names = new ArrayList<>();
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for(Player player : Bukkit.getOnlinePlayers()) {
             names.add(player.getName());
         }
+        return names;
+    }
 
+    public List<String> GetOfflinePlayerNames() {
+        List<String> names = new ArrayList<>();
+        for(OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            names.add(offlinePlayer.getName());
+        }
         return names;
     }
 }
