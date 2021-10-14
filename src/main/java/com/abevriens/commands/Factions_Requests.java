@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Factions_Requests extends Factions_Base {
-    private final int CHAT_SIZE = 8;
+    private static final int CHAT_SIZE = 8;
     public int page;
 
     public Factions_Requests(Factions_Base factions_base, int _page) {

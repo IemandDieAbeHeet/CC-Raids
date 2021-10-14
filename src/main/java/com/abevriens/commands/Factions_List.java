@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import java.util.ArrayList;
 
 public class Factions_List extends Factions_Base {
-    private final int CHAT_SIZE = 8;
+    private static final int CHAT_SIZE = 8;
     public int page;
 
     public Factions_List(Factions_Base factions_base, int _page) {
