@@ -86,11 +86,13 @@ public class FactionCommandTabCompleter implements TabCompleter {
                     return normalFactionCommands;
                 }
             } else if(args.length == 2) {
-                switch(args[1]) {
+                switch(args[0]) {
                     case "joinstatus":
                         return GetJoinStatusStrings();
                     case "requests":
                         return GetPageStrings((int)Math.ceil((double) cc_player.faction.playerJoinRequests.size() / 8));
+                    default:
+                        return GetOnlinePlayerNames();
                 }
             }
 
