@@ -39,6 +39,11 @@ public class Factions_Kick extends Factions_Base {
                     "niet in je faction! Bekijk alle leden met /factions info");
 
             player.spigot().sendMessage(errorMessage.create());
+        } else if(cc_kickplayer.uuid.equals(cc_player.uuid)) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je kunt jezelf niet kicken, gebruik /factions " +
+                    "delete om de faction te verwijderen en verlaten");
+
+            player.spigot().sendMessage(errorMessage.create());
         } else {
             OfflinePlayer offlineKickPlayer = Bukkit.getOfflinePlayer(UUID.fromString(cc_kickplayer.uuid));
             CrackCityRaids.instance.playerManager.setPlayerFaction(offlineKickPlayer, FactionManager.emptyFaction);
