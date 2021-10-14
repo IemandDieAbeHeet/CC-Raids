@@ -113,11 +113,11 @@ public class FactionCommandTabCompleter implements TabCompleter {
         for(JoinStatus joinStatus : JoinStatus.values()) {
             switch (joinStatus) {
                 case OPEN:
-                    statuses.add("Open");
+                    statuses.add("open");
                 case CLOSED:
-                    statuses.add("Closed");
+                    statuses.add("closed");
                 case REQUEST:
-                    statuses.add("Request");
+                    statuses.add("request");
             }
         }
         return  statuses;
