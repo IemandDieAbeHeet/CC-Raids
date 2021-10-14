@@ -86,13 +86,41 @@ public class FactionCommandTabCompleter implements TabCompleter {
                     return normalFactionCommands;
                 }
             } else if(args.length == 2) {
-                return GetOfflinePlayerNames();
+                switch(args[1]) {
+                    case "joinstatus":
+                        return GetJoinStatusStrings();
+                    case "requests":
+                        return GetPageStrings((int)Math.ceil((double) cc_player.faction.playerJoinRequests.size() / 8));
+                }
             }
 
             return names;
         }
 
         return GetOnlinePlayerNames();
+    }
+
+    public List<String> GetPageStrings(int lastPage) {
+        List<String> pages = new ArrayList<>();
+        for(int i = 1; i < lastPage; i++) {
+            pages.add(Integer.toString(i));
+        }
+        return pages;
+    }
+
+    public List<String> GetJoinStatusStrings() {
+        List<String> statuses = new ArrayList<>();
+        for(JoinStatus joinStatus : JoinStatus.values()) {
+            switch (joinStatus) {
+                case OPEN:
+                    statuses.add("Open");
+                case CLOSED:
+                    statuses.add("Closed");
+                case REQUEST:
+                    statuses.add("Request");
+            }
+        }
+        return  statuses;
     }
 
     public List<String> GetOnlinePlayerNames() {
