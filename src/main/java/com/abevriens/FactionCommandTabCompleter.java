@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FactionCommandTabCompleter implements TabCompleter {
     final ArrayList<String> allCommands = new ArrayList<String>() {
@@ -91,6 +92,17 @@ public class FactionCommandTabCompleter implements TabCompleter {
                         return GetJoinStatusStrings();
                     case "requests":
                         return GetPageStrings((int)Math.ceil((double) cc_player.faction.playerJoinRequests.size() / 8));
+                    case "join":
+                        return GetJoinableFactionNames();
+                    case "list":
+                        return GetPageStrings((int)Math.ceil((double) CrackCityRaids.instance.factionManager.factionList.size() / 8));
+                    case "kick":
+                    case "setowner":
+                        return GetFactionMemberNames(cc_player);
+                    case "info":
+                        return CrackCityRaids.instance.factionManager.factionNameList;
+                    case "accept":
+                        return GetFactionJoinRequestNames(cc_player);
                     default:
                         return GetOnlinePlayerNames();
                 }
@@ -102,11 +114,44 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return GetOnlinePlayerNames();
     }
 
+    public List<String> GetFactionJoinRequestNames(CC_Player cc_player) {
+        List<String> names = new ArrayList<>();
+        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            for(String request : cc_player.pendingRequests) {
+                names.add(Bukkit.getOfflinePlayer(UUID.fromString(request)).getName());
+            }
+        }
+        return names;
+    }
+
+    public List<String> GetFactionMemberNames(CC_Player cc_player) {
+        List<String> names = new ArrayList<>();
+        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+            for(CC_Player cc_playermember : cc_player.faction.players) {
+                if(!cc_playermember.uuid.equals(cc_player.uuid)) {
+                    names.add(cc_playermember.displayName);
+                }
+            }
+        }
+        return names;
+    }
+
+    public List<String> GetJoinableFactionNames() {
+        List <String> names = new ArrayList<>();
+        for(Faction faction : CrackCityRaids.instance.factionManager.factionList) {
+            if(faction.isJoinable()) {
+                names.add(faction.factionName);
+            }
+        }
+        return names;
+    }
+
     public List<String> GetPageStrings(int lastPage) {
         List<String> pages = new ArrayList<>();
-        for(int i = 1; i < lastPage; i++) {
+        for(int i = 2; i < lastPage; i++) {
             pages.add(Integer.toString(i));
         }
+        pages.add("1");
         return pages;
     }
 
