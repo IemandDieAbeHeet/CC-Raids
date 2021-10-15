@@ -12,51 +12,51 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public class Factions_Join extends Factions_Base {
+public class Factions_Join {
     public String name;
+    public CommandContext commandContext;
 
-    public Factions_Join(Factions_Base factions_base, String _name) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Join(CommandContext _commandContext, String _name) {
         name = _name;
+        commandContext = _commandContext;
 
         command_Join();
     }
 
     private void command_Join() {
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(name);
-        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(!commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction, " +
                     "gebruik eerst /factions leave om je faction te verlaten.");
-            player.spigot().sendMessage(errorMsg.create());
-        } else if(!factionManager.factionNameList.contains(name)) {
+            commandContext.player.spigot().sendMessage(errorMsg.create());
+        } else if(!commandContext.factionManager.factionNameList.contains(name)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De opgegeven faction bestaat niet!");
-            player.spigot().sendMessage(errorMsg.create());
-        } else if(faction.joinStatus == JoinStatus.REQUEST && cc_player.pendingRequests.contains(faction.factionName)) {
+            commandContext.player.spigot().sendMessage(errorMsg.create());
+        } else if(faction.joinStatus == JoinStatus.REQUEST && commandContext.cc_player.pendingRequests.contains(faction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je hebt al een join request open staan bij deze " +
                     "faction!");
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else if(faction.isFull()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De faction die je probeert te joinen zit vol!");
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else if(faction.joinStatus == JoinStatus.CLOSED) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De faction die je probeert te joinen " +
                     "staat op gesloten!");
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else if(faction.joinStatus == JoinStatus.REQUEST) {
-            faction.playerJoinRequests.add(cc_player.uuid);
-            cc_player.pendingRequests.add(faction.factionName);
+            faction.playerJoinRequests.add(commandContext.cc_player.uuid);
+            commandContext.cc_player.pendingRequests.add(faction.factionName);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
-            player.spigot().sendMessage(successMessage.create());
+            commandContext.player.spigot().sendMessage(successMessage.create());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
 
-            TextComponent requestMsgText = new TextComponent(cc_player.displayName + " heeft gevraagd of ze je faction " +
+            TextComponent requestMsgText = new TextComponent(commandContext.cc_player.displayName + " heeft gevraagd of ze je faction " +
                     "mogen joinen! ");
             requestMsgText.setColor(ChatColor.GOLD);
 
             TextComponent requestMsgButton = new TextComponent("[Accept]");
             requestMsgButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions accept "
-                    + cc_player.displayName));
+                    + commandContext.cc_player.displayName));
             requestMsgButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new Text("Klik om te accepteren!")));
 
@@ -73,9 +73,9 @@ public class Factions_Join extends Factions_Base {
             }
         } else {
             Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(name);
-            playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(player.getUniqueId()), newFaction);
+            commandContext.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(commandContext.player.getUniqueId()), newFaction);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
-            player.spigot().sendMessage(successMessage.create());
+            commandContext.player.spigot().sendMessage(successMessage.create());
         }
     }
 }

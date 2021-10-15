@@ -14,28 +14,28 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-public class Factions_Requests extends Factions_Base {
+public class Factions_Requests {
     private static final int CHAT_SIZE = 8;
     public int page;
+    public CommandContext commandContext;
 
-    public Factions_Requests(Factions_Base factions_base, int _page) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Requests(CommandContext _commandContext, int _page) {
         page = _page;
+        commandContext = _commandContext;
 
         command_Request();
     }
 
     private void command_Request() {
-        List<String> list = cc_player.faction.playerJoinRequests;
+        List<String> list = commandContext.cc_player.faction.playerJoinRequests;
 
-        if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
-           player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Je zit niet in een faction, als je join requests" +
+        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+           commandContext.player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Je zit niet in een faction, als je join requests" +
                    " wil bekijken kun je een faction maken met /factions create").create());
 
            return;
         } else if(list.size() < 1) {
-            player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen requests gevonden, wacht totdat" +
+            commandContext.player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen requests gevonden, wacht totdat" +
                     " iemand je faction joinen!").create());
 
             return;
@@ -85,7 +85,7 @@ public class Factions_Requests extends Factions_Base {
             componentBuilder.append(playerNumber);
             componentBuilder.append(playerInfo);
 
-            if(cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+            if(commandContext.cc_player.faction.factionOwner.uuid.equals(commandContext.cc_player.uuid)) {
                 componentBuilder.append(acceptButton);
             }
 
@@ -96,7 +96,7 @@ public class Factions_Requests extends Factions_Base {
             }
         }
 
-        player.spigot().sendMessage(componentBuilder.create());
-        player.spigot().sendMessage(footer.create());
+        commandContext.player.spigot().sendMessage(componentBuilder.create());
+        commandContext.player.spigot().sendMessage(footer.create());
     }
 }

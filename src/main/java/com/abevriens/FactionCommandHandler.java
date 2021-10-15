@@ -10,24 +10,19 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FactionCommandHandler implements CommandExecutor {
-    Player player;
-    POJO_Player pojo_player;
-    CC_Player cc_player;
-    @NotNull PlayerManager playerManager = CrackCityRaids.instance.playerManager;
-    @NotNull FactionManager factionManager = CrackCityRaids.instance.factionManager;
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if(sender instanceof Player) {
-            player = (Player) sender;
-            cc_player = playerManager.getCCPlayer(player);
-            pojo_player = playerManager.getPOJOPlayer(player);
-            Factions_Base factions_base = new Factions_Base(cc_player, player, pojo_player, factionManager, playerManager);
+            Player player = (Player) sender;
+
+            CommandContext commandContext = new CommandContext(player, CrackCityRaids.instance.factionManager, CrackCityRaids.instance.playerManager);
+
             if(args.length > 0) {
                 label:
                 switch (args[0].toLowerCase()) {
                     case "create":
                         if(args.length == 2) {
-                            new Factions_Create(factions_base, args[1]);
+                            new Factions_Create(commandContext, args[1]);
                         } else if(args.length < 2) {
 
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -44,21 +39,21 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "info":
                         if(args.length > 1) {
-                            new Factions_Info(factions_base, args[1]);
+                            new Factions_Info(commandContext, args[1]);
                         } else {
-                            new Factions_Info(factions_base, cc_player.faction.factionName);
+                            new Factions_Info(commandContext, CrackCityRaids.instance.playerManager.getCCPlayer(player).faction.factionName);
                         }
                         break;
                     case "help":
                         if(args.length > 1) {
-                            new Factions_Help(factions_base, Integer.parseInt(args[1]));
+                            new Factions_Help(commandContext, Integer.parseInt(args[1]));
                         } else {
-                            new Factions_Help(factions_base, 1);
+                            new Factions_Help(commandContext, 1);
                         }
                         break;
                     case "join":
                         if(args.length >= 2) {
-                            new Factions_Join(factions_base, args[1]);
+                            new Factions_Join(commandContext, args[1]);
                         } else {
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                     "Geen faction naam opgegeven, gebruik het commando als volgt:",
@@ -68,12 +63,12 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     case "leave":
-                        new Factions_Leave(factions_base);
+                        new Factions_Leave(commandContext);
                         break;
                     case "list":
                         if(args.length > 1) {
                             if(StringUtils.isNumeric(args[1])) {
-                                new Factions_List(factions_base, Integer.parseInt(args[1]));
+                                new Factions_List(commandContext, Integer.parseInt(args[1]));
                             } else {
                                 ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                         "Incorrect nummer opgegeven als tweede argument, gebruik het commando als volgt:",
@@ -82,11 +77,11 @@ public class FactionCommandHandler implements CommandExecutor {
                                 player.spigot().sendMessage(errorMsg.create());
                             }
                         } else {
-                            new Factions_List(factions_base, 1);
+                            new Factions_List(commandContext, 1);
                         }
                         break;
                     case "delete":
-                        new Factions_Delete(factions_base);
+                        new Factions_Delete(commandContext);
                         break;
                     case "joinstatus":
                         if(args.length < 2) {
@@ -101,14 +96,14 @@ public class FactionCommandHandler implements CommandExecutor {
                         switch (args[1]) {
                             case "open":
                             case "openbaar":
-                                new Factions_SetJoinStatus(factions_base, JoinStatus.OPEN);
+                                new Factions_SetJoinStatus(commandContext, JoinStatus.OPEN);
                                 break label;
                             case "request":
-                                new Factions_SetJoinStatus(factions_base, JoinStatus.REQUEST);
+                                new Factions_SetJoinStatus(commandContext, JoinStatus.REQUEST);
                                 break label;
                             case "close":
                             case "closed":
-                                new Factions_SetJoinStatus(factions_base, JoinStatus.CLOSED);
+                                new Factions_SetJoinStatus(commandContext, JoinStatus.CLOSED);
                                 break label;
                             default:
                                 ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -120,7 +115,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                     case "accept":
                         if(args.length > 1) {
-                            new Factions_Accept(factions_base, args[1]);
+                            new Factions_Accept(commandContext, args[1]);
                         } else {
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                     "Geen spelernaam opgegeven om te accepteren, gebruik het commando als volgt:",
@@ -133,7 +128,7 @@ public class FactionCommandHandler implements CommandExecutor {
                     case "requests":
                         if(args.length > 1) {
                             if(StringUtils.isNumeric(args[1])) {
-                                new Factions_Requests(factions_base, Integer.parseInt(args[1]));
+                                new Factions_Requests(commandContext, Integer.parseInt(args[1]));
                             } else {
                                 ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                         "Incorrect nummer opgegeven als tweede argument, gebruik het commando als volgt:",
@@ -142,12 +137,12 @@ public class FactionCommandHandler implements CommandExecutor {
                                 player.spigot().sendMessage(errorMsg.create());
                             }
                         } else {
-                            new Factions_Requests(factions_base, 1);
+                            new Factions_Requests(commandContext, 1);
                         }
                         break;
                     case "setowner":
                         if(args.length > 1) {
-                            new Factions_SetOwner(factions_base, args[1]);
+                            new Factions_SetOwner(commandContext, args[1]);
                             break;
                         } else {
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -159,7 +154,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "kick":
                         if(args.length > 1) {
-                            new Factions_Kick(factions_base, args[1]);
+                            new Factions_Kick(commandContext, args[1]);
                             break;
                         } else {
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
@@ -170,10 +165,10 @@ public class FactionCommandHandler implements CommandExecutor {
                         }
                         break;
                     default:
-                        new Factions_HelpError(factions_base, "Commando argument niet gevonden, probeer iets anders.");
+                        new Factions_HelpError(commandContext, "Commando argument niet gevonden, probeer iets anders.");
                 }
             } else {
-                new Factions_Help(factions_base, 1);
+                new Factions_Help(commandContext, 1);
             }
             return  true;
         } else {

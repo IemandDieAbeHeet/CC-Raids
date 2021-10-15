@@ -9,14 +9,14 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class Factions_Info  extends Factions_Base
+public class Factions_Info
 {
     public String name;
+    public CommandContext commandContext;
 
-    public Factions_Info(Factions_Base factions_base, String _name) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Info(CommandContext _commandContext, String _name) {
         name = _name;
+        commandContext = _commandContext;
 
         command_Info();
     }
@@ -28,13 +28,13 @@ public class Factions_Info  extends Factions_Base
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
                             "faction aan te maken.");
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else if(!CrackCityRaids.instance.factionManager.factionNameList.contains(name)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "De faction die je probeert op te zoeken bestaat niet. Je kunt alle factions bekijken met de " +
                             "command /factions list"
             );
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else {
             ComponentBuilder header = TextUtil.GenerateHeaderMsg("Info");
             ComponentBuilder footer = TextUtil.GenerateFooterMsg();
@@ -96,7 +96,7 @@ public class Factions_Info  extends Factions_Base
                     .append("\n")
                     .append(footer.create()).create();
 
-            player.spigot().sendMessage(components);
+            commandContext.player.spigot().sendMessage(components);
         }
     }
 }

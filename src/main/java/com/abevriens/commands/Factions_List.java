@@ -13,14 +13,15 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.ArrayList;
 
-public class Factions_List extends Factions_Base {
+public class Factions_List {
     private static final int CHAT_SIZE = 8;
     public int page;
 
-    public Factions_List(Factions_Base factions_base, int _page) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    CommandContext commandContext;
+
+    public Factions_List(CommandContext _commandContext, int _page) {
         page = _page;
+        commandContext = _commandContext;
 
         command_List();
     }
@@ -29,7 +30,7 @@ public class Factions_List extends Factions_Base {
         ArrayList<Faction> list = (ArrayList<Faction>) CrackCityRaids.instance.factionManager.factionList;
 
         if(list.size() < 1) {
-            player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +
+            commandContext.player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +
                     " faction door /factions create te gebruiken!").create());
 
             return;
@@ -77,7 +78,7 @@ public class Factions_List extends Factions_Base {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
 
-            if(cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName) && list.get(j).isJoinable()) {
+            if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName) && list.get(j).isJoinable()) {
                 componentBuilder.append(joinButton);
             }
 
@@ -88,7 +89,7 @@ public class Factions_List extends Factions_Base {
             }
         }
 
-        player.spigot().sendMessage(componentBuilder.create());
-        player.spigot().sendMessage(footer.create());
+        commandContext.player.spigot().sendMessage(componentBuilder.create());
+        commandContext.player.spigot().sendMessage(footer.create());
     }
 }

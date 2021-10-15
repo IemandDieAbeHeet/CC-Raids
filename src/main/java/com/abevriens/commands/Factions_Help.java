@@ -6,13 +6,13 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class Factions_Help extends Factions_Base {
+public class Factions_Help {
     public int page;
+    public CommandContext commandContext;
 
-    public Factions_Help(Factions_Base factions_base, int _page) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Help(CommandContext _commandContext, int _page) {
         page = _page;
+        commandContext = _commandContext;
 
         command_Help();
     }
@@ -29,7 +29,7 @@ public class Factions_Help extends Factions_Base {
                 .append(TextUtil.newLine)
                 .append(TextUtil.GenerateFooterMsg().create()).create();
 
-        player.spigot().sendMessage(components);
+        commandContext.player.spigot().sendMessage(components);
     }
 
 }

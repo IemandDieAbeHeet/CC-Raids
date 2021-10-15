@@ -5,12 +5,12 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
-public class Factions_HelpError extends  Factions_Base {
+public class Factions_HelpError {
     public String error;
+    public CommandContext commandContext;
 
-    public Factions_HelpError(Factions_Base factions_base, String _error) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_HelpError(CommandContext _commandContext, String _error) {
+        commandContext = _commandContext;
         error = _error;
 
         command_HelpError();
@@ -39,6 +39,6 @@ public class Factions_HelpError extends  Factions_Base {
                 .event((HoverEvent) null)
                 .create();
 
-        player.spigot().sendMessage(components);
+        commandContext.player.spigot().sendMessage(components);
     }
 }

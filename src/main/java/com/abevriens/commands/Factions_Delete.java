@@ -10,32 +10,32 @@ import org.bukkit.Bukkit;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Factions_Delete extends Factions_Base {
+public class Factions_Delete {
+    public CommandContext commandContext;
 
-    public Factions_Delete(Factions_Base factions_base) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Delete(CommandContext _commandContext) {
+        commandContext = _commandContext;
 
         command_Delete();
     }
 
     public void command_Delete() {
-        String factionName = cc_player.faction.factionName;
+        String factionName = commandContext.cc_player.faction.factionName;
         if(factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
-            player.spigot().sendMessage(errorMessage.create());
+            commandContext.player.spigot().sendMessage(errorMessage.create());
         }
-        if(!cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
+        if(!commandContext.cc_player.faction.factionOwner.uuid.equals(commandContext.cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je " +
-                    "het echt graag wilt moet je aan " + cc_player.faction.factionOwner.displayName +
+                    "het echt graag wilt moet je aan " + commandContext.cc_player.faction.factionOwner.displayName +
                     " vragen of ze jou owner geven.");
-            player.spigot().sendMessage(errorMessage.create());
+            commandContext.player.spigot().sendMessage(errorMessage.create());
         } else {
-            factionManager.factionList.remove(cc_player.faction);
-            factionManager.factionNameList.remove(factionName);
+            commandContext.factionManager.factionList.remove(commandContext.cc_player.faction);
+            commandContext.factionManager.factionNameList.remove(factionName);
 
-            ArrayList<CC_Player> factionMembers = new ArrayList<>(cc_player.faction.players);
+            ArrayList<CC_Player> factionMembers = new ArrayList<>(commandContext.cc_player.faction.players);
 
             for(CC_Player factionMember : factionMembers) {
                 CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
@@ -45,7 +45,7 @@ public class Factions_Delete extends Factions_Base {
             CrackCityRaids.instance.dbHandler.deleteFaction(factionName);
 
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
-            player.spigot().sendMessage(successMessage.create());
+            commandContext.player.spigot().sendMessage(successMessage.create());
         }
     }
 }

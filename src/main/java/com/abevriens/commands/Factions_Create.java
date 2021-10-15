@@ -10,33 +10,33 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class Factions_Create extends Factions_Base {
+public class Factions_Create {
     public String name;
+    public CommandContext commandContext;
 
-    public Factions_Create(Factions_Base factions_base, String _name) {
-        super(factions_base.cc_player, factions_base.player, factions_base.pojo_player,
-                factions_base.factionManager, factions_base.playerManager);
+    public Factions_Create(CommandContext _commandContext, String _name) {
         name = _name;
+        commandContext = _commandContext;
 
         command_Create();
     }
 
     private void command_Create() {
-        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(!commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction dus je kunt geen nieuwe " +
                     "faction aanmaken, verlaat deze met /factions leave.");
-            player.spigot().sendMessage(errorMsg.create());
-        } else if(factionManager.factionNameList.contains(name)) {
+            commandContext.player.spigot().sendMessage(errorMsg.create());
+        } else if(commandContext.factionManager.factionNameList.contains(name)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Een faction met deze naam bestaat al, " +
                     "kies een andere naam.");
-            player.spigot().sendMessage(errorMsg.create());
+            commandContext.player.spigot().sendMessage(errorMsg.create());
         } else {
             Faction faction = new Faction(
-                    pojo_player,
+                    commandContext.pojo_player,
                     name,
                     new ArrayList<CC_Player>() {
                         {
-                            add(cc_player);
+                            add(commandContext.cc_player);
                         }
                     },
                     new ArrayList<Chunk>(),
@@ -44,16 +44,16 @@ public class Factions_Create extends Factions_Base {
                     new ArrayList<String>());
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
-            pojo_player.factionName = faction.factionName;
-            cc_player.faction = faction;
+            commandContext.pojo_player.factionName = faction.factionName;
+            commandContext.cc_player.faction = faction;
             CrackCityRaids.instance.dbHandler.insertFaction(pojo_faction);
-            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
-            factionManager.factionNameList.add(faction.factionName);
-            factionManager.factionList.add(faction);
+            CrackCityRaids.instance.dbHandler.updatePlayer(commandContext.pojo_player);
+            commandContext.factionManager.factionNameList.add(faction.factionName);
+            commandContext.factionManager.factionList.add(faction);
 
             TextComponent successMessage = new TextComponent("Faction is succesvol aangemaakt!");
             successMessage.setColor(ChatColor.GREEN);
-            player.spigot().sendMessage(successMessage);
+            commandContext.player.spigot().sendMessage(successMessage);
         }
     }
 }
