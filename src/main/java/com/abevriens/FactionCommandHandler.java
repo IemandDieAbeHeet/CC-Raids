@@ -1,6 +1,7 @@
 package com.abevriens;
 
 import com.abevriens.commands.*;
+import com.abevriens.commands.factionblock.Factions_CreateFactionBlock;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
@@ -8,8 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Locale;
 
 public class FactionCommandHandler implements CommandExecutor {
 
@@ -170,7 +169,7 @@ public class FactionCommandHandler implements CommandExecutor {
                     case "factionblock":
                         switch(args[1].toLowerCase()) {
                             case "create":
-                             new Factions_SpawnFBlock(commandContext);
+                             new Factions_CreateFactionBlock(commandContext);
                         }
                         break;
                     default:
