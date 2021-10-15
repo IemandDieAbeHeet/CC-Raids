@@ -167,6 +167,15 @@ public class FactionCommandHandler implements CommandExecutor {
                         break;
                     case "fblock":
                     case "factionblock":
+                        if(args.length < 2) {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen subcommando opgegeven, gebruik het commando als volgt:",
+                                    "/factions factionblock [commando]");
+
+                            player.spigot().sendMessage(errorMsg.create());
+                            break;
+                        }
+
                         switch(args[1].toLowerCase()) {
                             case "create":
                              new Factions_CreateFactionBlock(commandContext);
