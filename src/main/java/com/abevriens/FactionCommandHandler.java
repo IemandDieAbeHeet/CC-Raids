@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class FactionCommandHandler implements CommandExecutor {
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -93,7 +95,7 @@ public class FactionCommandHandler implements CommandExecutor {
                             break;
                         }
 
-                        switch (args[1]) {
+                        switch (args[1].toLowerCase()) {
                             case "open":
                             case "openbaar":
                                 new Factions_SetJoinStatus(commandContext, JoinStatus.OPEN);
@@ -162,6 +164,13 @@ public class FactionCommandHandler implements CommandExecutor {
                                     "/factions setowner [naam]");
 
                             player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
+                    case "fblock":
+                    case "factionblock":
+                        switch(args[1].toLowerCase()) {
+                            case "create":
+                             new Factions_SpawnFBlock(commandContext);
                         }
                         break;
                     default:

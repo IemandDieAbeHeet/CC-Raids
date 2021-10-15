@@ -6,9 +6,12 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Factions_Create {
     public String name;
@@ -39,9 +42,10 @@ public class Factions_Create {
                             add(commandContext.cc_player);
                         }
                     },
-                    new ArrayList<Chunk>(),
+                    new ArrayList<>(),
                     JoinStatus.REQUEST,
-                    new ArrayList<String>());
+                    new ArrayList<>(),
+                    new Location(Bukkit.getWorld("world"), 0, 0, 0));
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             commandContext.pojo_player.factionName = faction.factionName;

@@ -3,6 +3,7 @@ package com.abevriens;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
@@ -21,13 +22,18 @@ public class Faction {
 
     public JoinStatus joinStatus;
 
-    public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players, List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<String> _playerJoinRequests) {
+    public Location fBlockLocation;
+
+    public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
+                   List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<String> _playerJoinRequests,
+                    Location _fBlockLocation) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
         occupiedChunks = _occupiedChunks;
         joinStatus = _joinStatus;
         playerJoinRequests = _playerJoinRequests;
+        fBlockLocation = _fBlockLocation;
     }
 
     public boolean isFull() {

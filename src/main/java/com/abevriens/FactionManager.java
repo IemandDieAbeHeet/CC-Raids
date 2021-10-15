@@ -1,11 +1,15 @@
 package com.abevriens;
 
 import org.bson.codecs.configuration.CodecConfigurationException;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FactionManager {
     public List<Faction> factionList = new ArrayList<>();
@@ -34,21 +38,20 @@ public class FactionManager {
         return emptyFaction;
     }
 
-    public static Faction emptyFaction = new Faction(null, "None", null, null, JoinStatus.OPEN, null);
+    public static Faction emptyFaction = new Faction(null, "None", null,
+            null, JoinStatus.OPEN, null, null);
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
 
         List<CC_Player> cc_players = new ArrayList<>();
-        List<String> playerJoinRequests = new ArrayList<>();
 
         for(POJO_Player pojo_player : pojo_faction.players) {
             cc_players.add(PlayerManager.POJOToCC(pojo_player));
         }
 
-        for(String uuid : pojo_faction.playerJoinRequests) {
-            playerJoinRequests.add(uuid);
-        }
+        Location fBlockLocationFromPOJO = new Vector(pojo_faction.fBlockLocation.x, pojo_faction.fBlockLocation.y,
+                pojo_faction.fBlockLocation.z).toLocation(Objects.requireNonNull(Bukkit.getWorld("world")));
 
         faction = new Faction(
                 pojo_faction.factionOwner,
@@ -56,7 +59,8 @@ public class FactionManager {
                 cc_players,
                 pojo_faction.occupiedChunks,
                 pojo_faction.joinStatus,
-                playerJoinRequests
+                pojo_faction.playerJoinRequests,
+                fBlockLocationFromPOJO
         );
 
         return faction;
@@ -66,14 +70,9 @@ public class FactionManager {
         POJO_Faction pojo_faction = new POJO_Faction();
 
         List<POJO_Player> pojo_players = new ArrayList<>();
-        List<String> playerJoinRequests = new ArrayList<>();
 
         for(CC_Player cc_player : faction.players) {
             pojo_players.add(PlayerManager.CCToPOJO(cc_player));
-        }
-
-        for(String uuid : faction.playerJoinRequests) {
-            playerJoinRequests.add(uuid);
         }
 
         pojo_faction.factionName = faction.factionName;
@@ -81,7 +80,8 @@ public class FactionManager {
         pojo_faction.occupiedChunks = faction.occupiedChunks;
         pojo_faction.players = pojo_players;
         pojo_faction.joinStatus = faction.joinStatus;
-        pojo_faction.playerJoinRequests = playerJoinRequests;
+        pojo_faction.playerJoinRequests = faction.playerJoinRequests;
+        pojo_faction.fBlockLocation = new POJO_Vector(faction.fBlockLocation.toVector());
 
         return pojo_faction;
     }
