@@ -7,11 +7,11 @@ import com.abevriens.PlayerManager;
 import org.bukkit.entity.Player;
 
 public class CommandContext {
-    Player player;
-    CC_Player cc_player;
-    POJO_Player pojo_player;
-    FactionManager factionManager;
-    PlayerManager playerManager;
+    public Player player;
+    public CC_Player cc_player;
+    public POJO_Player pojo_player;
+    public FactionManager factionManager;
+    public PlayerManager playerManager;
 
     public CommandContext(Player _player, FactionManager _factionManager, PlayerManager _playerManager) {
         player = _player;
