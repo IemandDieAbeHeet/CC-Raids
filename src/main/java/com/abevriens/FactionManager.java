@@ -1,9 +1,8 @@
 package com.abevriens;
 
 import org.bson.codecs.configuration.CodecConfigurationException;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,8 +49,11 @@ public class FactionManager {
             cc_players.add(PlayerManager.POJOToCC(pojo_player));
         }
 
-        Location fBlockLocationFromPOJO = new Vector(pojo_faction.fBlockLocation.x, pojo_faction.fBlockLocation.y,
-                pojo_faction.fBlockLocation.z).toLocation(Objects.requireNonNull(Bukkit.getWorld("world")));
+        Location locationFromPojo = new Vector(pojo_faction.factionBlock.locationVector.x,
+                pojo_faction.factionBlock.locationVector.y,
+                pojo_faction.factionBlock.locationVector.z).toLocation(Objects.requireNonNull(Bukkit.getWorld("world")));
+
+        FactionBlock fBlockFromPOJO = new FactionBlock(locationFromPojo, pojo_faction.factionName);
 
         faction = new Faction(
                 pojo_faction.factionOwner,
@@ -60,7 +62,7 @@ public class FactionManager {
                 pojo_faction.occupiedChunks,
                 pojo_faction.joinStatus,
                 pojo_faction.playerJoinRequests,
-                fBlockLocationFromPOJO
+                fBlockFromPOJO
         );
 
         return faction;
@@ -75,13 +77,17 @@ public class FactionManager {
             pojo_players.add(PlayerManager.CCToPOJO(cc_player));
         }
 
+        POJO_FactionBlock pojo_factionBlock = new POJO_FactionBlock();
+        pojo_factionBlock.locationVector = new POJO_Vector(faction.factionBlock.blockLocation.toVector());
+        pojo_factionBlock.factionName = faction.factionName;
+
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
         pojo_faction.occupiedChunks = faction.occupiedChunks;
         pojo_faction.players = pojo_players;
         pojo_faction.joinStatus = faction.joinStatus;
         pojo_faction.playerJoinRequests = faction.playerJoinRequests;
-        pojo_faction.fBlockLocation = new POJO_Vector(faction.fBlockLocation.toVector());
+        pojo_faction.factionBlock = pojo_factionBlock;
 
         return pojo_faction;
     }

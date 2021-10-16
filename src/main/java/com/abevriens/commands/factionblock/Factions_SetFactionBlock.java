@@ -41,13 +41,13 @@ public class Factions_SetFactionBlock {
                     commandContext.cc_player.faction.factionOwner.displayName + " vragen of ze jou owner geven.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
             return;
-        } else if(Objects.equals(commandContext.cc_player.faction.fBlockLocation,
+        } else if(Objects.equals(commandContext.cc_player.faction.factionBlock.blockLocation,
                 new Location(Bukkit.getWorld("world"), 0, 0, 0))) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction heeft nog geen faction blok" +
                     "geplaatst, plaats je faction /factions factionblock create.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
             return;
-        } else if(!commandContext.cc_player.faction.lastfBlockChange.isBefore(Instant.now().minusSeconds(10))) {
+        } else if(!commandContext.cc_player.faction.factionBlock.lastChange.isBefore(Instant.now().minusSeconds(10))) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je verplaatst je faction blok te snel, wacht 10 " +
                     "seconden en probeer het dan opnieuw.");
             commandContext.player.spigot().sendMessage(errorMessage.create());

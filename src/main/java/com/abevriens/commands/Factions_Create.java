@@ -45,7 +45,7 @@ public class Factions_Create {
                     new ArrayList<>(),
                     JoinStatus.REQUEST,
                     new ArrayList<>(),
-                    new Location(Bukkit.getWorld("world"), 0, 0, 0));
+                    new FactionBlock(new Location(Bukkit.getWorld("world"), 0, 0, 0), name));
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             commandContext.pojo_player.factionName = faction.factionName;

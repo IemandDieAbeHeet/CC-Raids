@@ -36,7 +36,7 @@ public class FactionBlockUtil {
 
         Location check = facingBlocks.get(1).getLocation().add(face.getDirection());
 
-        Block oldBlock = commandContext.cc_player.faction.fBlockLocation.getBlock();
+        Block oldBlock = commandContext.cc_player.faction.factionBlock.blockLocation.getBlock();
 
         if(!check.getBlock().isEmpty()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Het blok waar je de factions block probeert te " +
@@ -47,12 +47,12 @@ public class FactionBlockUtil {
             Material structureMat = Material.STRUCTURE_BLOCK;
             block.setType(structureMat);
             oldBlock.setType(Material.AIR);
-            commandContext.cc_player.faction.fBlockLocation = block.getLocation();
+            commandContext.cc_player.faction.factionBlock.blockLocation = block.getLocation();
             CrackCityRaids.instance.dbHandler.updateFaction(
                     FactionManager.FactionToPOJO(commandContext.cc_player.faction));
             BlockData data = block.getBlockData();
             commandContext.player.sendBlockChange(block.getLocation(), data);
-            commandContext.cc_player.faction.lastfBlockChange = Instant.now();
+            commandContext.cc_player.faction.factionBlock.lastChange = Instant.now();
         }
     }
 }

@@ -36,7 +36,7 @@ public class Factions_CreateFactionBlock {
                     commandContext.cc_player.faction.factionOwner.displayName + " vragen of ze jou owner geven.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
             return;
-        } else if(!Objects.equals(commandContext.cc_player.faction.fBlockLocation,
+        } else if(!Objects.equals(commandContext.cc_player.faction.factionBlock.blockLocation,
                 new Location(Bukkit.getWorld("world"), 0, 0, 0))) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction heeft al een faction blok" +
                     "geplaatst, verplaats je faction blok dan met /factions factionblock set.");

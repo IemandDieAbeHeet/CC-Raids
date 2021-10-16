@@ -19,7 +19,7 @@ public class POJO_Faction {
 
     public JoinStatus joinStatus;
 
-    public POJO_Vector fBlockLocation;
+    public POJO_FactionBlock factionBlock;
 
     public POJO_Faction() {
     }
