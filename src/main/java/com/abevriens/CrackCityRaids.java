@@ -6,10 +6,9 @@ public class CrackCityRaids extends JavaPlugin {
     public static CrackCityRaids instance;
 
     public MongoDBHandler dbHandler;
-
     public PlayerManager playerManager;
-
     public FactionManager factionManager;
+    public FactionBlockManager factionBlockManager;
 
     @Override
     public void onEnable() {
@@ -17,9 +16,11 @@ public class CrackCityRaids extends JavaPlugin {
         dbHandler = new MongoDBHandler();
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
+        factionBlockManager = new FactionBlockManager();
 
         this.getCommand("factions").setExecutor(new FactionCommandHandler());
         this.getCommand("factions").setTabCompleter(new FactionCommandTabCompleter());
+        getServer().getPluginManager().registerEvents(new BlockClickEventListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
         dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
@@ -28,6 +29,7 @@ public class CrackCityRaids extends JavaPlugin {
         //to CC_Players which requires factions to be loaded
         factionManager.LoadFactions();
         playerManager.LoadPlayers();
+        factionBlockManager.LoadFactionBlocks();
     }
 
     @Override

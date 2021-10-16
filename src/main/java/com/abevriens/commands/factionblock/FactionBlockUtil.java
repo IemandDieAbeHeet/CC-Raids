@@ -39,7 +39,7 @@ public class FactionBlockUtil {
         Block oldBlock = commandContext.cc_player.faction.factionBlock.blockLocation.getBlock();
 
         if(!check.getBlock().isEmpty()) {
-            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Het blok waar je de factions block probeert te " +
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Het blok waar je het factions blok probeert te " +
                     "plaatsen is niet leeg!");
             commandContext.player.spigot().sendMessage(errorMsg.create());
         } else {
@@ -48,6 +48,7 @@ public class FactionBlockUtil {
             block.setType(structureMat);
             oldBlock.setType(Material.AIR);
             commandContext.cc_player.faction.factionBlock.blockLocation = block.getLocation();
+            CrackCityRaids.instance.factionBlockManager.updateFactionBlockLocation(commandContext.cc_player.faction.factionBlock);
             CrackCityRaids.instance.dbHandler.updateFaction(
                     FactionManager.FactionToPOJO(commandContext.cc_player.faction));
             BlockData data = block.getBlockData();
