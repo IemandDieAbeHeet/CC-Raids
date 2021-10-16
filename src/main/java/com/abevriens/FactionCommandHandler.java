@@ -2,6 +2,7 @@ package com.abevriens;
 
 import com.abevriens.commands.*;
 import com.abevriens.commands.factionblock.Factions_CreateFactionBlock;
+import com.abevriens.commands.factionblock.Factions_SetFactionBlock;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
@@ -178,7 +179,17 @@ public class FactionCommandHandler implements CommandExecutor {
 
                         switch(args[1].toLowerCase()) {
                             case "create":
-                             new Factions_CreateFactionBlock(commandContext);
+                                new Factions_CreateFactionBlock(commandContext);
+                                break;
+                            case "set":
+                                new Factions_SetFactionBlock(commandContext);
+                                break;
+                            default:
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                        "Incorrect subcommando opgegeven, bekijk alle subcommando's met /factions help");
+
+                                player.spigot().sendMessage(errorMsg.create());
+                                break;
                         }
                         break;
                     default:

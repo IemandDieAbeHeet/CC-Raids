@@ -6,6 +6,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +26,8 @@ public class Faction {
 
     public Location fBlockLocation;
 
+    public Instant lastfBlockChange;
+
     public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
                    List<Chunk> _occupiedChunks, JoinStatus _joinStatus, List<String> _playerJoinRequests,
                     Location _fBlockLocation) {
@@ -34,6 +38,7 @@ public class Faction {
         joinStatus = _joinStatus;
         playerJoinRequests = _playerJoinRequests;
         fBlockLocation = _fBlockLocation;
+        lastfBlockChange = Instant.now().minusSeconds(10);
     }
 
     public boolean isFull() {
