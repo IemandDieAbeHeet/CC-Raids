@@ -1,7 +1,6 @@
 package com.abevriens;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class POJO_Faction {
 
     public JoinStatus joinStatus;
 
-    public POJO_FactionBlock factionBlock;
+    public POJO_FactionCore factionCore;
 
     public POJO_Faction() {
     }

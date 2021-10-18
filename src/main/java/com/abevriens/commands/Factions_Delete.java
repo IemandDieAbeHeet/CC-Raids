@@ -1,9 +1,6 @@
 package com.abevriens.commands;
 
-import com.abevriens.CC_Player;
-import com.abevriens.CrackCityRaids;
-import com.abevriens.FactionManager;
-import com.abevriens.TextUtil;
+import com.abevriens.*;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 
@@ -36,6 +33,8 @@ public class Factions_Delete {
             commandContext.factionManager.factionNameList.remove(factionName);
 
             ArrayList<CC_Player> factionMembers = new ArrayList<>(commandContext.cc_player.faction.players);
+
+            FactionCoreUtil.RemoveCore(commandContext);
 
             for(CC_Player factionMember : factionMembers) {
                 CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),

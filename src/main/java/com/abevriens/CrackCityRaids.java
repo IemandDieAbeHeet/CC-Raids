@@ -8,7 +8,7 @@ public class CrackCityRaids extends JavaPlugin {
     public MongoDBHandler dbHandler;
     public PlayerManager playerManager;
     public FactionManager factionManager;
-    public FactionBlockManager factionBlockManager;
+    public FactionCoreManager factionCoreManager;
 
     @Override
     public void onEnable() {
@@ -16,7 +16,7 @@ public class CrackCityRaids extends JavaPlugin {
         dbHandler = new MongoDBHandler();
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
-        factionBlockManager = new FactionBlockManager();
+        factionCoreManager = new FactionCoreManager();
 
         this.getCommand("factions").setExecutor(new FactionCommandHandler());
         this.getCommand("factions").setTabCompleter(new FactionCommandTabCompleter());
@@ -29,7 +29,7 @@ public class CrackCityRaids extends JavaPlugin {
         //to CC_Players which requires factions to be loaded
         factionManager.LoadFactions();
         playerManager.LoadPlayers();
-        factionBlockManager.LoadFactionBlocks();
+        factionCoreManager.LoadFactionCores();
     }
 
     @Override

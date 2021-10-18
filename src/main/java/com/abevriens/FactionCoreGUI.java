@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,17 +17,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FactionBlockGUI implements Listener {
+public class FactionCoreGUI implements Listener {
     private final Inventory inventory;
-    private Map<ItemStack, FactionBlockGUINavigation> navigationItemMap = new HashMap<>();
+    private Map<ItemStack, FactionCoreGUINavigation> navigationItemMap = new HashMap<>();
 
-    public FactionBlockGUI(FactionBlock factionBlock) {
-        inventory = Bukkit.createInventory(null, 9, ("Faction: " + factionBlock.factionName));
+    public FactionCoreGUI(FactionCore factionCore) {
+        inventory = Bukkit.createInventory(null, 9, ("Faction: " + factionCore.factionName));
 
-        initializeItems(factionBlock);
+        initializeItems(factionCore);
     }
 
-    public void initializeItems(FactionBlock factionBlock) {
+    public void initializeItems(FactionCore factionCore) {
         ItemStack decreaseX = createGUIItem(Material.RED_CONCRETE, "Verklein X as",
                 "Verklein de zone van je base in de X as");
         ItemStack increaseX = createGUIItem(Material.GREEN_CONCRETE, "Vergroot X as",
@@ -41,10 +40,10 @@ public class FactionBlockGUI implements Listener {
         inventory.addItem(increaseX);
         inventory.addItem(decreaseY);
         inventory.addItem(increaseY);
-        navigationItemMap.put(decreaseX, FactionBlockGUINavigation.DECREASE_SIZE_X);
-        navigationItemMap.put(increaseX, FactionBlockGUINavigation.INCREASE_SIZE_X);
-        navigationItemMap.put(decreaseY, FactionBlockGUINavigation.DECREASE_SIZE_Y);
-        navigationItemMap.put(increaseY, FactionBlockGUINavigation.INCREASE_SIZE_Y);
+        navigationItemMap.put(decreaseX, FactionCoreGUINavigation.DECREASE_SIZE_X);
+        navigationItemMap.put(increaseX, FactionCoreGUINavigation.INCREASE_SIZE_X);
+        navigationItemMap.put(decreaseY, FactionCoreGUINavigation.DECREASE_SIZE_Y);
+        navigationItemMap.put(increaseY, FactionCoreGUINavigation.INCREASE_SIZE_Y);
     }
 
     protected ItemStack createGUIItem(final Material material, final String name, final String... lore) {
@@ -76,7 +75,7 @@ public class FactionBlockGUI implements Listener {
 
         final Player player = (Player) e.getWhoClicked();
 
-        FactionBlockGUINavigation navigation = navigationItemMap.get(clickedItem);
+        FactionCoreGUINavigation navigation = navigationItemMap.get(clickedItem);
         if(navigation != null) {
             switch (navigation) {
                 case DECREASE_SIZE_X:

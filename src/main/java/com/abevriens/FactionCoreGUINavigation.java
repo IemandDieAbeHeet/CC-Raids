@@ -1,6 +1,6 @@
 package com.abevriens;
 
-public enum FactionBlockGUINavigation {
+public enum FactionCoreGUINavigation {
     DECREASE_SIZE_X,
     INCREASE_SIZE_X,
     DECREASE_SIZE_Y,

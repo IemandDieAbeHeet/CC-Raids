@@ -26,8 +26,8 @@ public class Factions_Info
 
         if(name.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
-                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen of /factions create om een" +
-                            "faction aan te maken.");
+                    "Je zit nog niet in een faction, gebruik /factions join om er een te joinen " +
+                            "of /factions create om een faction aan te maken.");
             commandContext.player.spigot().sendMessage(errorMsg.create());
         } else if(!CrackCityRaids.instance.factionManager.factionNameList.contains(name)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(

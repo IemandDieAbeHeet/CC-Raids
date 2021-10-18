@@ -1,30 +1,26 @@
-package com.abevriens.commands.factionblock;
+package com.abevriens.commands.factioncore;
 
-import com.abevriens.CrackCityRaids;
+import com.abevriens.FactionCoreUtil;
 import com.abevriens.FactionManager;
 import com.abevriens.TextUtil;
 import com.abevriens.commands.CommandContext;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Objects;
 
-public class Factions_CreateFactionBlock {
+public class Factions_SetFactionCore {
     public CommandContext commandContext;
 
-    public Factions_CreateFactionBlock(CommandContext _commandContext) {
+    public Factions_SetFactionCore(CommandContext _commandContext) {
         commandContext = _commandContext;
 
-        command_CreateFBlock();
+        command_CreateFCore();
     }
 
-    private void command_CreateFBlock() {
+    private void command_CreateFCore() {
         if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
@@ -36,14 +32,19 @@ public class Factions_CreateFactionBlock {
                     commandContext.cc_player.faction.factionOwner.displayName + " vragen of ze jou owner geven.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
             return;
-        } else if(!Objects.equals(commandContext.cc_player.faction.factionBlock.blockLocation,
+        } else if(Objects.equals(commandContext.cc_player.faction.factionCore.blockLocation,
                 new Location(Bukkit.getWorld("world"), 0, 0, 0))) {
-            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction heeft al een faction blok" +
-                    "geplaatst, verplaats je faction blok dan met /factions factionblock set.");
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je faction heeft nog geen faction core " +
+                    "geplaatst, plaats deze met /factions core create.");
+            commandContext.player.spigot().sendMessage(errorMessage.create());
+            return;
+        } else if(!commandContext.cc_player.faction.factionCore.lastChange.isBefore(Instant.now().minusSeconds(10))) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je verplaatst je faction core te snel, wacht 10 " +
+                    "seconden en probeer het dan opnieuw.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
             return;
         }
 
-        FactionBlockUtil.PlaceBlock(commandContext);
+        FactionCoreUtil.PlaceCore(commandContext);
     }
 }

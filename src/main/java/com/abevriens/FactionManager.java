@@ -2,7 +2,6 @@ package com.abevriens;
 
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.*;
-import org.bukkit.generator.WorldInfo;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,11 +48,11 @@ public class FactionManager {
             cc_players.add(PlayerManager.POJOToCC(pojo_player));
         }
 
-        Location locationFromPojo = new Vector(pojo_faction.factionBlock.locationVector.x,
-                pojo_faction.factionBlock.locationVector.y,
-                pojo_faction.factionBlock.locationVector.z).toLocation(Objects.requireNonNull(Bukkit.getWorld("world")));
+        Location locationFromPojo = new Vector(pojo_faction.factionCore.locationVector.x,
+                pojo_faction.factionCore.locationVector.y,
+                pojo_faction.factionCore.locationVector.z).toLocation(Objects.requireNonNull(Bukkit.getWorld("world")));
 
-        FactionBlock fBlockFromPOJO = new FactionBlock(locationFromPojo, pojo_faction.factionName);
+        FactionCore fCoreFromPOJO = new FactionCore(locationFromPojo, pojo_faction.factionName);
 
         faction = new Faction(
                 pojo_faction.factionOwner,
@@ -62,7 +61,7 @@ public class FactionManager {
                 pojo_faction.occupiedChunks,
                 pojo_faction.joinStatus,
                 pojo_faction.playerJoinRequests,
-                fBlockFromPOJO
+                fCoreFromPOJO
         );
 
         return faction;
@@ -77,9 +76,9 @@ public class FactionManager {
             pojo_players.add(PlayerManager.CCToPOJO(cc_player));
         }
 
-        POJO_FactionBlock pojo_factionBlock = new POJO_FactionBlock();
-        pojo_factionBlock.locationVector = new POJO_Vector(faction.factionBlock.blockLocation.toVector());
-        pojo_factionBlock.factionName = faction.factionName;
+        POJO_FactionCore pojo_factionCore = new POJO_FactionCore();
+        pojo_factionCore.locationVector = new POJO_Vector(faction.factionCore.blockLocation.toVector());
+        pojo_factionCore.factionName = faction.factionName;
 
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
@@ -87,7 +86,7 @@ public class FactionManager {
         pojo_faction.players = pojo_players;
         pojo_faction.joinStatus = faction.joinStatus;
         pojo_faction.playerJoinRequests = faction.playerJoinRequests;
-        pojo_faction.factionBlock = pojo_factionBlock;
+        pojo_faction.factionCore = pojo_factionCore;
 
         return pojo_faction;
     }

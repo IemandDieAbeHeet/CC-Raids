@@ -1,8 +1,9 @@
 package com.abevriens;
 
 import com.abevriens.commands.*;
-import com.abevriens.commands.factionblock.Factions_CreateFactionBlock;
-import com.abevriens.commands.factionblock.Factions_SetFactionBlock;
+import com.abevriens.commands.factioncore.Factions_CreateFactionCore;
+import com.abevriens.commands.factioncore.Factions_DeleteFactionCore;
+import com.abevriens.commands.factioncore.Factions_SetFactionCore;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
@@ -166,12 +167,12 @@ public class FactionCommandHandler implements CommandExecutor {
                             player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
-                    case "fblock":
-                    case "factionblock":
+                    case "core":
+                    case "factioncore":
                         if(args.length < 2) {
                             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                                     "Geen subcommando opgegeven, gebruik het commando als volgt:",
-                                    "/factions factionblock [commando]");
+                                    "/factions core [commando]");
 
                             player.spigot().sendMessage(errorMsg.create());
                             break;
@@ -179,10 +180,13 @@ public class FactionCommandHandler implements CommandExecutor {
 
                         switch(args[1].toLowerCase()) {
                             case "create":
-                                new Factions_CreateFactionBlock(commandContext);
+                                new Factions_CreateFactionCore(commandContext);
                                 break;
                             case "set":
-                                new Factions_SetFactionBlock(commandContext);
+                                new Factions_SetFactionCore(commandContext);
+                                break;
+                            case "delete":
+                                new Factions_DeleteFactionCore(commandContext);
                                 break;
                             default:
                                 ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
