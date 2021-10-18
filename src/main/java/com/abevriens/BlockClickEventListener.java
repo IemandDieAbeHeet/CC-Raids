@@ -5,10 +5,13 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 
 public class BlockClickEventListener implements Listener {
     @EventHandler
@@ -24,17 +27,27 @@ public class BlockClickEventListener implements Listener {
                             "waarschijnlijk is dit blok niet door een faction geplaatst");
 
                     player.spigot().sendMessage(errorMsg.create());
+                    event.setCancelled(true);
+                    return;
                 } else if(!player.getGameMode().equals(GameMode.SURVIVAL)) {
                     ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je moet in survival zitten als je het " +
                             "faction blok wil gebruiken!");
 
                     player.spigot().sendMessage(errorMsg.create());
+                    event.setCancelled(true);
+                    return;
                 } else if(!cc_player.faction.factionName.equals(factionBlock.factionName)) {
                     ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit niet in de faction waar dit faction " +
                             "blok van is!");
 
                     player.spigot().sendMessage(errorMsg.create());
+                    event.setCancelled(true);
+                    return;
                 }
+
+                FactionBlockGUI gui = new FactionBlockGUI(factionBlock);
+                gui.openInventory(player);
+                CrackCityRaids.instance.getServer().getPluginManager().registerEvents(gui, CrackCityRaids.instance);
             }
         }
     }
