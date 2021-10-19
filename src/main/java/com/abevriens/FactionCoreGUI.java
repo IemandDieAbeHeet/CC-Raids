@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,7 +23,7 @@ public class FactionCoreGUI implements Listener {
     private Map<ItemStack, FactionCoreGUINavigation> navigationItemMap = new HashMap<>();
 
     public FactionCoreGUI(FactionCore factionCore) {
-        inventory = Bukkit.createInventory(null, 9, ("Faction: " + factionCore.factionName));
+        inventory = Bukkit.createInventory(null, 45, ("Faction: " + factionCore.factionName));
 
         initializeItems(factionCore);
     }
