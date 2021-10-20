@@ -9,18 +9,32 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FactionCoreGUI implements Listener {
     private final Inventory inventory;
-    private Map<ItemStack, FactionCoreGUINavigation> navigationItemMap = new HashMap<>();
+    private final Map<ItemStack, FactionCoreGUINavigation> navigationItemMap = new HashMap<>();
+    private final List<Material> incrementMaterials = new ArrayList<Material>() {{
+        add(Material.COAL);
+        add(Material.IRON_INGOT);
+        add(Material.GOLD_INGOT);
+        add(Material.DIAMOND);
+    }};
+
+    private final List<Integer> increments = new ArrayList<Integer>() {{
+        add(1);
+        add(5);
+        add(10);
+        add(20);
+    }};
+
+    private int currentIncrement = 0;
+
+    private ItemStack changeIncrementItem;
 
     public FactionCoreGUI(FactionCore factionCore) {
         inventory = Bukkit.createInventory(null, 45, ("Faction: " + factionCore.factionName));
@@ -37,14 +51,23 @@ public class FactionCoreGUI implements Listener {
                 "Verklein de zone van je base in de Y as");
         ItemStack increaseY = createGUIItem(Material.GREEN_CONCRETE, "Vergroot Y as",
                 "Vergroot de zone van je base in de Y as");
-        inventory.addItem(decreaseX);
-        inventory.addItem(increaseX);
-        inventory.addItem(decreaseY);
-        inventory.addItem(increaseY);
+        changeIncrementItem = generateIncrementItem();
+        inventory.setItem(21, decreaseX);
+        inventory.setItem(23, increaseX);
+        inventory.setItem(31, decreaseY);
+        inventory.setItem(13, increaseY);
+        inventory.setItem(22, changeIncrementItem);
         navigationItemMap.put(decreaseX, FactionCoreGUINavigation.DECREASE_SIZE_X);
         navigationItemMap.put(increaseX, FactionCoreGUINavigation.INCREASE_SIZE_X);
         navigationItemMap.put(decreaseY, FactionCoreGUINavigation.DECREASE_SIZE_Y);
         navigationItemMap.put(increaseY, FactionCoreGUINavigation.INCREASE_SIZE_Y);
+        navigationItemMap.put(changeIncrementItem, FactionCoreGUINavigation.CHANGE_INCREMENT);
+    }
+
+    protected ItemStack generateIncrementItem() {
+        return createGUIItem(incrementMaterials.get(currentIncrement),
+                ("Toename/afname: " + increments.get(currentIncrement)),
+                "Verander de toename/afname van de grootte per klik.");
     }
 
     protected ItemStack createGUIItem(final Material material, final String name, final String... lore) {
@@ -78,28 +101,47 @@ public class FactionCoreGUI implements Listener {
         CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
 
         FactionCoreGUINavigation navigation = navigationItemMap.get(clickedItem);
-        if(navigation != null) {
+        if (navigation != null) {
             switch (navigation) {
                 case DECREASE_SIZE_X:
-                    cc_player.faction.xSize--;
+                    cc_player.faction.xSize -= increments.get(currentIncrement);
                     ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte verkleind");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case DECREASE_SIZE_Y:
-                    cc_player.faction.ySize--;
+                    cc_player.faction.ySize -= increments.get(currentIncrement);
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte verkleind");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case INCREASE_SIZE_X:
-                    cc_player.faction.xSize++;
+                    cc_player.faction.xSize += increments.get(currentIncrement);
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte vergroot");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case INCREASE_SIZE_Y:
-                    cc_player.faction.ySize++;
+                    cc_player.faction.ySize += increments.get(currentIncrement);
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte vergroot");
                     player.spigot().sendMessage(successMsg.create());
                     break;
+                case CHANGE_INCREMENT:
+                    if (e.isLeftClick()) {
+                        if (currentIncrement < increments.size() - 1) {
+                            currentIncrement++;
+                        } else {
+                            currentIncrement = 0;
+                        }
+                    } else {
+                        if (currentIncrement - 1 >= 0) {
+                            currentIncrement--;
+                        } else {
+                            currentIncrement = increments.size() - 1;
+                        }
+                    }
+                    ItemStack newIncrementItem = generateIncrementItem();
+                    inventory.setItem(22, newIncrementItem);
+                    navigationItemMap.remove(changeIncrementItem);
+                    navigationItemMap.put(newIncrementItem, FactionCoreGUINavigation.CHANGE_INCREMENT);
+                    changeIncrementItem = newIncrementItem;
             }
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(cc_player.faction);
