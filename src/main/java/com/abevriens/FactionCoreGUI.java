@@ -75,27 +75,35 @@ public class FactionCoreGUI implements Listener {
         if (clickedItem == null || clickedItem.getType().isAir()) return;
 
         final Player player = (Player) e.getWhoClicked();
+        CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
 
         FactionCoreGUINavigation navigation = navigationItemMap.get(clickedItem);
         if(navigation != null) {
             switch (navigation) {
                 case DECREASE_SIZE_X:
+                    cc_player.faction.xSize--;
                     ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte verkleind");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case DECREASE_SIZE_Y:
+                    cc_player.faction.ySize--;
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte verkleind");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case INCREASE_SIZE_X:
+                    cc_player.faction.xSize++;
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte vergroot");
                     player.spigot().sendMessage(successMsg.create());
                     break;
                 case INCREASE_SIZE_Y:
+                    cc_player.faction.ySize++;
                     successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte vergroot");
                     player.spigot().sendMessage(successMsg.create());
                     break;
             }
+
+            POJO_Faction pojo_faction = FactionManager.FactionToPOJO(cc_player.faction);
+            CrackCityRaids.instance.dbHandler.updateFaction(pojo_faction);
         }
     }
 
