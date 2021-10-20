@@ -36,10 +36,11 @@ public class Factions_Create {
                             add(commandContext.cc_player);
                         }
                     },
-                    new ArrayList<>(),
                     JoinStatus.REQUEST,
                     new ArrayList<>(),
-                    FactionCoreUtil.GenerateEmptyFactionCore(name));
+                    FactionCoreUtil.GenerateEmptyFactionCore(name),
+                    10, 10,
+                    new ArrayList<>());
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             commandContext.pojo_player.factionName = faction.factionName;

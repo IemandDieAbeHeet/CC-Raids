@@ -37,7 +37,7 @@ public class FactionManager {
     }
 
     public static Faction emptyFaction = new Faction(null, "None", null,
-            null, JoinStatus.OPEN, null, null);
+                JoinStatus.OPEN, null, null, 0, 0, null);
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -54,14 +54,22 @@ public class FactionManager {
 
         FactionCore fCoreFromPOJO = new FactionCore(locationFromPojo, pojo_faction.factionName);
 
+        List<Location> occupiedLocationsFromPojo = new ArrayList<>();
+
+        for(POJO_Vector pojo_vector : pojo_faction.occupiedLocations) {
+            occupiedLocationsFromPojo.add(pojo_vector.pojoVectorToLocation());
+        }
+
         faction = new Faction(
                 pojo_faction.factionOwner,
                 pojo_faction.factionName,
                 cc_players,
-                pojo_faction.occupiedChunks,
                 pojo_faction.joinStatus,
                 pojo_faction.playerJoinRequests,
-                fCoreFromPOJO
+                fCoreFromPOJO,
+                pojo_faction.xSize,
+                pojo_faction.ySize,
+                occupiedLocationsFromPojo
         );
 
         return faction;
@@ -80,13 +88,20 @@ public class FactionManager {
         pojo_factionCore.locationVector = new POJO_Vector(faction.factionCore.blockLocation.toVector());
         pojo_factionCore.factionName = faction.factionName;
 
+        List<POJO_Vector> pojo_locations = new ArrayList<>();
+        for(Location location : faction.occupiedBlocks) {
+            pojo_locations.add(new POJO_Vector(location.toVector()));
+        }
+
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
-        pojo_faction.occupiedChunks = faction.occupiedChunks;
         pojo_faction.players = pojo_players;
         pojo_faction.joinStatus = faction.joinStatus;
         pojo_faction.playerJoinRequests = faction.playerJoinRequests;
         pojo_faction.factionCore = pojo_factionCore;
+        pojo_faction.xSize = faction.xSize;
+        pojo_faction.ySize = faction.ySize;
+        pojo_faction.occupiedLocations = pojo_locations;
 
         return pojo_faction;
     }
