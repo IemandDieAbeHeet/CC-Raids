@@ -32,6 +32,14 @@ public class FactionCoreGUI implements Listener {
         add(20);
     }};
 
+    private final Map<FactionCoreGUINavigation, Integer> navigationInventoryPositionMap =
+    new HashMap<FactionCoreGUINavigation, Integer>() {{
+       put(FactionCoreGUINavigation.DECREASE_SIZE_X, 21);
+       put(FactionCoreGUINavigation.INCREASE_SIZE_X, 23);
+       put(FactionCoreGUINavigation.DECREASE_SIZE_Y, 31);
+       put(FactionCoreGUINavigation.INCREASE_SIZE_Y, 13);
+    }};
+
     private int currentIncrement = 0;
 
     private ItemStack changeIncrementItem;
@@ -39,10 +47,10 @@ public class FactionCoreGUI implements Listener {
     public FactionCoreGUI(FactionCore factionCore) {
         inventory = Bukkit.createInventory(null, 45, ("Faction: " + factionCore.factionName));
 
-        initializeItems(factionCore);
+        initializeItems();
     }
 
-    public void initializeItems(FactionCore factionCore) {
+    public void initializeItems() {
         ItemStack decreaseX = createGUIItem(Material.RED_CONCRETE, "Verklein X as",
                 "Verklein de zone van je base in de X as");
         ItemStack increaseX = createGUIItem(Material.GREEN_CONCRETE, "Vergroot X as",
@@ -68,6 +76,45 @@ public class FactionCoreGUI implements Listener {
         return createGUIItem(incrementMaterials.get(currentIncrement),
                 ("Toename/afname: " + increments.get(currentIncrement)),
                 "Verander de toename/afname van de grootte per klik.");
+    }
+
+    protected ItemStack generateNavigationItem(FactionCoreGUINavigation navigation, int size) {
+        switch (navigation) {
+            case DECREASE_SIZE_X:
+                return createGUIItem(Material.RED_CONCRETE, "Verklein X as (" + size + ")",
+                        "Verklein de zone van je base in de X as");
+            case INCREASE_SIZE_X:
+                return createGUIItem(Material.GREEN_CONCRETE, "Vergroot X as (" + size + ")",
+                        "Vergroot de zone van je base in de X as");
+            case DECREASE_SIZE_Y:
+                return createGUIItem(Material.RED_CONCRETE, "Verklein Y as (" + size + ")",
+                        "Verklein de zone van je base in de Y as");
+            case INCREASE_SIZE_Y:
+                return  createGUIItem(Material.GREEN_CONCRETE, "Vergroot Y as (" + size + ")",
+                        "Vergroot de zone van je base in de Y as");
+        }
+        return null;
+    }
+
+    protected void updateNavigationItems(CC_Player cc_player) {
+        for(FactionCoreGUINavigation navigation : FactionCoreGUINavigation.values()) {
+            ItemStack item;
+            switch (navigation) {
+                case DECREASE_SIZE_X:
+                    item = createGUIItem(Material.RED_CONCRETE, "Verklein X as (" + cc_player.faction.xSize + ")",
+                            "Verklein de zone van je base in de X as");
+                case INCREASE_SIZE_X:
+                    item = createGUIItem(Material.GREEN_CONCRETE, "Vergroot X as (" + cc_player.faction.xSize + ")",
+                            "Vergroot de zone van je base in de X as");
+                    inventory.setItem(navigationInventoryPositionMap.get(navigation), item);
+                case DECREASE_SIZE_Y:
+                    item = createGUIItem(Material.RED_CONCRETE, "Verklein Y as (" + cc_player.faction.ySize + ")",
+                            "Verklein de zone van je base in de Y as");
+                case INCREASE_SIZE_Y:
+                    item = createGUIItem(Material.GREEN_CONCRETE, "Vergroot Y as (" + cc_player.faction.ySize + ")",
+                            "Vergroot de zone van je base in de Y as");
+            }
+        }
     }
 
     protected ItemStack createGUIItem(final Material material, final String name, final String... lore) {
@@ -102,26 +149,64 @@ public class FactionCoreGUI implements Listener {
 
         FactionCoreGUINavigation navigation = navigationItemMap.get(clickedItem);
         if (navigation != null) {
+            ComponentBuilder errorMsg;
+            ComponentBuilder successMsg;
             switch (navigation) {
                 case DECREASE_SIZE_X:
-                    cc_player.faction.xSize -= increments.get(currentIncrement);
-                    ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte verkleind");
-                    player.spigot().sendMessage(successMsg.create());
+                    if(cc_player.faction.xSize - increments.get(currentIncrement) < 10) {
+                        errorMsg = TextUtil.GenerateErrorMsg("Je kunt de X grootte niet kleiner maken dan 10");
+                        player.spigot().sendMessage(errorMsg.create());
+                    } else {
+                        cc_player.faction.xSize -= increments.get(currentIncrement);
+                        ItemStack newItem = generateNavigationItem(navigation, cc_player.faction.xSize);
+                        navigationItemMap.remove(inventory.getItem(21));
+                        navigationItemMap.put(newItem, navigation);
+                        inventory.setItem(21, newItem);
+                        successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte verkleind");
+                        player.spigot().sendMessage(successMsg.create());
+                    }
                     break;
                 case DECREASE_SIZE_Y:
-                    cc_player.faction.ySize -= increments.get(currentIncrement);
-                    successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte verkleind");
-                    player.spigot().sendMessage(successMsg.create());
+                    if(cc_player.faction.ySize - increments.get(currentIncrement) < 5) {
+                        errorMsg = TextUtil.GenerateErrorMsg("Je kunt de Y grootte niet kleiner maken dan 5");
+                        player.spigot().sendMessage(errorMsg.create());
+                    } else {
+                        cc_player.faction.ySize -= increments.get(currentIncrement);
+                        ItemStack newItem = generateNavigationItem(navigation, cc_player.faction.ySize);
+                        navigationItemMap.remove(inventory.getItem(31));
+                        navigationItemMap.put(newItem, navigation);
+                        inventory.setItem(31, newItem);
+                        successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte verkleind");
+                        player.spigot().sendMessage(successMsg.create());
+                    }
                     break;
                 case INCREASE_SIZE_X:
-                    cc_player.faction.xSize += increments.get(currentIncrement);
-                    successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte vergroot");
-                    player.spigot().sendMessage(successMsg.create());
+                    if(cc_player.faction.xSize + increments.get(currentIncrement) > 300) {
+                        errorMsg = TextUtil.GenerateErrorMsg("Je kunt de X grootte niet groter maken dan 300");
+                        player.spigot().sendMessage(errorMsg.create());
+                    } else {
+                        cc_player.faction.xSize += increments.get(currentIncrement);
+                        ItemStack newItem = generateNavigationItem(navigation, cc_player.faction.xSize);
+                        navigationItemMap.remove(inventory.getItem(23));
+                        navigationItemMap.put(newItem, navigation);
+                        inventory.setItem(23, newItem);
+                        successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte vergroot");
+                        player.spigot().sendMessage(successMsg.create());
+                    }
                     break;
                 case INCREASE_SIZE_Y:
-                    cc_player.faction.ySize += increments.get(currentIncrement);
-                    successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte vergroot");
-                    player.spigot().sendMessage(successMsg.create());
+                    if(cc_player.faction.ySize + increments.get(currentIncrement) > 200) {
+                        errorMsg = TextUtil.GenerateErrorMsg("Je kunt de Y grootte niet kleiner maken dan 200");
+                        player.spigot().sendMessage(errorMsg.create());
+                    } else {
+                        cc_player.faction.ySize += increments.get(currentIncrement);
+                        ItemStack newItem = generateNavigationItem(navigation, cc_player.faction.ySize);
+                        navigationItemMap.remove(inventory.getItem(13));
+                        navigationItemMap.put(newItem, navigation);
+                        inventory.setItem(13, newItem);
+                        successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte vergroot");
+                        player.spigot().sendMessage(successMsg.create());
+                    }
                     break;
                 case CHANGE_INCREMENT:
                     if (e.isLeftClick()) {
