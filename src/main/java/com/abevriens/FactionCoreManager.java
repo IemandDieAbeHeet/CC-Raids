@@ -19,6 +19,20 @@ public class FactionCoreManager {
         }
     }
 
+    public FactionCore getClosestFactionCore(Location location) {
+        double prevDistance = 1000;
+        FactionCore closestCore = null;
+        for(Location coreLocation : vectorFactionCoreHashMap.keySet()) {
+            double distance = coreLocation.distance(location);
+            if(distance < prevDistance) {
+                prevDistance = distance;
+                closestCore = vectorFactionCoreHashMap.get(coreLocation);
+            }
+        }
+
+        return closestCore;
+    }
+
     public FactionCore getFactionCore(Block block) {
         return vectorFactionCoreHashMap.get(block.getLocation());
     }

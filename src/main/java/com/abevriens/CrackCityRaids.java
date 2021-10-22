@@ -22,6 +22,7 @@ public class CrackCityRaids extends JavaPlugin {
         this.getCommand("factions").setTabCompleter(new FactionCommandTabCompleter());
         getServer().getPluginManager().registerEvents(new BlockClickEventListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
 
         dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
 

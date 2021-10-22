@@ -1,5 +1,9 @@
 package com.abevriens;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
+
 import java.util.List;
 
 public class CC_Player {
@@ -7,6 +11,7 @@ public class CC_Player {
     public String uuid;
     public Faction faction;
     public List<String> pendingRequests;
+    public Location previousLocation = new Vector(0, 0, 0).toLocation(Bukkit.getWorld("world"));
 
     public CC_Player(String _displayName, String _uuid, Faction _faction, List<String> _pendingRequests) {
         displayName = _displayName;
