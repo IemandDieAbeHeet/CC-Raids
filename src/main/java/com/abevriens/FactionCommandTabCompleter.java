@@ -63,6 +63,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
             add("help");
             add("delete");
             add("setowner");
+            add("core");
         }
     };
 
@@ -103,6 +104,10 @@ public class FactionCommandTabCompleter implements TabCompleter {
                         return CrackCityRaids.instance.factionManager.factionNameList;
                     case "accept":
                         return GetFactionJoinRequestNames(cc_player);
+                    case "core":
+                        if(!cc_player.faction.isEmptyFaction()) {
+                            return GetFactionCoreCommands(cc_player.faction);
+                        }
                     default:
                         return GetOnlinePlayerNames();
                 }
@@ -114,7 +119,18 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return GetOnlinePlayerNames();
     }
 
-    public List<String> GetFactionJoinRequestNames(CC_Player cc_player) {
+    private List<String> GetFactionCoreCommands(Faction faction) {
+        List<String> cmds = new ArrayList<>();
+        if(!faction.factionCore.equals(FactionCoreUtil.GenerateEmptyFactionCore(faction.factionName))) {
+            cmds.add("set");
+            cmds.add("delete");
+        } else {
+            cmds.add("create");
+        }
+        return cmds;
+    }
+
+    private List<String> GetFactionJoinRequestNames(CC_Player cc_player) {
         List<String> names = new ArrayList<>();
         if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             for(String request : cc_player.pendingRequests) {
@@ -124,7 +140,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return names;
     }
 
-    public List<String> GetFactionMemberNames(CC_Player cc_player) {
+    private List<String> GetFactionMemberNames(CC_Player cc_player) {
         List<String> names = new ArrayList<>();
         if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
             for(CC_Player cc_playermember : cc_player.faction.players) {
@@ -136,7 +152,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return names;
     }
 
-    public List<String> GetJoinableFactionNames() {
+    private List<String> GetJoinableFactionNames() {
         List <String> names = new ArrayList<>();
         for(Faction faction : CrackCityRaids.instance.factionManager.factionList) {
             if(faction.isJoinable()) {
@@ -146,7 +162,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return names;
     }
 
-    public List<String> GetPageStrings(int lastPage) {
+    private List<String> GetPageStrings(int lastPage) {
         List<String> pages = new ArrayList<>();
         for(int i = 2; i < lastPage; i++) {
             pages.add(Integer.toString(i));
@@ -155,7 +171,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return pages;
     }
 
-    public List<String> GetJoinStatusStrings() {
+    private List<String> GetJoinStatusStrings() {
         List<String> statuses = new ArrayList<>();
         for(JoinStatus joinStatus : JoinStatus.values()) {
             switch (joinStatus) {
@@ -170,7 +186,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return  statuses;
     }
 
-    public List<String> GetOnlinePlayerNames() {
+    private List<String> GetOnlinePlayerNames() {
         List<String> names = new ArrayList<>();
         for(Player player : Bukkit.getOnlinePlayers()) {
             names.add(player.getName());
@@ -178,7 +194,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         return names;
     }
 
-    public List<String> GetOfflinePlayerNames() {
+    private List<String> GetOfflinePlayerNames() {
         List<String> names = new ArrayList<>();
         for(OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             names.add(offlinePlayer.getName());
