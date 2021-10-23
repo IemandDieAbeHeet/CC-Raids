@@ -22,7 +22,7 @@ public class Factions_Accept {
         CC_Player cc_requestingplayer = null;
         OfflinePlayer offlinePlayer = null;
 
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMessage.create());

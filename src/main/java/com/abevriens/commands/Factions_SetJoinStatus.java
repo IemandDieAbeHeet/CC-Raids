@@ -18,7 +18,7 @@ public class Factions_SetJoinStatus {
     }
 
     private void command_SetJoinStatus() {
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction, maak een nieuwe faction" +
                     "  met /factions create of join er een via /factions list");
             commandContext.player.spigot().sendMessage(errorMessage.create());

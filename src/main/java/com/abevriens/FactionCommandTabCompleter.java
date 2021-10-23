@@ -80,7 +80,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
 
             CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
             if (args.length == 1) {
-                if (cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+                if (cc_player.faction.isEmptyFaction()) {
                     return noFactionCommands;
                 } else if (cc_player.faction.factionOwner.uuid.equals(cc_player.uuid)) {
                     return ownerCommands;
@@ -132,7 +132,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
 
     private List<String> GetFactionJoinRequestNames(CC_Player cc_player) {
         List<String> names = new ArrayList<>();
-        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(!cc_player.faction.isEmptyFaction()) {
             for(String request : cc_player.pendingRequests) {
                 names.add(Bukkit.getOfflinePlayer(UUID.fromString(request)).getName());
             }
@@ -142,7 +142,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
 
     private List<String> GetFactionMemberNames(CC_Player cc_player) {
         List<String> names = new ArrayList<>();
-        if(!cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(!cc_player.faction.isEmptyFaction()) {
             for(CC_Player cc_playermember : cc_player.faction.players) {
                 if(!cc_playermember.uuid.equals(cc_player.uuid)) {
                     names.add(cc_playermember.displayName);

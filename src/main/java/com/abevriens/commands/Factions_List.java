@@ -78,7 +78,7 @@ public class Factions_List {
             componentBuilder.append(factionNumber);
             componentBuilder.append(factionInfo);
 
-            if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName) && list.get(j).isJoinable()) {
+            if(commandContext.cc_player.faction.isEmptyFaction() && list.get(j).isJoinable()) {
                 componentBuilder.append(joinButton);
             }
 

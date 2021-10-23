@@ -21,7 +21,7 @@ public class Factions_DeleteFactionCore {
     }
 
     private void command_DeleteFCore() {
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMsg.create());

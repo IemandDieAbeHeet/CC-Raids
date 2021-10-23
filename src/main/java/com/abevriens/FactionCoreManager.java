@@ -21,7 +21,7 @@ public class FactionCoreManager {
 
     public FactionCore getClosestFactionCore(Location location) {
         double prevDistance = 1000;
-        FactionCore closestCore = null;
+        FactionCore closestCore = FactionCoreUtil.GenerateEmptyFactionCore("Empty");
         for(Location coreLocation : vectorFactionCoreHashMap.keySet()) {
             double distance = coreLocation.distance(location);
             if(distance < prevDistance) {

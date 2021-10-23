@@ -15,6 +15,9 @@ public class PlayerMoveListener implements Listener {
         CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
 
         FactionCore closestCore = CrackCityRaids.instance.factionCoreManager.getClosestFactionCore(event.getFrom());
+
+        if(closestCore == null) return;
+
         Faction closestFaction = CrackCityRaids.instance.factionManager.getFaction(closestCore.factionName);
 
         if(cc_player.faction == closestFaction) return;

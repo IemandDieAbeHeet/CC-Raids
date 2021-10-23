@@ -25,7 +25,7 @@ public class Factions_Join {
 
     private void command_Join() {
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(name);
-        if(!commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(!commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction, " +
                     "gebruik eerst /factions leave om je faction te verlaten.");
             commandContext.player.spigot().sendMessage(errorMsg.create());

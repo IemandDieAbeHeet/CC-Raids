@@ -29,7 +29,7 @@ public class Factions_Requests {
     private void command_Request() {
         List<String> list = commandContext.cc_player.faction.playerJoinRequests;
 
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
            commandContext.player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Je zit niet in een faction, als je join requests" +
                    " wil bekijken kun je een faction maken met /factions create").create());
 

@@ -15,7 +15,7 @@ public class Factions_Leave {
     }
 
     private void command_Leave() {
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             TextComponent errorMessage = new TextComponent("Je ziet niet in een faction, gebruik /factions" +
                     " join om een faction te joinen.");
             errorMessage.setColor(ChatColor.RED);

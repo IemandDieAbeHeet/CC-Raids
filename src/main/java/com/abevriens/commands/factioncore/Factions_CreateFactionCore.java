@@ -20,7 +20,7 @@ public class Factions_CreateFactionCore {
     }
 
     private void command_CreateFCore() {
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMsg.create());

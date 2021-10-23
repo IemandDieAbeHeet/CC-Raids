@@ -64,7 +64,7 @@ public class PlayerManager {
         POJO_Player pojo_player = getPOJOPlayer(offlinePlayer);
         CC_Player cc_player = getCCPlayer(offlinePlayer);
 
-        if(faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(faction.isEmptyFaction()) {
             cc_player.faction.players.remove(cc_player);
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
         } else {

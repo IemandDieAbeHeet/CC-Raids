@@ -21,7 +21,7 @@ public class Factions_Kick {
     private void command_Kick() {
         CC_Player cc_kickplayer = CrackCityRaids.instance.playerManager.getCCPlayer(name);
 
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMessage.create());

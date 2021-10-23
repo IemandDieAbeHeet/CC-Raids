@@ -21,7 +21,7 @@ public class Factions_SetOwner {
     private void command_SetOwner() {
         CC_Player cc_ownerplayer = CrackCityRaids.instance.playerManager.getCCPlayer(name);
 
-        if(commandContext.cc_player.faction.factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
