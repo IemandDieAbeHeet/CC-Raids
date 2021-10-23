@@ -57,4 +57,8 @@ public class Faction {
             }
         }
     }
+
+    public boolean isEmptyFaction() {
+        return factionName.equals(FactionManager.emptyFaction.factionName);
+    }
 }
