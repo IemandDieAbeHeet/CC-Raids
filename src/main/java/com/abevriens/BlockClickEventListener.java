@@ -26,13 +26,6 @@ public class BlockClickEventListener implements Listener {
                     player.spigot().sendMessage(errorMsg.create());
                     event.setCancelled(true);
                     return;
-                } else if(!player.getGameMode().equals(GameMode.SURVIVAL)) {
-                    ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je moet in survival zitten als je de " +
-                            "faction core wil gebruiken!");
-
-                    player.spigot().sendMessage(errorMsg.create());
-                    event.setCancelled(true);
-                    return;
                 } else if(!cc_player.faction.factionName.equals(factionCore.factionName)) {
                     ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit niet in de faction waar deze faction " +
                             "core van is!");
