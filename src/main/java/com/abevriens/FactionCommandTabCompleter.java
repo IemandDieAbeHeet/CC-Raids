@@ -121,7 +121,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
 
     private List<String> GetFactionCoreCommands(Faction faction) {
         List<String> cmds = new ArrayList<>();
-        if(!faction.factionCore.equals(FactionCoreUtil.GenerateEmptyFactionCore(faction.factionName))) {
+        if(!faction.factionCore.blockLocation.equals(FactionCoreUtil.GenerateEmptyFactionCore(faction.factionName).blockLocation)) {
             cmds.add("set");
             cmds.add("delete");
         } else {
