@@ -9,6 +9,6 @@ public class JDAManager {
     public JDA jda;
 
     public JDAManager() throws LoginException {
-        jda = JDABuilder.createDefault("OTAxOTYxMDQ4MTA0NTAxMjQ4.YXXerw.S9lXgor1PoLXhAzewpyWOwLBp_M").build();
+        jda = JDABuilder.createDefault("").build();
     }
 }
