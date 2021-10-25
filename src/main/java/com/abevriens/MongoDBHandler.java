@@ -40,7 +40,9 @@ public class MongoDBHandler {
             factionCollection = mongoDatabase.getCollection("factions", POJO_Faction.class);
             CrackCityRaids.instance.getLogger().info(ChatColor.GREEN + "Connected to MongoDB");
         } catch(MongoException e) {
-            CrackCityRaids.instance.getLogger().info(ChatColor.RED + e.getMessage());
+            CrackCityRaids.instance.getLogger().warning(ChatColor.RED + e.getMessage());
+            CrackCityRaids.instance.getLogger().warning(ChatColor.RED + "Disabling plugin...");
+            CrackCityRaids.instance.getPluginLoader().disablePlugin(CrackCityRaids.instance);
         }
     }
 
