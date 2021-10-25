@@ -1,6 +1,12 @@
 package com.abevriens;
 
+
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.security.auth.login.LoginException;
 
 public class CrackCityRaids extends JavaPlugin {
     public static CrackCityRaids instance;
@@ -9,6 +15,7 @@ public class CrackCityRaids extends JavaPlugin {
     public PlayerManager playerManager;
     public FactionManager factionManager;
     public FactionCoreManager factionCoreManager;
+    public JDAManager jdaManager;
 
     @Override
     public void onEnable() {
@@ -17,6 +24,13 @@ public class CrackCityRaids extends JavaPlugin {
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
         factionCoreManager = new FactionCoreManager();
+        try {
+            jdaManager = new JDAManager();
+        } catch (LoginException e) {
+            this.getLogger().warning("Couldn't connect to the Discord Bot!");
+            CrackCityRaids.instance.getLogger().warning(ChatColor.RED + "Disabling plugin...");
+            CrackCityRaids.instance.getPluginLoader().disablePlugin(CrackCityRaids.instance);
+        }
 
         this.getCommand("factions").setExecutor(new FactionCommandHandler());
         this.getCommand("factions").setTabCompleter(new FactionCommandTabCompleter());
