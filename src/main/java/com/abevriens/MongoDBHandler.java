@@ -47,7 +47,9 @@ public class MongoDBHandler {
     }
 
     public void disconnect() {
-        mongoClient.close();
+        if(mongoClient != null) {
+            mongoClient.close();
+        }
     }
 
     public void insertPlayer(POJO_Player POJOPlayer) { playerCollection.insertOne(POJOPlayer); }
