@@ -26,6 +26,7 @@ public class PlayerMoveListener implements Listener {
             player.teleport(cc_player.previousLocation);
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je probeert een faction te betreden die niet van jou is");
+            CrackCityRaids.instance.jdaManager.infoChannel.sendMessage("Ze zijn binnendfn!F#@$##!#!").queue();
             player.spigot().sendMessage(errorMsg.create());
         }
 

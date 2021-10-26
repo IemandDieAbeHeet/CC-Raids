@@ -1,3 +1,4 @@
 discord:
   token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  info_channel: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  guild_id: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  info_channel_id: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
