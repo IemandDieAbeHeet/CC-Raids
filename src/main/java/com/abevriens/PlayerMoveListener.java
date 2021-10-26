@@ -44,11 +44,8 @@ public class PlayerMoveListener implements Listener {
         int blockMaxY = factionCore.blockLocation.getBlockY() + faction.ySize/2;
         int blockMinZ = factionCore.blockLocation.getBlockZ() - faction.xSize/2;
         int blockMaxZ = factionCore.blockLocation.getBlockZ() + faction.xSize/2;
-        if(xLoc > blockMinX && xLoc < blockMaxX &&
+        return xLoc > blockMinX && xLoc < blockMaxX &&
                 yLoc > blockMinY && yLoc < blockMaxY &&
-                zLoc > blockMinZ && zLoc < blockMaxZ) {
-            return true;
-        }
-        return false;
+                zLoc > blockMinZ && zLoc < blockMaxZ;
     }
 }
