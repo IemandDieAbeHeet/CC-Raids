@@ -10,10 +10,10 @@ import java.util.HashMap;
 public class DiscordReadyListener extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
-        JDAManager jdaManager = CrackCityRaids.instance.jdaManager;
+        DiscordManager discordManager = CrackCityRaids.instance.discordManager;
         HashMap<String, Object> discordConfig = CrackCityRaids.instance.configurationManager.getDiscordConfig();
 
-        jdaManager.guild = jdaManager.jda.getGuildById((Long) discordConfig.get("guild_id"));
-        jdaManager.infoChannel = jdaManager.jda.getTextChannelById((Long) discordConfig.get("info_channel_id"));
+        discordManager.guild = discordManager.jda.getGuildById((Long) discordConfig.get("guild_id"));
+        discordManager.infoChannel = discordManager.jda.getTextChannelById((Long) discordConfig.get("info_channel_id"));
     }
 }

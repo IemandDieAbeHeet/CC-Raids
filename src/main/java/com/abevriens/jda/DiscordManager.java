@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 
-public class JDAManager {
+public class DiscordManager {
     public JDA jda;
     public Guild guild;
     public TextChannel infoChannel;
 
-    public JDAManager(String token) throws LoginException {
+    public DiscordManager(String token) throws LoginException {
         jda = JDABuilder.createDefault(token).build();
         jda.addEventListener(new DiscordReadyListener());
     }
