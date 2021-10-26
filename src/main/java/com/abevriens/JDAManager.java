@@ -8,7 +8,7 @@ import javax.security.auth.login.LoginException;
 public class JDAManager {
     public JDA jda;
 
-    public JDAManager() throws LoginException {
-        jda = JDABuilder.createDefault("").build();
+    public JDAManager(String token) throws LoginException {
+        jda = JDABuilder.createDefault(token).build();
     }
 }

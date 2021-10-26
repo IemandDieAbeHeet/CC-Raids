@@ -4,6 +4,7 @@ package com.abevriens;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
@@ -16,6 +17,7 @@ public class CrackCityRaids extends JavaPlugin {
     public FactionManager factionManager;
     public FactionCoreManager factionCoreManager;
     public JDAManager jdaManager;
+    public FileConfiguration config = getConfig();
 
     @Override
     public void onEnable() {
@@ -24,8 +26,13 @@ public class CrackCityRaids extends JavaPlugin {
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
         factionCoreManager = new FactionCoreManager();
+
+        config.addDefault("discordToken", "xxxxxxxxxxxxxxxxxxxxxxx");
+        config.options().copyDefaults(true);
+        saveConfig();
+
         try {
-            jdaManager = new JDAManager();
+            jdaManager = new JDAManager(config.getString("discordToken"));
         } catch (LoginException e) {
             this.getLogger().warning("Couldn't connect to the Discord Bot!");
             CrackCityRaids.instance.getLogger().warning(ChatColor.RED + "Disabling plugin...");
