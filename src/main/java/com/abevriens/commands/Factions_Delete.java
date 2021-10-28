@@ -1,10 +1,12 @@
 package com.abevriens.commands;
 
 import com.abevriens.*;
+import com.abevriens.jda.DiscordIdEnum;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Factions_Delete {
@@ -35,6 +37,11 @@ public class Factions_Delete {
             ArrayList<CC_Player> factionMembers = new ArrayList<>(commandContext.cc_player.faction.players);
 
             FactionCoreUtil.RemoveCore(commandContext);
+
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
 
             for(CC_Player factionMember : factionMembers) {
                 CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
