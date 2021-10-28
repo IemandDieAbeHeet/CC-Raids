@@ -83,6 +83,8 @@ public class Factions_Create {
                     Faction infoCallbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
                     infoCallbackFaction.discordIdMap.put(DiscordIdEnum.INFO_CHANNEL, infoResponse.getId());
                     CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(infoCallbackFaction));
+                    infoResponse.sendMessage("Dit is het info kanaal van jouw faction, hier krijg je bijvoorbeeld " +
+                            "notificaties binnen over mensen die je faction hebben betreden.").queue();
                 };
                 createInfoChannel.queue(infoCallback);
 
