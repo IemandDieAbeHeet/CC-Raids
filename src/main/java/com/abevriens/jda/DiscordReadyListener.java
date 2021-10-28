@@ -13,7 +13,6 @@ public class DiscordReadyListener extends ListenerAdapter {
         DiscordManager discordManager = CrackCityRaids.instance.discordManager;
         HashMap<String, Object> discordConfig = CrackCityRaids.instance.configurationManager.getDiscordConfig();
 
-        discordManager.guild = discordManager.jda.getGuildById((Long) discordConfig.get("guild_id"));
         discordManager.infoChannel = discordManager.jda.getTextChannelById((Long) discordConfig.get("info_channel_id"));
     }
 }

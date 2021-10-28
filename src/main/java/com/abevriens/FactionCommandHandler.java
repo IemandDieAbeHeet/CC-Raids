@@ -196,6 +196,17 @@ public class FactionCommandHandler implements CommandExecutor {
                                 break;
                         }
                         break;
+                    case "linkdiscord":
+                    case "link":
+                        if(args.length > 1) {
+                            new Factions_LinkDiscord(commandContext, args[1]);
+                        } else {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen Discord username opgegeven, gebruik het commando als volgt:",
+                                    "/factions link [naam]");
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
                     default:
                         new Factions_HelpError(commandContext, "Commando argument niet gevonden, probeer iets anders.");
                 }

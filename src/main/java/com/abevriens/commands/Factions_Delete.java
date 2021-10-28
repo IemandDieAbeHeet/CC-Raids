@@ -38,10 +38,10 @@ public class Factions_Delete {
 
             FactionCoreUtil.RemoveCore(commandContext);
 
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.guild.getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
 
             for(CC_Player factionMember : factionMembers) {
                 CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),

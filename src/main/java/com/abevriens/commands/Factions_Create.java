@@ -62,7 +62,7 @@ public class Factions_Create {
             commandContext.factionManager.factionNameList.add(faction.factionName);
             commandContext.factionManager.factionList.add(faction);
 
-            RoleAction createRole = CrackCityRaids.instance.discordManager.guild.createRole();
+            RoleAction createRole = CrackCityRaids.instance.discordManager.getGuild().createRole();
             createRole.setName(name).queue();
             Consumer<Role> roleCallback = (response) -> {
                 Faction callbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
@@ -71,7 +71,7 @@ public class Factions_Create {
             };
             createRole.queue(roleCallback);
 
-            ChannelAction<Category> createCategory = CrackCityRaids.instance.discordManager.guild.createCategory(
+            ChannelAction<Category> createCategory = CrackCityRaids.instance.discordManager.getGuild().createCategory(
                     "Faction: " + name);
             Consumer<Category> categoryCallback = (response) -> {
                 Faction callbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
