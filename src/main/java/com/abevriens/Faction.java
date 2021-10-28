@@ -1,10 +1,13 @@
 package com.abevriens;
 
+import com.abevriens.jda.DiscordIdEnum;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,9 +30,11 @@ public class Faction {
 
     public List<Location> occupiedBlocks;
 
+    public EnumMap<DiscordIdEnum, String> discordIdMap;
+
     public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
                    JoinStatus _joinStatus, List<String> _playerJoinRequests, FactionCore _factionCore,
-                   int _xSize, int _ySize, List<Location> _occupiedBlocks) {
+                   int _xSize, int _ySize, List<Location> _occupiedBlocks, EnumMap<DiscordIdEnum, String> _discordIdMap) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
@@ -39,6 +44,7 @@ public class Faction {
         xSize = _xSize;
         ySize = _ySize;
         occupiedBlocks = _occupiedBlocks;
+        discordIdMap = _discordIdMap;
     }
 
     public boolean isFull() {

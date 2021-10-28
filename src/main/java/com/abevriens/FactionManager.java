@@ -1,13 +1,12 @@
 package com.abevriens;
 
+import com.abevriens.jda.DiscordIdEnum;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.*;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class FactionManager {
     public List<Faction> factionList = new ArrayList<>();
@@ -37,7 +36,7 @@ public class FactionManager {
     }
 
     public static Faction emptyFaction = new Faction(null, "None", null,
-                JoinStatus.OPEN, null, null, 0, 0, null);
+                JoinStatus.OPEN, null, null, 0, 0, null, null);
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -60,6 +59,11 @@ public class FactionManager {
             occupiedLocationsFromPojo.add(pojo_vector.pojoVectorToLocation());
         }
 
+        EnumMap<DiscordIdEnum, String> hashMapToEnumMap = new EnumMap<>(DiscordIdEnum.class);
+        for(String id : pojo_faction.discordIdMap.keySet()) {
+            hashMapToEnumMap.put(DiscordIdEnum.valueOf(id), pojo_faction.discordIdMap.get(id));
+        }
+
         faction = new Faction(
                 pojo_faction.factionOwner,
                 pojo_faction.factionName,
@@ -69,7 +73,8 @@ public class FactionManager {
                 fCoreFromPOJO,
                 pojo_faction.xSize,
                 pojo_faction.ySize,
-                occupiedLocationsFromPojo
+                occupiedLocationsFromPojo,
+                hashMapToEnumMap
         );
 
         return faction;
@@ -93,6 +98,11 @@ public class FactionManager {
             pojo_locations.add(new POJO_Vector(location.toVector()));
         }
 
+        HashMap<String, String> enumMapToHashMap = new HashMap<>();
+        for(DiscordIdEnum discordId : faction.discordIdMap.keySet()) {
+            enumMapToHashMap.put(discordId.toString(), faction.discordIdMap.get(discordId));
+        }
+
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
         pojo_faction.players = pojo_players;
@@ -102,7 +112,7 @@ public class FactionManager {
         pojo_faction.xSize = faction.xSize;
         pojo_faction.ySize = faction.ySize;
         pojo_faction.occupiedLocations = pojo_locations;
-
+        pojo_faction.discordIdMap = enumMapToHashMap;
         return pojo_faction;
     }
 }
