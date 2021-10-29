@@ -72,10 +72,13 @@ public class Factions_Info
             switch(faction.joinStatus) {
                 case REQUEST:
                     joinStatusText.setText("Request");
+                    break;
                 case CLOSED:
                     joinStatusText.setText("Closed");
+                    break;
                 case OPEN:
                     joinStatusText.setText("Open");
+                    break;
             }
 
             BaseComponent[] joinstatusInfo = new ComponentBuilder("Join status: ")
