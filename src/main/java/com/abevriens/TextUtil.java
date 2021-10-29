@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.entity.Player;
 
 public class TextUtil {
     public static ChatColor footerColor = ChatColor.AQUA;
@@ -109,5 +110,11 @@ public class TextUtil {
                 .event((HoverEvent) null);
 
         return footer;
+    }
+
+    public static void SendDiscordLinkError(Player player) {
+        ComponentBuilder errorMsg = GenerateErrorMsg("Je hebt je Discord nog niet gelinkt, gebruik " +
+                "/factions link om je Discord account te linken aan je Minecraft account.");
+        player.spigot().sendMessage(errorMsg.create());
     }
 }

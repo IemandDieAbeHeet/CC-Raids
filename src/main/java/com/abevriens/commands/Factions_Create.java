@@ -27,7 +27,9 @@ public class Factions_Create {
     }
 
     private void command_Create() {
-        if(!commandContext.cc_player.faction.isEmptyFaction()) {
+        if(commandContext.cc_player.discordId == null) {
+            TextUtil.SendDiscordLinkError(commandContext.player);
+        } else if(!commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je zit al in een faction dus je kunt geen nieuwe " +
                     "faction aanmaken, verlaat deze met /factions leave.");
             commandContext.player.spigot().sendMessage(errorMsg.create());
