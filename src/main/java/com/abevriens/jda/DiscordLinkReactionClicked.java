@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class DiscordLinkReactionClicked extends ListenerAdapter {
@@ -19,6 +20,9 @@ public class DiscordLinkReactionClicked extends ListenerAdapter {
                     UUID.fromString(CrackCityRaids.instance.playerManager.getDiscordRequest(event.getUserId()))));
             requestingPlayer.discordId = event.getUserId();
             CrackCityRaids.instance.dbHandler.updatePlayer(PlayerManager.CCToPOJO(requestingPlayer));
+            CrackCityRaids.instance.playerManager.addPlayer(
+                    Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(requestingPlayer.uuid))),
+                    PlayerManager.CCToPOJO(requestingPlayer), requestingPlayer);
             String messageId = event.getMessageId();
             event.getChannel().deleteMessageById(messageId).queue();
         } else if(event.getReactionEmote().getEmoji().equals("\uD83D\uDC4E")) {
