@@ -36,7 +36,9 @@ public class FactionManager {
     }
 
     public static Faction emptyFaction = new Faction(null, "None", null,
-                JoinStatus.OPEN, null, null, 0, 0, null, null);
+                JoinStatus.OPEN, null, null, 0, 0, null,
+            null, new RaidAlert(
+                    "None", 360, false, new ArrayList<>(), new ArrayList<>()));
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -64,6 +66,10 @@ public class FactionManager {
             hashMapToEnumMap.put(DiscordIdEnum.valueOf(id), pojo_faction.discordIdMap.get(id));
         }
 
+        RaidAlert raidAlert = new RaidAlert(pojo_faction.factionName, pojo_faction.pojo_raidAlert.countdown,
+                pojo_faction.pojo_raidAlert.started, pojo_faction.pojo_raidAlert.enteredPlayerList,
+                pojo_faction.pojo_raidAlert.enteredFactionList);
+
         faction = new Faction(
                 pojo_faction.factionOwner,
                 pojo_faction.factionName,
@@ -74,7 +80,8 @@ public class FactionManager {
                 pojo_faction.xSize,
                 pojo_faction.ySize,
                 occupiedLocationsFromPojo,
-                hashMapToEnumMap
+                hashMapToEnumMap,
+                raidAlert
         );
 
         return faction;
@@ -103,6 +110,13 @@ public class FactionManager {
             enumMapToHashMap.put(discordId.toString(), faction.discordIdMap.get(discordId));
         }
 
+        POJO_RaidAlert pojo_raidAlert = new POJO_RaidAlert();
+        pojo_raidAlert.alertedFactionName = faction.factionName;
+        pojo_raidAlert.countdown = faction.raidAlert.countdown;
+        pojo_raidAlert.started = faction.raidAlert.started;
+        pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredFactionList;
+        pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredPlayerList;
+
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;
         pojo_faction.players = pojo_players;
@@ -113,6 +127,27 @@ public class FactionManager {
         pojo_faction.ySize = faction.ySize;
         pojo_faction.occupiedLocations = pojo_locations;
         pojo_faction.discordIdMap = enumMapToHashMap;
+        pojo_faction.pojo_raidAlert = pojo_raidAlert;
         return pojo_faction;
+    }
+
+    public static String generateCountdownTimeString(int timeInMinutes) {
+        int hours = (int) Math.floor((double) timeInMinutes / 60);
+        int minutes = timeInMinutes - (hours * 60);
+        String timerString;
+        if(hours > 0) {
+            if(minutes == 1) {
+                timerString = hours + " uur, 1 minuut";
+            } else {
+                timerString = hours + " uur, " + minutes + " minuten";
+            }
+        } else {
+            if(minutes < 1) {
+                timerString = "1 minuut!";
+            } else {
+                timerString = minutes + " minuten";
+            }
+        }
+        return timerString;
     }
 }

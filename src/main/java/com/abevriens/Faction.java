@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,9 +31,12 @@ public class Faction {
 
     public EnumMap<DiscordIdEnum, String> discordIdMap;
 
+    public RaidAlert raidAlert;
+
     public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
                    JoinStatus _joinStatus, List<String> _playerJoinRequests, FactionCore _factionCore,
-                   int _xSize, int _ySize, List<Location> _occupiedBlocks, EnumMap<DiscordIdEnum, String> _discordIdMap) {
+                   int _xSize, int _ySize, List<Location> _occupiedBlocks, EnumMap<DiscordIdEnum, String> _discordIdMap,
+                   RaidAlert _raidAlert) {
         factionOwner = _factionOwner;
         factionName = _factionName;
         players = _players;
@@ -45,6 +47,8 @@ public class Faction {
         ySize = _ySize;
         occupiedBlocks = _occupiedBlocks;
         discordIdMap = _discordIdMap;
+        raidAlert = _raidAlert;
+        if(raidAlert.started) raidAlert.runTimer();
     }
 
     public boolean isFull() {

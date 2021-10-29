@@ -4,5 +4,6 @@ public enum DiscordIdEnum {
     CATEGORY,
     INFO_CHANNEL,
     CHAT_CHANNEL,
-    ROLE
+    ROLE,
+    TIMER
 }

@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.security.auth.login.LoginException;
+import java.util.Objects;
 
 public class CrackCityRaids extends JavaPlugin {
     public static CrackCityRaids instance;
@@ -34,19 +35,13 @@ public class CrackCityRaids extends JavaPlugin {
             CrackCityRaids.instance.getPluginLoader().disablePlugin(CrackCityRaids.instance);
         }
 
-        this.getCommand("factions").setExecutor(new FactionCommandHandler());
-        this.getCommand("factions").setTabCompleter(new FactionCommandTabCompleter());
+        Objects.requireNonNull(this.getCommand("factions")).setExecutor(new FactionCommandHandler());
+        Objects.requireNonNull(this.getCommand("factions")).setTabCompleter(new FactionCommandTabCompleter());
         getServer().getPluginManager().registerEvents(new BlockClickEventListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
 
         dbHandler.connect("mongodb://localhost:27017/?readPreference=primary&ssl=false");
-
-        //Always load factions before players. LoadPlayers converts POJO_Players
-        //to CC_Players which requires factions to be loaded
-        factionManager.LoadFactions();
-        playerManager.LoadPlayers();
-        factionCoreManager.LoadFactionCores();
     }
 
     @Override

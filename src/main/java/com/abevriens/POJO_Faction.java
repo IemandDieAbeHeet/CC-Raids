@@ -28,6 +28,8 @@ public class POJO_Faction {
 
     public HashMap<String, String> discordIdMap;
 
+    public POJO_RaidAlert pojo_raidAlert;
+
     public POJO_Faction() {
     }
 }

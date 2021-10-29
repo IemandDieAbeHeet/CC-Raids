@@ -1,5 +1,9 @@
 package com.abevriens;
 
+import com.abevriens.jda.DiscordIdEnum;
+import com.abevriens.jda.RaidAlertEmbedBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -7,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import java.awt.*;
 
 public class PlayerMoveListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
@@ -24,9 +30,42 @@ public class PlayerMoveListener implements Listener {
 
         if(isWithinBounds(event.getFrom(), closestCore)) {
             player.teleport(cc_player.previousLocation);
-            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
-                    "Je probeert een faction te betreden die niet van jou is");
-            CrackCityRaids.instance.discordManager.infoChannel.sendMessage("Ze zijn binnendfn!F#@$##!#!").queue();
+            ComponentBuilder errorMsg;
+            if(closestFaction.raidAlert.started) {
+                errorMsg = TextUtil.GenerateErrorMsg("Je probeert een faction te betreden die niet " +
+                        "van jou is. Er is al een raid timer gestart en je kunt over " +
+                        FactionManager.generateCountdownTimeString(closestFaction.raidAlert.countdown) + " beginnen met raiden.");
+
+                if(!closestFaction.raidAlert.enteredPlayerList.contains(cc_player.displayName)) {
+                    closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
+                }
+                if(!closestFaction.raidAlert.enteredFactionList.contains(cc_player.faction.factionName)) {
+                    closestFaction.raidAlert.enteredFactionList.add(cc_player.faction.factionName);
+                }
+                closestFaction.raidAlert.updateTimerMessage();
+            } else {
+                closestFaction.raidAlert.started = true;
+                errorMsg = TextUtil.GenerateErrorMsg(
+                        "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
+                                "Je kunt over 6 uur de faction betreden en beginnen met raiden.");
+                TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+                        closestFaction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
+                if(!closestFaction.raidAlert.enteredFactionList.contains(cc_player.faction.factionName)) {
+                    closestFaction.raidAlert.enteredFactionList.add(cc_player.faction.factionName);
+                }
+
+                if(!closestFaction.raidAlert.enteredPlayerList.contains(cc_player.displayName)) {
+                    closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
+                }
+
+                EmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(closestFaction.raidAlert);
+                if (infoChannel != null) {
+                    infoChannel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
+                        closestFaction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
+                        closestFaction.raidAlert.runTimer();
+                    });
+                }
+            }
             player.spigot().sendMessage(errorMsg.create());
         }
 
