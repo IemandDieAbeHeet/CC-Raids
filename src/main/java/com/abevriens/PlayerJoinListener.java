@@ -24,7 +24,8 @@ public class PlayerJoinListener implements Listener {
                 player.getDisplayName(),
                 player.getUniqueId().toString(),
                 FactionManager.emptyFaction,
-                new ArrayList<>()
+                new ArrayList<>(),
+                null
         );
 
         playerManager.addPlayer(player, pojo_player, cc_player);

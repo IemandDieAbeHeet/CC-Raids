@@ -14,8 +14,9 @@ public class DiscordManager {
     public TextChannel infoChannel;
 
     public DiscordManager(String token) throws LoginException {
-        jda = JDABuilder.create(token, GatewayIntent.GUILD_MEMBERS).build();
-        jda.addEventListener(new DiscordReadyListener());
+        jda = JDABuilder.create(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+                GatewayIntent.DIRECT_MESSAGES).build();
+        jda.addEventListener(new DiscordReadyListener(), new DiscordLinkReactionClicked());
     }
 
     public Guild getGuild() {

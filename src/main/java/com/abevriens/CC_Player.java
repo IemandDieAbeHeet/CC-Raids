@@ -12,23 +12,24 @@ public class CC_Player {
     public Faction faction;
     public List<String> pendingRequests;
     public Location previousLocation = new Vector(0, 0, 0).toLocation(Bukkit.getWorld("world"));
-    public String discordName;
+    public String discordId;
 
-    public CC_Player(String _displayName, String _uuid, Faction _faction, List<String> _pendingRequests) {
+    public CC_Player(String _displayName, String _uuid, Faction _faction, List<String> _pendingRequests, String _discordId) {
         displayName = _displayName;
         uuid = _uuid;
         faction = _faction;
         pendingRequests = _pendingRequests;
+        discordId = _discordId;
     }
 
     /**
      * Update database after using!
      */
     public void deleteRequests() {
-        pendingRequests.clear();
         for(String request : pendingRequests) {
             Faction requestFaction = CrackCityRaids.instance.factionManager.getFaction(request);
             requestFaction.playerJoinRequests.remove(uuid);
         }
+        pendingRequests.clear();
     }
 }

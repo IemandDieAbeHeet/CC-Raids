@@ -39,6 +39,8 @@ public class Factions_LinkDiscord {
             return;
         }
 
+        CrackCityRaids.instance.playerManager.addDiscordRequest(member.getId(), commandContext.cc_player.uuid);
+
         member.getUser().openPrivateChannel().queue(privateChannel -> {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Discord Link Aanvraag");

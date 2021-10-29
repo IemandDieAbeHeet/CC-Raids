@@ -8,9 +8,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerManager {
-    private HashMap<OfflinePlayer, CC_Player> CCPlayerHashMap = new HashMap<>();
-    private HashMap<OfflinePlayer, POJO_Player> POJOPlayerHashMap = new HashMap<>();
-    private HashMap<String, CC_Player> CCPlayerStringHashMap = new HashMap<>();
+    private final HashMap<OfflinePlayer, CC_Player> CCPlayerHashMap = new HashMap<>();
+    private final HashMap<OfflinePlayer, POJO_Player> POJOPlayerHashMap = new HashMap<>();
+    private final HashMap<String, CC_Player> CCPlayerStringHashMap = new HashMap<>();
+    private final HashMap<String, String> playerDiscordRequests = new HashMap<>();
 
     public void LoadPlayers() {
         for (POJO_Player pojo_player : CrackCityRaids.instance.dbHandler.playerCollection.find()) {
@@ -92,7 +93,8 @@ public class PlayerManager {
             pojo_player.displayName,
             pojo_player.uuid,
             faction,
-            pojo_player.pendingRequests
+            pojo_player.pendingRequests,
+            pojo_player.discordId
         );
     }
 
@@ -103,7 +105,16 @@ public class PlayerManager {
         pojo_player.factionName = cc_player.faction.factionName;
         pojo_player.uuid = cc_player.uuid;
         pojo_player.pendingRequests = cc_player.pendingRequests;
+        pojo_player.discordId = cc_player.discordId;
 
         return pojo_player;
+    }
+
+    public void addDiscordRequest(String discordId, String playerUUID) {
+        playerDiscordRequests.put(discordId, playerUUID);
+    }
+
+    public String getDiscordRequest(String discordId) {
+        return playerDiscordRequests.get(discordId);
     }
 }
