@@ -1,5 +1,7 @@
 package com.abevriens;
 
+import com.abevriens.jda.DiscordIdEnum;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -67,9 +69,17 @@ public class PlayerManager {
 
         if(faction.isEmptyFaction()) {
             cc_player.faction.players.remove(cc_player);
+            Role role = CrackCityRaids.instance.discordManager.getGuild().getRoleById(cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE));
+            if(role != null) {
+                CrackCityRaids.instance.discordManager.getGuild().removeRoleFromMember(cc_player.discordId, role).queue();
+            }
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
         } else {
             faction.players.add(cc_player);
+            Role role = CrackCityRaids.instance.discordManager.getGuild().getRoleById(faction.discordIdMap.get(DiscordIdEnum.ROLE));
+            if(role != null) {
+                CrackCityRaids.instance.discordManager.getGuild().addRoleToMember(cc_player.discordId, role).queue();
+            }
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         }
 
