@@ -24,6 +24,12 @@ public class Factions_LinkDiscord {
     }
 
     private void command_LinkDiscord() {
+        if(commandContext.cc_player.discordId != null) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je hebt je Discord account al gelinkt!");
+            commandContext.player.spigot().sendMessage(errorMsg.create());
+            return;
+        }
+
         List<Member> memberList = CrackCityRaids.instance.discordManager.getGuild().loadMembers().get();
         Member member = null;
         for(Member guildMember : memberList) {
