@@ -4,7 +4,6 @@ import com.abevriens.*;
 import com.abevriens.jda.DiscordIdEnum;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
@@ -14,9 +13,9 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Random;
 import java.util.function.Consumer;
 
 public class Factions_Create {
@@ -75,6 +74,9 @@ public class Factions_Create {
                 callbackFaction.discordIdMap.put(DiscordIdEnum.ROLE, roleResponse.getId());
                 CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(callbackFaction));
                 CrackCityRaids.instance.discordManager.getGuild().addRoleToMember(commandContext.cc_player.discordId, roleResponse).queue();
+                Random rg = new Random();
+                roleResponse.getManager().setColor(rg.nextInt(255)).queue();
+                roleResponse.getManager().setHoisted(true).queue();
 
                 ChannelAction<Category> createCategory = CrackCityRaids.instance.discordManager.getGuild().createCategory(
                                 "Faction: " + name)
