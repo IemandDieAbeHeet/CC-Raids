@@ -68,7 +68,7 @@ public class Faction {
         }
     }
 
-    public boolean isRaidable() { return !raidAlert.raidingCountdownStarted && raidAlert.raidingCountdown > 1;  }
+    public boolean isRaidable() { return !raidAlert.openCountdownStarted && raidAlert.openCountdown > 1;  }
 
     public boolean isEmptyFaction() {
         return factionName.equals(FactionManager.emptyFaction.factionName);

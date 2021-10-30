@@ -12,8 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.awt.*;
-
 public class PlayerMoveListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -44,7 +42,7 @@ public class PlayerMoveListener implements Listener {
                 }
                 closestFaction.raidAlert.updateTimerMessage();
             } else {
-                closestFaction.raidAlert.raidingCountdownStarted = true;
+                closestFaction.raidAlert.openCountdownStarted = true;
                 errorMsg = TextUtil.GenerateErrorMsg(
                         "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
                                 "Je kunt over 6 uur de faction betreden en beginnen met raiden.");

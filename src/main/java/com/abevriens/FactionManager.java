@@ -68,8 +68,8 @@ public class FactionManager {
         }
 
         RaidAlert raidAlert = new RaidAlert(pojo_faction.factionName, pojo_faction.pojo_raidAlert.raidCountdown,
-                pojo_faction.pojo_raidAlert.raidingCountdown, pojo_faction.pojo_raidAlert.raidCountdownStarted,
-                pojo_faction.pojo_raidAlert.raidingCountdownStarted, pojo_faction.pojo_raidAlert.enteredPlayerList,
+                pojo_faction.pojo_raidAlert.openCountdown, pojo_faction.pojo_raidAlert.raidCountdownStarted,
+                pojo_faction.pojo_raidAlert.openCountdownStarted, pojo_faction.pojo_raidAlert.enteredPlayerList,
                 pojo_faction.pojo_raidAlert.enteredFactionList);
 
         faction = new Faction(
@@ -115,8 +115,8 @@ public class FactionManager {
         POJO_RaidAlert pojo_raidAlert = new POJO_RaidAlert();
         pojo_raidAlert.alertedFactionName = faction.factionName;
         pojo_raidAlert.raidCountdownStarted = faction.raidAlert.raidCountdownStarted;
-        pojo_raidAlert.raidingCountdownStarted = faction.raidAlert.raidingCountdownStarted;
-        pojo_raidAlert.raidingCountdown = faction.raidAlert.raidingCountdown;
+        pojo_raidAlert.openCountdownStarted = faction.raidAlert.openCountdownStarted;
+        pojo_raidAlert.openCountdown = faction.raidAlert.openCountdown;
         pojo_raidAlert.raidCountdown = faction.raidAlert.raidCountdown;
         pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredFactionList;
         pojo_raidAlert.enteredPlayerList = faction.raidAlert.enteredPlayerList;

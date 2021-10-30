@@ -5,9 +5,9 @@ import java.util.List;
 public class POJO_RaidAlert {
     public String alertedFactionName;
     public int raidCountdown;
-    public int raidingCountdown;
+    public int openCountdown;
     public boolean raidCountdownStarted;
-    public boolean raidingCountdownStarted;
+    public boolean openCountdownStarted;
     public List<String> enteredPlayerList;
     public List<String> enteredFactionList;
 

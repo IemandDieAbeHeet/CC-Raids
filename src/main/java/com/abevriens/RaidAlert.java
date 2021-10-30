@@ -12,21 +12,21 @@ import java.util.concurrent.TimeUnit;
 public class RaidAlert {
     public String alertedFactionName;
     public int raidCountdown;
-    public int raidingCountdown;
+    public int openCountdown;
     public boolean raidCountdownStarted;
-    public boolean raidingCountdownStarted;
+    public boolean openCountdownStarted;
     public List<String> enteredPlayerList;
     public List<String> enteredFactionList;
 
     private final Timer timer = new Timer(true);
 
     public RaidAlert(String _alertedFactionName, int _raidCountdown, int _raidingCountdown, boolean _raidCountdownStarted,
-                     boolean _raidingCountdownStarted, List<String> _enteredPlayerList, List<String> _enteredFactionList) {
+                     boolean _openCountdownStarted, List<String> _enteredPlayerList, List<String> _enteredFactionList) {
         alertedFactionName = _alertedFactionName;
         raidCountdown = _raidCountdown;
-        raidingCountdown = _raidingCountdown;
+        openCountdown = _raidingCountdown;
         raidCountdownStarted = _raidCountdownStarted;
-        raidingCountdownStarted = _raidingCountdownStarted;
+        openCountdownStarted = _openCountdownStarted;
         enteredPlayerList = _enteredPlayerList;
         enteredFactionList = _enteredFactionList;
     }
@@ -50,6 +50,22 @@ public class RaidAlert {
                 }
             }
         }, 0, 60 * 1000);
+    }
+
+    public void runOpenTimer() {
+        openCountdownStarted = true;
+
+        timer.schedule(new TimerTask() {
+            public void run() {
+                if(openCountdown < 1) {
+                    openCountdownStarted = false;
+                    openCountdown = 360;
+                    cancel();
+                } else {
+                    openCountdown--;
+                }
+            }
+        }, 0 , 60 * 1000);
     }
 
     public void updateTimerMessage() {
