@@ -48,7 +48,7 @@ public class Faction {
         occupiedBlocks = _occupiedBlocks;
         discordIdMap = _discordIdMap;
         raidAlert = _raidAlert;
-        if(raidAlert.raidCountdownStarted) raidAlert.runTimer();
+        if(raidAlert.raidCountdownStarted) raidAlert.runRaidTimer();
     }
 
     public boolean isFull() {
