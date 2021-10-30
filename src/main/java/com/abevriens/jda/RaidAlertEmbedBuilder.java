@@ -5,8 +5,6 @@ import com.abevriens.RaidAlert;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.*;
-
 public class RaidAlertEmbedBuilder extends EmbedBuilder {
     public RaidAlertEmbedBuilder(RaidAlert raidAlert) {
         super();
@@ -39,13 +37,15 @@ public class RaidAlertEmbedBuilder extends EmbedBuilder {
         factionsField = new MessageEmbed.Field(factionsField.getName(),
                 factions.toString(), false);
 
-        MessageEmbed.Field timerField = new MessageEmbed.Field("Timer",
-                FactionManager.generateCountdownTimeString(raidAlert.countdown), false);
-
         this.setTitle("Raid alert!");
         this.addField(playersField);
         this.addField(factionsField);
+    }
+
+    public void addTimerField(int countdown, String text) {
+        MessageEmbed.Field timerField = new MessageEmbed.Field("Timer",
+                text + FactionManager.generateCountdownTimeString(countdown), false);
+
         this.addField(timerField);
-        this.setColor(Color.RED);
     }
 }

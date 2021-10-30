@@ -31,10 +31,10 @@ public class PlayerMoveListener implements Listener {
         if(isWithinBounds(event.getFrom(), closestCore)) {
             player.teleport(cc_player.previousLocation);
             ComponentBuilder errorMsg;
-            if(closestFaction.raidAlert.started) {
+            if(closestFaction.raidAlert.raidCountdownStarted) {
                 errorMsg = TextUtil.GenerateErrorMsg("Je probeert een faction te betreden die niet " +
                         "van jou is. Er is al een raid timer gestart en je kunt over " +
-                        FactionManager.generateCountdownTimeString(closestFaction.raidAlert.countdown) + " beginnen met raiden.");
+                        FactionManager.generateCountdownTimeString(closestFaction.raidAlert.raidCountdown) + " beginnen met raiden.");
 
                 if(!closestFaction.raidAlert.enteredPlayerList.contains(cc_player.displayName)) {
                     closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
@@ -44,7 +44,7 @@ public class PlayerMoveListener implements Listener {
                 }
                 closestFaction.raidAlert.updateTimerMessage();
             } else {
-                closestFaction.raidAlert.started = true;
+                closestFaction.raidAlert.raidingCountdownStarted = true;
                 errorMsg = TextUtil.GenerateErrorMsg(
                         "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
                                 "Je kunt over 6 uur de faction betreden en beginnen met raiden.");
@@ -62,7 +62,7 @@ public class PlayerMoveListener implements Listener {
                 if (infoChannel != null) {
                     infoChannel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
                         closestFaction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
-                        closestFaction.raidAlert.runTimer();
+                        closestFaction.raidAlert.runRaidTimer();
                     });
                 }
             }

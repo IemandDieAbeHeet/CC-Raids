@@ -48,7 +48,7 @@ public class Faction {
         occupiedBlocks = _occupiedBlocks;
         discordIdMap = _discordIdMap;
         raidAlert = _raidAlert;
-        if(raidAlert.started) raidAlert.runTimer();
+        if(raidAlert.raidCountdownStarted) raidAlert.runTimer();
     }
 
     public boolean isFull() {
@@ -67,6 +67,8 @@ public class Faction {
             }
         }
     }
+
+    public boolean isRaidable() { return !raidAlert.raidingCountdownStarted && raidAlert.raidingCountdown > 1;  }
 
     public boolean isEmptyFaction() {
         return factionName.equals(FactionManager.emptyFaction.factionName);

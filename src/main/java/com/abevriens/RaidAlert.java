@@ -2,43 +2,47 @@ package com.abevriens;
 
 import com.abevriens.jda.DiscordIdEnum;
 import com.abevriens.jda.RaidAlertEmbedBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class RaidAlert {
     public String alertedFactionName;
-    public int countdown;
-    public boolean started;
+    public int raidCountdown;
+    public int raidingCountdown;
+    public boolean raidCountdownStarted;
+    public boolean raidingCountdownStarted;
     public List<String> enteredPlayerList;
     public List<String> enteredFactionList;
 
     private final Timer timer = new Timer(true);
 
-    public RaidAlert(String _alertedFactionName, int _countdown, boolean _started, List<String> _enteredPlayerList,
-                     List<String> _enteredFactionList) {
+    public RaidAlert(String _alertedFactionName, int _raidCountdown, int _raidingCountdown, boolean _raidCountdownStarted,
+                     boolean _raidingCountdownStarted, List<String> _enteredPlayerList, List<String> _enteredFactionList) {
         alertedFactionName = _alertedFactionName;
-        countdown = _countdown;
-        started = _started;
+        raidCountdown = _raidCountdown;
+        raidingCountdown = _raidingCountdown;
+        raidCountdownStarted = _raidCountdownStarted;
+        raidingCountdownStarted = _raidingCountdownStarted;
         enteredPlayerList = _enteredPlayerList;
         enteredFactionList = _enteredFactionList;
     }
 
-    public void runTimer() {
-        started = true;
+    public void runRaidTimer() {
+        raidCountdownStarted = true;
 
         timer.schedule(new TimerTask() {
             public void run() {
-                if(countdown < 1) {
-                    started = false;
+                if(raidCountdown < 1) {
+                    raidCountdownStarted = false;
+                    raidCountdown = 360;
                     cancel();
+                    endTimerMessage();
                 } else {
-                    countdown--;
+                    raidCountdown--;
                     updateTimerMessage();
                     POJO_Faction pojo_faction =
                             FactionManager.FactionToPOJO(CrackCityRaids.instance.factionManager.getFaction(alertedFactionName));
@@ -59,6 +63,21 @@ public class RaidAlert {
 
         infoChannel.retrieveMessageById(faction.discordIdMap.get(DiscordIdEnum.TIMER)).queue(message -> {
             message.editMessage(raidAlertEmbedBuilder.build()).queue();
+        });
+    }
+
+    public void endTimerMessage() {
+        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
+        RaidAlertEmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(this);
+
+        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+                faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
+
+        if(infoChannel == null) return;
+
+        infoChannel.retrieveMessageById(faction.discordIdMap.get(DiscordIdEnum.TIMER)).queue(message -> {
+            message.editMessage(raidAlertEmbedBuilder.build()).queue();
+            message.delete().queueAfter(6, TimeUnit.HOURS);
         });
     }
 }

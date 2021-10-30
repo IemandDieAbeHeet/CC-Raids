@@ -38,7 +38,8 @@ public class FactionManager {
     public static Faction emptyFaction = new Faction(null, "None", null,
                 JoinStatus.OPEN, null, null, 0, 0, null,
             null, new RaidAlert(
-                    "None", 360, false, new ArrayList<>(), new ArrayList<>()));
+                    "None", 360, 360, false,
+            false, new ArrayList<>(), new ArrayList<>()));
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -66,8 +67,9 @@ public class FactionManager {
             hashMapToEnumMap.put(DiscordIdEnum.valueOf(id), pojo_faction.discordIdMap.get(id));
         }
 
-        RaidAlert raidAlert = new RaidAlert(pojo_faction.factionName, pojo_faction.pojo_raidAlert.countdown,
-                pojo_faction.pojo_raidAlert.started, pojo_faction.pojo_raidAlert.enteredPlayerList,
+        RaidAlert raidAlert = new RaidAlert(pojo_faction.factionName, pojo_faction.pojo_raidAlert.raidCountdown,
+                pojo_faction.pojo_raidAlert.raidingCountdown, pojo_faction.pojo_raidAlert.raidCountdownStarted,
+                pojo_faction.pojo_raidAlert.raidingCountdownStarted, pojo_faction.pojo_raidAlert.enteredPlayerList,
                 pojo_faction.pojo_raidAlert.enteredFactionList);
 
         faction = new Faction(
@@ -112,10 +114,12 @@ public class FactionManager {
 
         POJO_RaidAlert pojo_raidAlert = new POJO_RaidAlert();
         pojo_raidAlert.alertedFactionName = faction.factionName;
-        pojo_raidAlert.countdown = faction.raidAlert.countdown;
-        pojo_raidAlert.started = faction.raidAlert.started;
+        pojo_raidAlert.raidCountdownStarted = faction.raidAlert.raidCountdownStarted;
+        pojo_raidAlert.raidingCountdownStarted = faction.raidAlert.raidingCountdownStarted;
+        pojo_raidAlert.raidingCountdown = faction.raidAlert.raidingCountdown;
+        pojo_raidAlert.raidCountdown = faction.raidAlert.raidCountdown;
         pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredFactionList;
-        pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredPlayerList;
+        pojo_raidAlert.enteredPlayerList = faction.raidAlert.enteredPlayerList;
 
         pojo_faction.factionName = faction.factionName;
         pojo_faction.factionOwner = faction.factionOwner;

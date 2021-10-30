@@ -57,7 +57,8 @@ public class Factions_Create {
                     10, 10,
                     new ArrayList<>(),
                     discordIdMap,
-                    new RaidAlert(name, 360, false, new ArrayList<>(), new ArrayList<>())
+                    new RaidAlert(name, 360, 360, false, false,
+                            new ArrayList<>(), new ArrayList<>())
             );
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
