@@ -32,7 +32,8 @@ public class PlayerMoveListener implements Listener {
             if(closestFaction.raidAlert.raidCountdownStarted) {
                 errorMsg = TextUtil.GenerateErrorMsg("Je probeert een faction te betreden die niet " +
                         "van jou is. Er is al een raid timer gestart en je kunt over " +
-                        FactionManager.generateCountdownTimeString(closestFaction.raidAlert.raidCountdown) + " beginnen met raiden.");
+                        FactionManager.generateCountdownTimeString(closestFaction.raidAlert.raidCountdown) +
+                        " beginnen met raiden.");
 
                 if(!closestFaction.raidAlert.enteredPlayerList.contains(cc_player.displayName)) {
                     closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
@@ -40,14 +41,15 @@ public class PlayerMoveListener implements Listener {
                 if(!closestFaction.raidAlert.enteredFactionList.contains(cc_player.faction.factionName)) {
                     closestFaction.raidAlert.enteredFactionList.add(cc_player.faction.factionName);
                 }
-                closestFaction.raidAlert.updateTimerMessage();
+                
+                if (closestFaction.discordIdMap != null) {
+                    closestFaction.raidAlert.updateRaidTimerMessage();
+                }
             } else {
-                closestFaction.raidAlert.openCountdownStarted = true;
+                closestFaction.raidAlert.raidCountdownStarted = true;
                 errorMsg = TextUtil.GenerateErrorMsg(
                         "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
                                 "Je kunt over 6 uur de faction betreden en beginnen met raiden.");
-                TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
-                        closestFaction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
                 if(!closestFaction.raidAlert.enteredFactionList.contains(cc_player.faction.factionName)) {
                     closestFaction.raidAlert.enteredFactionList.add(cc_player.faction.factionName);
                 }
@@ -56,13 +58,7 @@ public class PlayerMoveListener implements Listener {
                     closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
                 }
 
-                EmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(closestFaction.raidAlert);
-                if (infoChannel != null) {
-                    infoChannel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
-                        closestFaction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
-                        closestFaction.raidAlert.runRaidTimer();
-                    });
-                }
+                closestFaction.raidAlert.runRaidTimer();
             }
             player.spigot().sendMessage(errorMsg.create());
         }

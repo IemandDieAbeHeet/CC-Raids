@@ -146,7 +146,7 @@ public class FactionManager {
                 timerString = hours + " uur, " + minutes + " minuten";
             }
         } else {
-            if(minutes < 1) {
+            if(minutes <= 1) {
                 timerString = "1 minuut!";
             } else {
                 timerString = minutes + " minuten";

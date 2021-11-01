@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 public class RaidAlertEmbedBuilder extends EmbedBuilder {
-    public RaidAlertEmbedBuilder(RaidAlert raidAlert) {
+    public RaidAlertEmbedBuilder(RaidAlert raidAlert, String title) {
         super();
 
         int i = 0;
@@ -37,14 +37,14 @@ public class RaidAlertEmbedBuilder extends EmbedBuilder {
         factionsField = new MessageEmbed.Field(factionsField.getName(),
                 factions.toString(), false);
 
-        this.setTitle("Raid alert!");
+        this.setTitle(title);
         this.addField(playersField);
         this.addField(factionsField);
     }
 
-    public void addTimerField(int countdown, String text) {
-        MessageEmbed.Field timerField = new MessageEmbed.Field("Timer",
-                text + FactionManager.generateCountdownTimeString(countdown), false);
+    public void addTimerField(int countdown, String title) {
+        MessageEmbed.Field timerField = new MessageEmbed.Field(title,
+                FactionManager.generateCountdownTimeString(countdown), false);
 
         this.addField(timerField);
     }
