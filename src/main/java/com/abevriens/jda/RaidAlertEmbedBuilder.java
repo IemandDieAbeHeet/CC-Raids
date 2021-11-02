@@ -38,8 +38,9 @@ public class RaidAlertEmbedBuilder extends EmbedBuilder {
                 factions.toString(), false);
 
         this.setTitle(title);
-        this.addField(playersField);
-        this.addField(factionsField);
+        this.setDescription("Deze raid alert is verstuurd omdat iemand jouw faction is betreden.");
+        //this.addField(playersField);
+        //this.addField(factionsField);
     }
 
     public void addTimerField(int countdown, String title) {

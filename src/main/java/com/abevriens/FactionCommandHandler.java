@@ -207,6 +207,16 @@ public class FactionCommandHandler implements CommandExecutor {
                             player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
+                    case "confirmalert":
+                        if(args.length > 1) {
+                            new Factions_ConfirmRaidAlert(commandContext, args[1]);
+                        } else {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen faction naam opgegeven, gebruik het commando als volgt:",
+                                    "/factions confirmalert [faction]");
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
+                        break;
                     default:
                         new Factions_HelpError(commandContext, "Commando argument niet gevonden, probeer iets anders.");
                 }

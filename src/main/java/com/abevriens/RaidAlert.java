@@ -6,11 +6,14 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class RaidAlert {
@@ -27,6 +30,7 @@ public class RaidAlert {
     public boolean openCountdownStarted;
     public List<String> enteredPlayerList;
     public List<String> enteredFactionList;
+    public List<String> playersAllowedToConfirm = new ArrayList<>();
 
     private final Timer timer = new Timer(true);
 
@@ -106,6 +110,19 @@ public class RaidAlert {
             }
         }
 
+        for(String playerName : enteredPlayerList) {
+            CC_Player player = CrackCityRaids.instance.playerManager.getCCPlayer(playerName);
+            if(player != null) {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(player.uuid));
+
+                if (offlinePlayer.isOnline()) {
+                    ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg("De raid bij de faction "
+                            + faction.factionName + " is gestart!");
+                    Objects.requireNonNull(offlinePlayer.getPlayer()).spigot().sendMessage(successMsg.create());
+                }
+            }
+        }
+
         openCountdownStarted = true;
 
         boolean nullChecked = false;
@@ -162,6 +179,9 @@ public class RaidAlert {
     }
 
     private void endOpenTimerMessage() {
+        enteredFactionList.clear();
+        enteredPlayerList.clear();
+        playersAllowedToConfirm.clear();
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
         RaidAlertEmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(this, "Raid is gestopt.");
         raidAlertEmbedBuilder.setColor(COLOR_END);
@@ -197,7 +217,6 @@ public class RaidAlert {
         raidAlertEmbedBuilder.setColor(COLOR_ALERT);
 
         channel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
-            message.pin().queue();
             faction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         });
@@ -209,7 +228,6 @@ public class RaidAlert {
         raidAlertEmbedBuilder.setColor(COLOR_OPEN);
 
         channel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
-            message.pin().queue();
             faction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
             CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         });

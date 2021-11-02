@@ -4,7 +4,12 @@ import com.abevriens.jda.DiscordIdEnum;
 import com.abevriens.jda.RaidAlertEmbedBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,19 +62,23 @@ public class PlayerMoveListener implements Listener {
                 player.spigot().sendMessage(errorMsg.create());
                 player.teleport(cc_player.previousLocation);
             } else {
-                errorMsg = TextUtil.GenerateErrorMsg(
-                        "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
-                                "Je kunt over 6 uur de faction betreden en beginnen met raiden.");
-                if(!closestFaction.raidAlert.enteredFactionList.contains(cc_player.faction.factionName)) {
-                    closestFaction.raidAlert.enteredFactionList.add(cc_player.faction.factionName);
-                }
+                closestFaction.raidAlert.playersAllowedToConfirm.add(cc_player.uuid);
 
-                if(!closestFaction.raidAlert.enteredPlayerList.contains(cc_player.displayName)) {
-                    closestFaction.raidAlert.enteredPlayerList.add(cc_player.displayName);
-                }
+                ComponentBuilder confirmRaidAlertMsg = new ComponentBuilder();
 
-                closestFaction.raidAlert.runRaidTimer();
-                player.spigot().sendMessage(errorMsg.create());
+                TextComponent confirmMsgText = new TextComponent("Wil je een raid alert versturen naar de faction " +
+                        closestFaction.factionName + "? ");
+                confirmMsgText.setColor(ChatColor.GOLD);
+
+                TextComponent requestMsgButton = new TextComponent("[Verstuur]");
+                requestMsgButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/factions confirmalert "
+                        + closestFaction.factionName));
+                requestMsgButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new Text("Klik om te versturen!")));
+
+                confirmRaidAlertMsg.append(confirmMsgText).append(requestMsgButton);
+
+                player.spigot().sendMessage(confirmRaidAlertMsg.create());
                 player.teleport(cc_player.previousLocation);
             }
         } else {
