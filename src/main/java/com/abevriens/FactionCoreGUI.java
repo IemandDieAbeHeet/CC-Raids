@@ -17,7 +17,7 @@ import java.util.*;
 
 public class FactionCoreGUI implements Listener {
     private final Inventory inventory;
-    private final Map<ItemStack, FactionCoreGUINavigation> navigationItemMap = new HashMap<>();
+    private final Map<ItemStack, FactionCoreGUIMenuItems> menuItemMap = new HashMap<>();
     private final List<Material> incrementMaterials = new ArrayList<Material>() {{
         add(Material.COAL);
         add(Material.IRON_INGOT);
@@ -32,12 +32,12 @@ public class FactionCoreGUI implements Listener {
         add(20);
     }};
 
-    private final Map<FactionCoreGUINavigation, Integer> navigationInventoryPositionMap =
-    new HashMap<FactionCoreGUINavigation, Integer>() {{
-       put(FactionCoreGUINavigation.DECREASE_SIZE_X, 21);
-       put(FactionCoreGUINavigation.INCREASE_SIZE_X, 23);
-       put(FactionCoreGUINavigation.DECREASE_SIZE_Y, 31);
-       put(FactionCoreGUINavigation.INCREASE_SIZE_Y, 13);
+    private final Map<FactionCoreGUIMenuItems, Integer> navigationInventoryPositionMap =
+    new HashMap<FactionCoreGUIMenuItems, Integer>() {{
+       put(FactionCoreGUIMenuItems.DECREASE_SIZE_X, 21);
+       put(FactionCoreGUIMenuItems.INCREASE_SIZE_X, 23);
+       put(FactionCoreGUIMenuItems.DECREASE_SIZE_Y, 31);
+       put(FactionCoreGUIMenuItems.INCREASE_SIZE_Y, 13);
     }};
 
     private int currentIncrement = 0;
@@ -54,7 +54,7 @@ public class FactionCoreGUI implements Listener {
         changeIncrementItem = generateIncrementItem();
         updateNavigationItems(factionCore);
         inventory.setItem(22, changeIncrementItem);
-        navigationItemMap.put(changeIncrementItem, FactionCoreGUINavigation.CHANGE_INCREMENT);
+        menuItemMap.put(changeIncrementItem, FactionCoreGUIMenuItems.CHANGE_INCREMENT);
     }
 
     protected ItemStack generateIncrementItem() {
@@ -63,9 +63,9 @@ public class FactionCoreGUI implements Listener {
                 "Verander de toename/afname van de grootte per klik.");
     }
 
-    protected ItemStack generateNavigationItem(FactionCoreGUINavigation navigation, FactionCore factionCore) {
+    protected ItemStack generateMenuItem(FactionCoreGUIMenuItems menu, FactionCore factionCore) {
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionCore.factionName);
-        switch (navigation) {
+        switch (menu) {
             case DECREASE_SIZE_X:
                 return createGUIItem(Material.RED_CONCRETE,
                         "Verklein X as (x: " + faction.xSize + ", y: " + faction.ySize + ")",
@@ -82,18 +82,22 @@ public class FactionCoreGUI implements Listener {
                 return  createGUIItem(Material.GREEN_CONCRETE,
                         "Vergroot Y as (x: " + faction.xSize + ", y: " + faction.ySize + ")",
                         "Vergroot de zone van je base in de Y as");
+            case CHANGE_RAIDTIMER:
+                return createGUIItem(Material.CLOCK,
+                        "Verander de raid timer tijd: " + faction.raidAlert.maxOpenCountdown,
+                        "Klik op de linkermuisknop om met 1 uur te verhogen, rechtermuisknop om met 1 uur te verlagen.");
         }
         return null;
     }
 
     protected void updateNavigationItems(FactionCore factionCore) {
-        for(FactionCoreGUINavigation navigation : navigationInventoryPositionMap.keySet()) {
+        for(FactionCoreGUIMenuItems navigation : navigationInventoryPositionMap.keySet()) {
             ItemStack item;
             ItemStack currentItem;
-            item = generateNavigationItem(navigation, factionCore);
+            item = generateMenuItem(navigation, factionCore);
             currentItem = inventory.getItem(navigationInventoryPositionMap.get(navigation));
-            navigationItemMap.remove(currentItem);
-            navigationItemMap.put(item, navigation);
+            menuItemMap.remove(currentItem);
+            menuItemMap.put(item, navigation);
             inventory.setItem(navigationInventoryPositionMap.get(navigation), item);
         }
     }
@@ -102,11 +106,13 @@ public class FactionCoreGUI implements Listener {
         final ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(name);
+        if(meta != null) {
+            meta.setDisplayName(name);
 
-        meta.setLore(Arrays.asList(lore));
+            meta.setLore(Arrays.asList(lore));
 
-        item.setItemMeta(meta);
+            item.setItemMeta(meta);
+        }
 
         return item;
     }
@@ -128,7 +134,7 @@ public class FactionCoreGUI implements Listener {
         final Player player = (Player) e.getWhoClicked();
         CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
 
-        FactionCoreGUINavigation navigation = navigationItemMap.get(clickedItem);
+        FactionCoreGUIMenuItems navigation = menuItemMap.get(clickedItem);
         if (navigation != null) {
             ComponentBuilder errorMsg;
             ComponentBuilder successMsg;
@@ -193,9 +199,15 @@ public class FactionCoreGUI implements Listener {
                     }
                     ItemStack newIncrementItem = generateIncrementItem();
                     inventory.setItem(22, newIncrementItem);
-                    navigationItemMap.remove(changeIncrementItem);
-                    navigationItemMap.put(newIncrementItem, FactionCoreGUINavigation.CHANGE_INCREMENT);
+                    menuItemMap.remove(changeIncrementItem);
+                    menuItemMap.put(newIncrementItem, FactionCoreGUIMenuItems.CHANGE_INCREMENT);
                     changeIncrementItem = newIncrementItem;
+                case CHANGE_RAIDTIMER:
+                    if(e.isLeftClick()) {
+                        
+                    } else {
+
+                    }
             }
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(cc_player.faction);

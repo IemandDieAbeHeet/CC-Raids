@@ -27,9 +27,18 @@ public class PlayerMoveListener implements Listener {
         if(cc_player.faction == closestFaction) return;
 
         if(isWithinBounds(event.getFrom(), closestCore)) {
-            player.teleport(cc_player.previousLocation);
             ComponentBuilder errorMsg;
-            if(closestFaction.raidAlert.raidCountdownStarted) {
+            if(closestFaction.raidAlert.openCountdownStarted) {
+                ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg("Je bent de faction " +
+                        closestFaction.factionName + " betreden. Raid alles binnen " + FactionManager.generateCountdownTimeString(
+                                closestFaction.raidAlert.openCountdown));
+
+                if(!cc_player.isWithinFactionBounds) {
+                    player.spigot().sendMessage(successMsg.create());
+                }
+
+                cc_player.isWithinFactionBounds = true;
+            } else if(closestFaction.raidAlert.raidCountdownStarted) {
                 errorMsg = TextUtil.GenerateErrorMsg("Je probeert een faction te betreden die niet " +
                         "van jou is. Er is al een raid timer gestart en je kunt over " +
                         FactionManager.generateCountdownTimeString(closestFaction.raidAlert.raidCountdown) +
@@ -45,8 +54,9 @@ public class PlayerMoveListener implements Listener {
                 if (closestFaction.discordIdMap != null) {
                     closestFaction.raidAlert.updateRaidTimerMessage();
                 }
+                player.spigot().sendMessage(errorMsg.create());
+                player.teleport(cc_player.previousLocation);
             } else {
-                closestFaction.raidAlert.raidCountdownStarted = true;
                 errorMsg = TextUtil.GenerateErrorMsg(
                         "Je probeert een faction te betreden die niet van jou is, er is een raid alert verstuurd. " +
                                 "Je kunt over 6 uur de faction betreden en beginnen met raiden.");
@@ -59,8 +69,11 @@ public class PlayerMoveListener implements Listener {
                 }
 
                 closestFaction.raidAlert.runRaidTimer();
+                player.spigot().sendMessage(errorMsg.create());
+                player.teleport(cc_player.previousLocation);
             }
-            player.spigot().sendMessage(errorMsg.create());
+        } else {
+            cc_player.isWithinFactionBounds = false;
         }
 
         cc_player.previousLocation = event.getFrom();

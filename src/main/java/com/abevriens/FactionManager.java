@@ -1,10 +1,12 @@
 package com.abevriens;
 
 import com.abevriens.jda.DiscordIdEnum;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.*;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.util.*;
 
@@ -19,6 +21,27 @@ public class FactionManager {
             for (POJO_Faction faction : factions) {
                 factionList.add(POJOToFaction(faction));
                 factionNameList.add(faction.factionName);
+            }
+
+            for(Faction faction : factionList) {
+                //Check of er een raid timer in het info kanaal staat terwijl er eigenlijk geen countdown is gestart en
+                //verwijder deze.
+                if(!faction.raidAlert.openCountdownStarted && !faction.raidAlert.raidCountdownStarted) {
+                    if(faction.discordIdMap.get(DiscordIdEnum.TIMER) != null) {
+                        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+                                faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
+
+                        if(infoChannel == null) continue;
+                        infoChannel.retrieveMessageById(faction.discordIdMap.get(DiscordIdEnum.TIMER))
+                                .queue(found -> {
+                                    found.delete().queue();
+                                    faction.discordIdMap.remove(DiscordIdEnum.TIMER);
+                                });
+                    }
+                }
+
+                if (faction.raidAlert.raidCountdownStarted) faction.raidAlert.runRaidTimer();
+                if (faction.raidAlert.openCountdownStarted) faction.raidAlert.runOpenTimer();
             }
         } catch(CodecConfigurationException e) {
             CrackCityRaids.instance.getLogger().info(e.getMessage());
@@ -38,8 +61,8 @@ public class FactionManager {
     public static Faction emptyFaction = new Faction(null, "None", null,
                 JoinStatus.OPEN, null, null, 0, 0, null,
             null, new RaidAlert(
-                    "None", 360, 360, false,
-            false, new ArrayList<>(), new ArrayList<>()));
+                    "None", 360, 360, 360,
+            360, false,false, new ArrayList<>(), new ArrayList<>()));
 
     public static Faction POJOToFaction(@NotNull POJO_Faction pojo_faction) {
         Faction faction;
@@ -68,7 +91,8 @@ public class FactionManager {
         }
 
         RaidAlert raidAlert = new RaidAlert(pojo_faction.factionName, pojo_faction.pojo_raidAlert.raidCountdown,
-                pojo_faction.pojo_raidAlert.openCountdown, pojo_faction.pojo_raidAlert.raidCountdownStarted,
+                pojo_faction.pojo_raidAlert.maxRaidCountdown, pojo_faction.pojo_raidAlert.openCountdown,
+                pojo_faction.pojo_raidAlert.maxOpenCountdown, pojo_faction.pojo_raidAlert.raidCountdownStarted,
                 pojo_faction.pojo_raidAlert.openCountdownStarted, pojo_faction.pojo_raidAlert.enteredPlayerList,
                 pojo_faction.pojo_raidAlert.enteredFactionList);
 
@@ -115,7 +139,9 @@ public class FactionManager {
         POJO_RaidAlert pojo_raidAlert = new POJO_RaidAlert();
         pojo_raidAlert.alertedFactionName = faction.factionName;
         pojo_raidAlert.raidCountdownStarted = faction.raidAlert.raidCountdownStarted;
+        pojo_raidAlert.maxRaidCountdown = faction.raidAlert.maxRaidCountdown;
         pojo_raidAlert.openCountdownStarted = faction.raidAlert.openCountdownStarted;
+        pojo_raidAlert.maxOpenCountdown = faction.raidAlert.maxOpenCountdown;
         pojo_raidAlert.openCountdown = faction.raidAlert.openCountdown;
         pojo_raidAlert.raidCountdown = faction.raidAlert.raidCountdown;
         pojo_raidAlert.enteredFactionList = faction.raidAlert.enteredFactionList;

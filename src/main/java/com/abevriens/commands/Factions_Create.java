@@ -12,6 +12,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -57,8 +58,8 @@ public class Factions_Create {
                     10, 10,
                     new ArrayList<>(),
                     discordIdMap,
-                    new RaidAlert(name, 360, 360, false, false,
-                            new ArrayList<>(), new ArrayList<>())
+                    new RaidAlert(name, 360, 360, 360, 360,
+                            false, false, new ArrayList<>(), new ArrayList<>())
             );
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
@@ -70,15 +71,19 @@ public class Factions_Create {
             commandContext.factionManager.factionList.add(faction);
 
             RoleAction createRole = CrackCityRaids.instance.discordManager.getGuild().createRole();
-            createRole.setName(name).queue();
             Consumer<Role> roleCallback = (roleResponse) -> {
                 Faction callbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
                 callbackFaction.discordIdMap.put(DiscordIdEnum.ROLE, roleResponse.getId());
                 CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(callbackFaction));
                 CrackCityRaids.instance.discordManager.getGuild().addRoleToMember(commandContext.cc_player.discordId, roleResponse).queue();
                 Random rg = new Random();
-                roleResponse.getManager().setColor(rg.nextInt(255)).queue();
-                roleResponse.getManager().setHoisted(true).queue();
+                float r = rg.nextFloat();
+                float g = rg.nextFloat();
+                float b = rg.nextFloat();
+                roleResponse.getManager()
+                        .setColor(new Color(r, g, b))
+                        .setHoisted(true)
+                        .setName(name).queue();
 
                 ChannelAction<Category> createCategory = CrackCityRaids.instance.discordManager.getGuild().createCategory(
                                 "Faction: " + name)
@@ -89,7 +94,9 @@ public class Factions_Create {
                     categoryCallbackFaction.discordIdMap.put(DiscordIdEnum.CATEGORY, categoryResponse.getId());
                     CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(categoryCallbackFaction));
 
-                    ChannelAction<TextChannel> createInfoChannel = categoryResponse.createTextChannel("info");
+                    ChannelAction<TextChannel> createInfoChannel = categoryResponse.createTextChannel("info")
+                            .addPermissionOverride(roleResponse, EnumSet.of(Permission.VIEW_CHANNEL),
+                                    EnumSet.of(Permission.MESSAGE_WRITE));
                     Consumer<TextChannel> infoCallback = (infoResponse) -> {
                         Faction infoCallbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
                         infoCallbackFaction.discordIdMap.put(DiscordIdEnum.INFO_CHANNEL, infoResponse.getId());
