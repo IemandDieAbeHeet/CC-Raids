@@ -11,12 +11,12 @@ import java.util.Objects;
 public class CrackCityRaids extends JavaPlugin {
     public static CrackCityRaids instance;
 
-    public MongoDBHandler dbHandler;
-    public PlayerManager playerManager;
-    public FactionManager factionManager;
-    public FactionCoreManager factionCoreManager;
-    public DiscordManager discordManager;
-    public ConfigurationManager configurationManager;
+    public static MongoDBHandler dbHandler;
+    public static PlayerManager playerManager;
+    public static FactionManager factionManager;
+    public static FactionCoreManager factionCoreManager;
+    public static DiscordManager discordManager;
+    public static ConfigurationManager configurationManager;
 
     @Override
     public void onEnable() {
