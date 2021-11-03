@@ -43,7 +43,6 @@ public class Factions_ConfirmRaidAlert {
 
             faction.raidAlert.runRaidTimer();
             commandContext.player.spigot().sendMessage(successMsg.create());
-            commandContext.player.teleport(commandContext.cc_player.previousLocation);
         }
     }
 }
