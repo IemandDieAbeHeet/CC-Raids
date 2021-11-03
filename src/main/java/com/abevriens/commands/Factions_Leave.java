@@ -28,6 +28,7 @@ public class Factions_Leave {
             commandContext.player.spigot().sendMessage(errorMessage);
         } else {
             commandContext.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(commandContext.player.getUniqueId()), FactionManager.emptyFaction);
+            commandContext.cc_player.factionChatEnabled = false;
             TextComponent leaveMessage = new TextComponent("Faction succesvol verlaten.");
             leaveMessage.setColor(ChatColor.GREEN);
             commandContext.player.spigot().sendMessage(leaveMessage);

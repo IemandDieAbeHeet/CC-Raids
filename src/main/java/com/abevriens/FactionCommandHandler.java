@@ -217,6 +217,32 @@ public class FactionCommandHandler implements CommandExecutor {
                             player.spigot().sendMessage(errorMsg.create());
                         }
                         break;
+                    case "chat":
+                        if(args.length < 2) {
+                            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                    "Geen subcommando opgegeven, gebruik het commando als volgt:",
+                                    "/factions chat [on, off]");
+
+                            player.spigot().sendMessage(errorMsg.create());
+                            break;
+                        }
+
+                        ComponentBuilder successMsg;
+                        switch (args[1]) {
+                            case "on":
+                                new Factions_Chat(commandContext, true);
+                                break;
+                            case "off":
+                                new Factions_Chat(commandContext, false);
+                                break;
+                            default:
+                                ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                        "Incorrect subcommando opgegeven, bekijk alle subcommando's met /factions help");
+
+                                player.spigot().sendMessage(errorMsg.create());
+                                break;
+                        }
+                        break;
                     default:
                         new Factions_HelpError(commandContext, "Commando argument niet gevonden, probeer iets anders.");
                 }

@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -61,6 +62,15 @@ public class PlayerManager {
 
     public CC_Player getCCPlayer(OfflinePlayer offlinePlayer) {
         return CCPlayerHashMap.get(offlinePlayer);
+    }
+
+    public CC_Player getPlayerFromDiscordId(@NotNull String discordId) {
+        for(CC_Player cc_player : CCPlayerHashMap.values()) {
+            if(discordId.equals(cc_player.discordId)) {
+                return cc_player;
+            }
+        }
+        return null;
     }
 
     public void setPlayerFaction(OfflinePlayer offlinePlayer, Faction faction) {

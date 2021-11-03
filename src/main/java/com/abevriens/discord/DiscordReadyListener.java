@@ -14,6 +14,8 @@ public class DiscordReadyListener extends ListenerAdapter {
         HashMap<String, Object> discordConfig = CrackCityRaids.instance.configurationManager.getDiscordConfig();
 
         discordManager.infoChannel = discordManager.jda.getTextChannelById((Long) discordConfig.get("info_channel_id"));
+        discordManager.minecraftChatChannel = discordManager.jda.getTextChannelById(
+                (Long) discordConfig.get("minecraft_chat_channel_id"));
 
         //Always load factions before players. LoadPlayers converts POJO_Players
         //to CC_Players which requires factions to be loaded

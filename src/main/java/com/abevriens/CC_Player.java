@@ -13,7 +13,8 @@ public class CC_Player {
     public List<String> pendingRequests;
     public Location previousLocation = new Vector(0, 0, 0).toLocation(Bukkit.getWorld("world"));
     public String discordId;
-    public boolean isWithinFactionBounds;
+    public boolean isWithinFactionBounds = false;
+    public boolean factionChatEnabled = false;
 
     public CC_Player(String _displayName, String _uuid, Faction _faction, List<String> _pendingRequests, String _discordId) {
         displayName = _displayName;
