@@ -9,11 +9,10 @@ import net.dv8tion.jda.api.requests.ErrorResponse;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class RaidAlert {
@@ -49,6 +48,7 @@ public class RaidAlert {
     }
 
     public void runRaidTimer() {
+        raidCountdown = maxRaidCountdown;
         raidCountdownStarted = true;
 
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
@@ -78,7 +78,6 @@ public class RaidAlert {
             public void run() {
                 if(raidCountdown < 1 || openCountdownStarted) {
                     raidCountdownStarted = false;
-                    raidCountdown = maxRaidCountdown;
                     cancel();
                     runOpenTimer();
                 } else {
@@ -93,6 +92,8 @@ public class RaidAlert {
     }
 
     public void runOpenTimer() {
+        openCountdown = maxOpenCountdown;
+        openCountdownStarted = true;
         Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
         TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
@@ -123,8 +124,6 @@ public class RaidAlert {
             }
         }
 
-        openCountdownStarted = true;
-
         boolean nullChecked = false;
         if(faction.discordIdMap.get(DiscordIdEnum.TIMER) == null) {
             sendOpenAlertEmbed(infoChannel, faction);
@@ -146,7 +145,6 @@ public class RaidAlert {
             public void run() {
                 if(openCountdown < 1 || raidCountdownStarted) {
                     openCountdownStarted = false;
-                    openCountdown = maxOpenCountdown;
                     cancel();
                     endOpenTimerMessage();
                 } else {

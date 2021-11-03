@@ -35,8 +35,8 @@ public class FactionManager {
                         infoChannel.retrieveMessageById(faction.discordIdMap.get(DiscordIdEnum.TIMER))
                                 .queue(found -> {
                                     found.delete().queue();
-                                    faction.discordIdMap.remove(DiscordIdEnum.TIMER);
                                 });
+                        faction.discordIdMap.remove(DiscordIdEnum.TIMER);
                     }
                 }
 
@@ -179,5 +179,10 @@ public class FactionManager {
             }
         }
         return timerString;
+    }
+
+    public static String generateShortCountdownTimeString(int timeInMinutes) {
+        int hours = (int) Math.floor((double) timeInMinutes / 60);
+        return hours + " uur";
     }
 }

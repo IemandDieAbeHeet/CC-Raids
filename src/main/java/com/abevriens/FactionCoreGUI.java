@@ -18,27 +18,28 @@ import java.util.*;
 public class FactionCoreGUI implements Listener {
     private final Inventory inventory;
     private final Map<ItemStack, FactionCoreGUIMenuItems> menuItemMap = new HashMap<>();
-    private final List<Material> incrementMaterials = new ArrayList<Material>() {{
+    private final List<Material> incrementMaterials = new ArrayList<>() {{
         add(Material.COAL);
         add(Material.IRON_INGOT);
         add(Material.GOLD_INGOT);
         add(Material.DIAMOND);
     }};
 
-    private final List<Integer> increments = new ArrayList<Integer>() {{
+    private final List<Integer> increments = new ArrayList<>() {{
         add(1);
         add(5);
         add(10);
         add(20);
     }};
 
-    private final Map<FactionCoreGUIMenuItems, Integer> navigationInventoryPositionMap =
-    new HashMap<FactionCoreGUIMenuItems, Integer>() {{
-       put(FactionCoreGUIMenuItems.DECREASE_SIZE_X, 21);
-       put(FactionCoreGUIMenuItems.INCREASE_SIZE_X, 23);
-       put(FactionCoreGUIMenuItems.DECREASE_SIZE_Y, 31);
-       put(FactionCoreGUIMenuItems.INCREASE_SIZE_Y, 13);
-    }};
+    private final Map<FactionCoreGUIMenuItems, Integer> menuInventoryPositionMap =
+            new HashMap<>() {{
+                put(FactionCoreGUIMenuItems.DECREASE_SIZE_X, 21);
+                put(FactionCoreGUIMenuItems.INCREASE_SIZE_X, 23);
+                put(FactionCoreGUIMenuItems.DECREASE_SIZE_Y, 31);
+                put(FactionCoreGUIMenuItems.INCREASE_SIZE_Y, 13);
+                put(FactionCoreGUIMenuItems.CHANGE_RAIDTIMER, 19);
+            }};
 
     private int currentIncrement = 0;
 
@@ -52,7 +53,7 @@ public class FactionCoreGUI implements Listener {
 
     public void initializeItems(FactionCore factionCore) {
         changeIncrementItem = generateIncrementItem();
-        updateNavigationItems(factionCore);
+        updateMenuItems(factionCore);
         inventory.setItem(22, changeIncrementItem);
         menuItemMap.put(changeIncrementItem, FactionCoreGUIMenuItems.CHANGE_INCREMENT);
     }
@@ -84,21 +85,23 @@ public class FactionCoreGUI implements Listener {
                         "Vergroot de zone van je base in de Y as");
             case CHANGE_RAIDTIMER:
                 return createGUIItem(Material.CLOCK,
-                        "Verander de raid timer tijd: " + faction.raidAlert.maxOpenCountdown,
-                        "Klik op de linkermuisknop om met 1 uur te verhogen, rechtermuisknop om met 1 uur te verlagen.");
+                        "Verander de raid timer tijd. (" +
+                                FactionManager.generateShortCountdownTimeString(faction.raidAlert.maxRaidCountdown) + ")",
+                        "Klik op de linkermuisknop om met 1 uur te verhogen,",
+                                "en de rechtermuisknop om met 1 uur te verlagen.");
         }
         return null;
     }
 
-    protected void updateNavigationItems(FactionCore factionCore) {
-        for(FactionCoreGUIMenuItems navigation : navigationInventoryPositionMap.keySet()) {
+    protected void updateMenuItems(FactionCore factionCore) {
+        for(FactionCoreGUIMenuItems menuItem : menuInventoryPositionMap.keySet()) {
             ItemStack item;
             ItemStack currentItem;
-            item = generateMenuItem(navigation, factionCore);
-            currentItem = inventory.getItem(navigationInventoryPositionMap.get(navigation));
+            item = generateMenuItem(menuItem, factionCore);
+            currentItem = inventory.getItem(menuInventoryPositionMap.get(menuItem));
             menuItemMap.remove(currentItem);
-            menuItemMap.put(item, navigation);
-            inventory.setItem(navigationInventoryPositionMap.get(navigation), item);
+            menuItemMap.put(item, menuItem);
+            inventory.setItem(menuInventoryPositionMap.get(menuItem), item);
         }
     }
 
@@ -145,7 +148,7 @@ public class FactionCoreGUI implements Listener {
                         player.spigot().sendMessage(errorMsg.create());
                     } else {
                         cc_player.faction.xSize -= increments.get(currentIncrement);
-                        updateNavigationItems(cc_player.faction.factionCore);
+                        updateMenuItems(cc_player.faction.factionCore);
                         successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte verkleind");
                         player.spigot().sendMessage(successMsg.create());
                     }
@@ -156,7 +159,7 @@ public class FactionCoreGUI implements Listener {
                         player.spigot().sendMessage(errorMsg.create());
                     } else {
                         cc_player.faction.ySize -= increments.get(currentIncrement);
-                        updateNavigationItems(cc_player.faction.factionCore);
+                        updateMenuItems(cc_player.faction.factionCore);
                         successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte verkleind");
                         player.spigot().sendMessage(successMsg.create());
                     }
@@ -167,7 +170,7 @@ public class FactionCoreGUI implements Listener {
                         player.spigot().sendMessage(errorMsg.create());
                     } else {
                         cc_player.faction.xSize += increments.get(currentIncrement);
-                        updateNavigationItems(cc_player.faction.factionCore);
+                        updateMenuItems(cc_player.faction.factionCore);
                         successMsg = TextUtil.GenerateSuccessMsg("Je hebt de X grootte vergroot");
                         player.spigot().sendMessage(successMsg.create());
                     }
@@ -178,7 +181,7 @@ public class FactionCoreGUI implements Listener {
                         player.spigot().sendMessage(errorMsg.create());
                     } else {
                         cc_player.faction.ySize += increments.get(currentIncrement);
-                        updateNavigationItems(cc_player.faction.factionCore);
+                        updateMenuItems(cc_player.faction.factionCore);
                         successMsg = TextUtil.GenerateSuccessMsg("Je hebt de Y grootte vergroot");
                         player.spigot().sendMessage(successMsg.create());
                     }
@@ -204,10 +207,23 @@ public class FactionCoreGUI implements Listener {
                     changeIncrementItem = newIncrementItem;
                 case CHANGE_RAIDTIMER:
                     if(e.isLeftClick()) {
-                        
+                        if((cc_player.faction.raidAlert.maxRaidCountdown + 60) <= 960) {
+                            cc_player.faction.raidAlert.maxRaidCountdown += 60;
+                        } else {
+                            errorMsg = TextUtil.GenerateErrorMsg("Je kunt de raid countdown niet " +
+                                    "hoger zetten dan 16 uur!");
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
                     } else {
-
+                        if(cc_player.faction.raidAlert.maxRaidCountdown > 360) {
+                            cc_player.faction.raidAlert.maxRaidCountdown -= 60;
+                        } else {
+                            errorMsg = TextUtil.GenerateErrorMsg("Je kunt de raid countdown niet lager zetten " +
+                                    "dan 6 uur!");
+                            player.spigot().sendMessage(errorMsg.create());
+                        }
                     }
+                    updateMenuItems(cc_player.faction.factionCore);
             }
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(cc_player.faction);
