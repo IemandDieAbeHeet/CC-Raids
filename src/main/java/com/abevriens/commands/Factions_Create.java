@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Factions_Create {
@@ -102,7 +103,9 @@ public class Factions_Create {
                         infoCallbackFaction.discordIdMap.put(DiscordIdEnum.INFO_CHANNEL, infoResponse.getId());
                         CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(infoCallbackFaction));
                         infoResponse.sendMessage("Dit is het info kanaal van jouw faction, hier krijg je bijvoorbeeld " +
-                                "notificaties binnen over mensen die je faction hebben betreden.").queue();
+                                "notificaties binnen over mensen die je faction hebben betreden.").queue((message -> {
+                                    message.delete().queueAfter(10, TimeUnit.MINUTES);
+                        }));
                     };
                     createInfoChannel.queue(infoCallback);
 
