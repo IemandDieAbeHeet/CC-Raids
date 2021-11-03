@@ -16,7 +16,7 @@ public class PlayerChatListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(event.getPlayer());
         if(!cc_player.factionChatEnabled) {
-            CrackCityRaids.instance.discordManager.minecraftChatChannel.sendMessage(
+            CrackCityRaids.instance.discordManager.getMinecraftChatChannel().sendMessage(
                     "[Minecraft] " + event.getPlayer().getDisplayName() + ":\n" + event.getMessage()).queue();
         } else {
             TextChannel factionChat = CrackCityRaids.instance.discordManager.getGuild()

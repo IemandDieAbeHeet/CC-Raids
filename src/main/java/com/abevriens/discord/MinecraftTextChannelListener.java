@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class MinecraftTextChannelListener extends ListenerAdapter {
     @Override
@@ -21,7 +22,15 @@ public class MinecraftTextChannelListener extends ListenerAdapter {
         CC_Player cc_player = CrackCityRaids.instance.playerManager.getPlayerFromDiscordId(
                 Objects.requireNonNull(message.getMember()).getId());
 
-        if(event.getChannel().getId().equals(CrackCityRaids.instance.discordManager.minecraftChatChannel.getId())) {
+        if(cc_player == null) {
+            message.getChannel().sendMessage(event.getAuthor().getAsMention() + " je hebt je Discord niet gelinkt met je " +
+                    "Minecraft account, doe dit door in de Minecraft server /factions link " +
+                        event.getAuthor().getName() + " te typen.")
+                    .queue(sent -> {
+                        sent.delete().queueAfter(30, TimeUnit.SECONDS);
+                        message.delete().queueAfter(30, TimeUnit.SECONDS);
+                    });
+        } else if(event.getChannel().getId().equals(CrackCityRaids.instance.discordManager.getMinecraftChatChannel().getId())) {
             CrackCityRaids.instance.getServer().broadcastMessage(
                     ChatColor.BLUE + "[Discord Chat] " +  ChatColor.RESET + cc_player.displayName + ": " + content);
         } else if(event.getChannel().getId().equals(cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))) {

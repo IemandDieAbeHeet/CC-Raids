@@ -5,17 +5,13 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 public class DiscordReadyListener extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         DiscordManager discordManager = CrackCityRaids.instance.discordManager;
-        HashMap<String, Object> discordConfig = CrackCityRaids.instance.configurationManager.getDiscordConfig();
 
-        discordManager.infoChannel = discordManager.jda.getTextChannelById((Long) discordConfig.get("info_channel_id"));
-        discordManager.minecraftChatChannel = discordManager.jda.getTextChannelById(
-                (Long) discordConfig.get("minecraft_chat_channel_id"));
+        discordManager.getGuild().upsertCommand("clearmc",
+                "Clear the Minecraft chat channel of all it's messages").queue();
 
         //Always load factions before players. LoadPlayers converts POJO_Players
         //to CC_Players which requires factions to be loaded
