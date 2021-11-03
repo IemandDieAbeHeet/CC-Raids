@@ -66,8 +66,8 @@ public class PlayerMoveListener implements Listener {
 
                 ComponentBuilder confirmRaidAlertMsg = new ComponentBuilder();
 
-                TextComponent confirmMsgText = new TextComponent("Wil je een raid alert versturen naar de faction " +
-                        closestFaction.factionName + "? ");
+                TextComponent confirmMsgText = new TextComponent("Je bent binnen de base van faction "
+                        + closestFaction.factionName + "!\n Wil je een raid alert versturen? ");
                 confirmMsgText.setColor(ChatColor.GOLD);
 
                 TextComponent requestMsgButton = new TextComponent("[Verstuur]");
@@ -75,6 +75,7 @@ public class PlayerMoveListener implements Listener {
                         + closestFaction.factionName));
                 requestMsgButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         new Text("Klik om te versturen!")));
+                requestMsgButton.setBold(true);
 
                 confirmRaidAlertMsg.append(confirmMsgText).append(requestMsgButton);
 
