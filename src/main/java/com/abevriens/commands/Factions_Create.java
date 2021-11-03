@@ -1,7 +1,7 @@
 package com.abevriens.commands;
 
 import com.abevriens.*;
-import com.abevriens.jda.DiscordIdEnum;
+import com.abevriens.discord.DiscordIdEnum;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Role;

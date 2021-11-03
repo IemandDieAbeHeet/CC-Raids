@@ -1,4 +1,4 @@
-package com.abevriens.jda;
+package com.abevriens.discord;
 
 import com.abevriens.FactionManager;
 import com.abevriens.RaidAlert;

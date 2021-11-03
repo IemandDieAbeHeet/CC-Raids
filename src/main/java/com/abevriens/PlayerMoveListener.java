@@ -1,9 +1,5 @@
 package com.abevriens;
 
-import com.abevriens.jda.DiscordIdEnum;
-import com.abevriens.jda.RaidAlertEmbedBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

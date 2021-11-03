@@ -1,7 +1,7 @@
 package com.abevriens;
 
 
-import com.abevriens.jda.DiscordManager;
+import com.abevriens.discord.DiscordManager;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 

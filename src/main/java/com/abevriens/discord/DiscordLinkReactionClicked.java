@@ -1,4 +1,4 @@
-package com.abevriens.jda;
+package com.abevriens.discord;
 
 import com.abevriens.CC_Player;
 import com.abevriens.CrackCityRaids;

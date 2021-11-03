@@ -1,4 +1,4 @@
-package com.abevriens.jda;
+package com.abevriens.discord;
 
 public enum DiscordIdEnum {
     CATEGORY,

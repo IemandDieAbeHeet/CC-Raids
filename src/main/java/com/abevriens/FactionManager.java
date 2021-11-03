@@ -1,12 +1,11 @@
 package com.abevriens;
 
-import com.abevriens.jda.DiscordIdEnum;
+import com.abevriens.discord.DiscordIdEnum;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bson.codecs.configuration.CodecConfigurationException;
 import org.bukkit.*;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.*;
 

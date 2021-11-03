@@ -1,7 +1,7 @@
 package com.abevriens;
 
-import com.abevriens.jda.DiscordIdEnum;
-import com.abevriens.jda.RaidAlertEmbedBuilder;
+import com.abevriens.discord.DiscordIdEnum;
+import com.abevriens.discord.RaidAlertEmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;

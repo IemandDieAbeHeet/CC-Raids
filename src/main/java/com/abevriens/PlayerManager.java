@@ -1,6 +1,6 @@
 package com.abevriens;
 
-import com.abevriens.jda.DiscordIdEnum;
+import com.abevriens.discord.DiscordIdEnum;
 import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

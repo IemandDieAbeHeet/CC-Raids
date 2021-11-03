@@ -1,4 +1,4 @@
-package com.abevriens.jda;
+package com.abevriens.discord;
 
 import com.abevriens.CrackCityRaids;
 import net.dv8tion.jda.api.events.ReadyEvent;

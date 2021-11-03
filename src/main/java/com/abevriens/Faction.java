@@ -1,6 +1,6 @@
 package com.abevriens;
 
-import com.abevriens.jda.DiscordIdEnum;
+import com.abevriens.discord.DiscordIdEnum;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
