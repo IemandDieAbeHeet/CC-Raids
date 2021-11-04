@@ -6,7 +6,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -30,7 +35,7 @@ public class Factions_LinkDiscord {
             return;
         }
 
-        List<Member> memberList = CrackCityRaids.instance.discordManager.getGuild().loadMembers().get();
+        List<Member> memberList = CrackCityRaids.discordManager.getGuild().loadMembers().get();
         Member member = null;
         for(Member guildMember : memberList) {
             if(guildMember.getEffectiveName().equals(discordName)) {
@@ -40,12 +45,23 @@ public class Factions_LinkDiscord {
 
         if(member == null) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Discord user niet gevonden, heb je de goede naam " +
-                    "opgegeven en zit je wel in de Discord server?");
+                    "opgegeven en zit je wel in de ");
+            TextComponent discordLink = new TextComponent("Discord server");
+            discordLink.setColor(ChatColor.BLUE);
+            discordLink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/jtwnAnZBc9"));
+            discordLink.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new Text("Klik om de Discord server te joinen")));
+            TextComponent end = new TextComponent("?");
+            end.setColor(ChatColor.RED);
+            end.setHoverEvent(null);
+            end.setClickEvent(null);
+            errorMsg.append(discordLink);
+            errorMsg.append(end);
             commandContext.player.spigot().sendMessage(errorMsg.create());
             return;
         }
 
-        CrackCityRaids.instance.playerManager.addDiscordRequest(member.getId(), commandContext.cc_player.uuid);
+        CrackCityRaids.playerManager.addDiscordRequest(member.getId(), commandContext.cc_player.uuid);
 
         member.getUser().openPrivateChannel().queue(privateChannel -> {
             EmbedBuilder embedBuilder = new EmbedBuilder();
