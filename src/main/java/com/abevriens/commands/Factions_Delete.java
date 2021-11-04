@@ -67,14 +67,16 @@ public class Factions_Delete {
                             .thenCompose((v) -> category.delete().submit())
                             .whenComplete((s, error) -> {
                                 if (error == null) {
-                                    commandContext.factionManager.factionList.remove(commandContext.cc_player.faction);
-                                    commandContext.factionManager.factionNameList.remove(factionName);
+                                    Faction faction = commandContext.cc_player.faction;
 
                                     for (CC_Player factionMember : factionMembers) {
                                         CrackCityRaids.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(
                                                 UUID.fromString(factionMember.uuid)), FactionManager.emptyFaction);
                                         factionMember.factionChatEnabled = false;
                                     }
+
+                                    commandContext.factionManager.factionList.remove(faction);
+                                    commandContext.factionManager.factionNameList.remove(factionName);
 
                                     CrackCityRaids.dbHandler.deleteFaction(factionName);
 
