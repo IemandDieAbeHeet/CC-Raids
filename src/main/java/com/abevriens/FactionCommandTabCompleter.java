@@ -1,6 +1,7 @@
 package com.abevriens;
 
 import com.abevriens.commands.Factions_List;
+import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -29,6 +30,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
             add("help");
             add("delete");
             add("setowner");
+            add("link");
         }
     };
 
@@ -39,6 +41,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
             add("create");
             add("info");
             add("help");
+            add("link");
         }
     };
 
@@ -108,6 +111,8 @@ public class FactionCommandTabCompleter implements TabCompleter {
                         if(!cc_player.faction.isEmptyFaction()) {
                             return GetFactionCoreCommands(cc_player.faction);
                         }
+                    case "link":
+                        return GetGuildMemberNames();
                     default:
                         return GetOnlinePlayerNames();
                 }
@@ -117,6 +122,16 @@ public class FactionCommandTabCompleter implements TabCompleter {
         }
 
         return GetOnlinePlayerNames();
+    }
+
+    private List<String> GetGuildMemberNames() {
+        List<String> names = new ArrayList<>();
+
+        for(Member member : CrackCityRaids.discordManager.getGuild().loadMembers().get()) {
+            names.add(member.getEffectiveName());
+        }
+
+        return names;
     }
 
     private List<String> GetFactionCoreCommands(Faction faction) {
