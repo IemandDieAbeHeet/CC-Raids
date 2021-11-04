@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -39,6 +40,10 @@ public class Factions_Join {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je hebt al een join request open staan bij deze " +
                     "faction!");
             commandContext.player.spigot().sendMessage(errorMsg.create());
+        } else if(!commandContext.cc_player.lastFactionChange.isBefore(Instant.now().minusSeconds(10))) {
+            ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je verandert te snel van faction, wacht 10 " +
+                    "seconden en probeer het dan opnieuw.");
+            commandContext.player.spigot().sendMessage(errorMessage.create());
         } else if(faction.isFull()) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("De faction die je probeert te joinen zit vol!");
             commandContext.player.spigot().sendMessage(errorMsg.create());
@@ -76,6 +81,7 @@ public class Factions_Join {
             }
         } else {
             Faction newFaction = CrackCityRaids.factionManager.getFaction(name);
+            commandContext.cc_player.lastFactionChange = Instant.now();
             commandContext.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(commandContext.player.getUniqueId()), newFaction);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
             commandContext.player.spigot().sendMessage(successMessage.create());
