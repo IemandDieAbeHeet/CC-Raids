@@ -1,6 +1,7 @@
 package com.abevriens.commands;
 
 import com.abevriens.CrackCityRaids;
+import com.abevriens.PlayerManager;
 import com.abevriens.TextUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
@@ -16,6 +17,8 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Factions_LinkDiscord {
     public String discordName;
@@ -46,7 +49,7 @@ public class Factions_LinkDiscord {
         if(member == null) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Discord user niet gevonden, heb je de goede naam " +
                     "opgegeven en zit je wel in de ");
-            TextComponent discordLink = new TextComponent("Discord server");
+            TextComponent discordLink = new TextComponent("[Discord server]");
             discordLink.setColor(ChatColor.BLUE);
             discordLink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/jtwnAnZBc9"));
             discordLink.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
@@ -60,6 +63,18 @@ public class Factions_LinkDiscord {
             commandContext.player.spigot().sendMessage(errorMsg.create());
             return;
         }
+
+        if(CrackCityRaids.playerManager.containsDiscordRequest(commandContext.cc_player.uuid)) {
+            ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Je hebt al een aanvraag verstuurd, wacht 30 " +
+                    "seconden om er een opnieuw te sturen.");
+
+            commandContext.player.spigot().sendMessage(errorMsg.create());
+            return;
+        }
+
+        Timer timer = new Timer();
+
+        String memberId = member.getId();
 
         CrackCityRaids.playerManager.addDiscordRequest(member.getId(), commandContext.cc_player.uuid);
 
@@ -75,6 +90,14 @@ public class Factions_LinkDiscord {
             embedBuilder.addField(infoField);
             privateChannel.sendMessage(embedBuilder.build()).queue(message -> {
                 message.addReaction("\uD83D\uDC4D").queue(reaction -> message.addReaction("\uD83D\uDC4E").queue());
+
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        CrackCityRaids.playerManager.removeDiscordRequest(memberId);
+                        message.delete().queue();
+                    }
+                }, 1000 * 30);
             });
         });
     }

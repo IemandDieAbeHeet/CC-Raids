@@ -64,15 +64,6 @@ public class PlayerManager {
         return CCPlayerHashMap.get(offlinePlayer);
     }
 
-    public CC_Player getPlayerFromDiscordId(@NotNull String discordId) {
-        for(CC_Player cc_player : CCPlayerHashMap.values()) {
-            if(discordId.equals(cc_player.discordId)) {
-                return cc_player;
-            }
-        }
-        return null;
-    }
-
     public void setPlayerFaction(OfflinePlayer offlinePlayer, Faction faction) {
         POJO_Player pojo_player = getPOJOPlayer(offlinePlayer);
         CC_Player cc_player = getCCPlayer(offlinePlayer);
@@ -134,7 +125,15 @@ public class PlayerManager {
         playerDiscordRequests.put(discordId, playerUUID);
     }
 
+    public boolean containsDiscordRequest(String playerUUID) {
+        return playerDiscordRequests.containsValue(playerUUID);
+    }
+
     public String getDiscordRequest(String discordId) {
         return playerDiscordRequests.get(discordId);
+    }
+
+    public void removeDiscordRequest(String discordId) {
+        playerDiscordRequests.remove(discordId);
     }
 }
