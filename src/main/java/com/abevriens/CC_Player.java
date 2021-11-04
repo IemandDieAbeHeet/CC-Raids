@@ -17,7 +17,6 @@ public class CC_Player {
             Objects.requireNonNull(Bukkit.getWorld("world")));
     public String discordId;
     public boolean isWithinFactionBounds = false;
-    public boolean factionChatEnabled = false;
     public Instant lastFactionChange;
 
     public CC_Player(String _displayName, String _uuid, Faction _faction, List<String> _pendingRequests, String _discordId) {

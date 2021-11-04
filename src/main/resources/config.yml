@@ -2,4 +2,3 @@ discord:
   token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   guild_id: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
   info_channel_id: xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  minecraft_chat_channel_id: xxxxxxxxxxxxxxxxxxxxxxxxxxxx

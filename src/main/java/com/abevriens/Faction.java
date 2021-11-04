@@ -34,8 +34,6 @@ public class Faction {
 
     public RaidAlert raidAlert;
 
-    public boolean discordCreated = true;
-
     public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
                    JoinStatus _joinStatus, List<String> _playerJoinRequests, FactionCore _factionCore,
                    int _xSize, int _ySize, List<Location> _occupiedBlocks, EnumMap<DiscordIdEnum, String> _discordIdMap,

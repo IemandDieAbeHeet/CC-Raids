@@ -72,7 +72,6 @@ public class Factions_Delete {
                                     for (CC_Player factionMember : factionMembers) {
                                         CrackCityRaids.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(
                                                 UUID.fromString(factionMember.uuid)), FactionManager.emptyFaction);
-                                        factionMember.factionChatEnabled = false;
                                     }
 
                                     commandContext.factionManager.factionList.remove(faction);

@@ -47,7 +47,6 @@ public class Factions_Kick {
         } else {
             OfflinePlayer offlineKickPlayer = Bukkit.getOfflinePlayer(UUID.fromString(cc_kickplayer.uuid));
             CrackCityRaids.playerManager.setPlayerFaction(offlineKickPlayer, FactionManager.emptyFaction);
-            cc_kickplayer.factionChatEnabled = false;
             ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg( cc_kickplayer.displayName + " is uit de " +
                     "faction gekickt!");
             commandContext.cc_player.faction.sendMessageToPlayers(successMsg);
