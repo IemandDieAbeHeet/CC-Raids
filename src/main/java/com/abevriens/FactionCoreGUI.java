@@ -227,7 +227,7 @@ public class FactionCoreGUI implements Listener {
             }
 
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(cc_player.faction);
-            CrackCityRaids.instance.dbHandler.updateFaction(pojo_faction);
+            CrackCityRaids.dbHandler.updateFaction(pojo_faction);
         }
     }
 

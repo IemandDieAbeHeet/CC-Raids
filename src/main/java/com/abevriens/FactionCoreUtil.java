@@ -46,8 +46,8 @@ public class FactionCoreUtil {
             block.setType(structureMat);
             oldBlock.setType(Material.AIR);
             commandContext.cc_player.faction.factionCore.blockLocation = block.getLocation();
-            CrackCityRaids.instance.factionCoreManager.updateFactionCoreLocation(commandContext.cc_player.faction.factionCore);
-            CrackCityRaids.instance.dbHandler.updateFaction(
+            CrackCityRaids.factionCoreManager.updateFactionCoreLocation(commandContext.cc_player.faction.factionCore);
+            CrackCityRaids.dbHandler.updateFaction(
                     FactionManager.FactionToPOJO(commandContext.cc_player.faction));
             BlockData data = block.getBlockData();
             commandContext.player.sendBlockChange(block.getLocation(), data);
@@ -69,8 +69,8 @@ public class FactionCoreUtil {
         oldBlock.setType(Material.AIR);
         commandContext.cc_player.faction.factionCore.blockLocation =
                 GenerateEmptyFactionCore(commandContext.cc_player.faction.factionName).blockLocation;
-        CrackCityRaids.instance.factionCoreManager.updateFactionCoreLocation(commandContext.cc_player.faction.factionCore);
-        CrackCityRaids.instance.dbHandler.updateFaction(
+        CrackCityRaids.factionCoreManager.updateFactionCoreLocation(commandContext.cc_player.faction.factionCore);
+        CrackCityRaids.dbHandler.updateFaction(
                 FactionManager.FactionToPOJO(commandContext.cc_player.faction));
         BlockData data = oldBlock.getBlockData();
         commandContext.player.sendBlockChange(oldBlock.getLocation(), data);

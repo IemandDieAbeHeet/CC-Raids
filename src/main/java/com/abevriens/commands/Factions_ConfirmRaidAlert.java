@@ -18,7 +18,7 @@ public class Factions_ConfirmRaidAlert {
     }
 
     private  void command_confirmRaidAlert() {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(factionName);
 
         if(faction.raidAlert.raidCountdownStarted || faction.raidAlert.openCountdownStarted) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Er is al een raid alert verstuurd naar deze faction.");

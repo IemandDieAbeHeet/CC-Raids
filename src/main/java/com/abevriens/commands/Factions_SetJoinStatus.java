@@ -28,7 +28,7 @@ public class Factions_SetJoinStatus {
             commandContext.player.spigot().sendMessage(errorMessage.create());
         } else {
             commandContext.cc_player.faction.joinStatus = status;
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(commandContext.cc_player.faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(commandContext.cc_player.faction));
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Join status van de faction is succesvol aangepast");
             commandContext.player.spigot().sendMessage(successMessage.create());
         }

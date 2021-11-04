@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Factions_Join {
@@ -24,7 +25,7 @@ public class Factions_Join {
     }
 
     private void command_Join() {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(name);
+        Faction faction = CrackCityRaids.factionManager.getFaction(name);
         if(commandContext.cc_player.discordId == null) {
             TextUtil.SendDiscordLinkError(commandContext.player);
         } else if(!commandContext.cc_player.faction.isEmptyFaction()) {
@@ -50,7 +51,7 @@ public class Factions_Join {
             commandContext.cc_player.pendingRequests.add(faction.factionName);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction join request is verstuurd!");
             commandContext.player.spigot().sendMessage(successMessage.create());
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
 
             TextComponent requestMsgText = new TextComponent(commandContext.cc_player.displayName + " heeft gevraagd of ze je faction " +
                     "mogen joinen! ");
@@ -70,11 +71,11 @@ public class Factions_Join {
                         requestMsg.append(requestMsgButton);
                     }
 
-                    memberOfflinePlayer.getPlayer().spigot().sendMessage(requestMsg.create());
+                    Objects.requireNonNull(memberOfflinePlayer.getPlayer()).spigot().sendMessage(requestMsg.create());
                 }
             }
         } else {
-            Faction newFaction = CrackCityRaids.instance.factionManager.getFaction(name);
+            Faction newFaction = CrackCityRaids.factionManager.getFaction(name);
             commandContext.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(commandContext.player.getUniqueId()), newFaction);
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction succesvol gejoined!");
             commandContext.player.spigot().sendMessage(successMessage.create());

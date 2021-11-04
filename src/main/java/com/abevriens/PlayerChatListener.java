@@ -14,12 +14,12 @@ import java.util.Objects;
 public class PlayerChatListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(event.getPlayer());
+        CC_Player cc_player = CrackCityRaids.playerManager.getCCPlayer(event.getPlayer());
         if(!cc_player.factionChatEnabled) {
-            CrackCityRaids.instance.discordManager.getMinecraftChatChannel().sendMessage(
+            CrackCityRaids.discordManager.getMinecraftChatChannel().sendMessage(
                     "[Minecraft] " + event.getPlayer().getDisplayName() + ":\n" + event.getMessage()).queue();
         } else {
-            TextChannel factionChat = CrackCityRaids.instance.discordManager.getGuild()
+            TextChannel factionChat = CrackCityRaids.discordManager.getGuild()
                     .getTextChannelById(cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL));
 
             if(factionChat != null) {

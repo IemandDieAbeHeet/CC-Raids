@@ -18,7 +18,7 @@ public class FactionCommandHandler implements CommandExecutor {
         if(sender instanceof Player) {
             Player player = (Player) sender;
 
-            CommandContext commandContext = new CommandContext(player, CrackCityRaids.instance.factionManager, CrackCityRaids.instance.playerManager);
+            CommandContext commandContext = new CommandContext(player, CrackCityRaids.factionManager, CrackCityRaids.playerManager);
 
             if(args.length > 0) {
                 label:
@@ -44,7 +44,7 @@ public class FactionCommandHandler implements CommandExecutor {
                         if(args.length > 1) {
                             new Factions_Info(commandContext, args[1]);
                         } else {
-                            new Factions_Info(commandContext, CrackCityRaids.instance.playerManager.getCCPlayer(player).faction.factionName);
+                            new Factions_Info(commandContext, CrackCityRaids.playerManager.getCCPlayer(player).faction.factionName);
                         }
                         break;
                     case "help":

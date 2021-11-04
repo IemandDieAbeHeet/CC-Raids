@@ -22,14 +22,14 @@ public class Factions_Info
     }
 
     private void command_Info() {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(name);
+        Faction faction = CrackCityRaids.factionManager.getFaction(name);
 
         if(name.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "Je zit nog niet in een faction, gebruik /factions join om er een te joinen " +
                             "of /factions create om een faction aan te maken.");
             commandContext.player.spigot().sendMessage(errorMsg.create());
-        } else if(!CrackCityRaids.instance.factionManager.factionNameList.contains(name)) {
+        } else if(!CrackCityRaids.factionManager.factionNameList.contains(name)) {
             ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
                     "De faction die je probeert op te zoeken bestaat niet. Je kunt alle factions bekijken met de " +
                             "command /factions list"

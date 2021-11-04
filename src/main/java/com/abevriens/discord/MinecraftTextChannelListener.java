@@ -19,7 +19,7 @@ public class MinecraftTextChannelListener extends ListenerAdapter {
 
         Message message = event.getMessage();
         String content = message.getContentRaw();
-        CC_Player cc_player = CrackCityRaids.instance.playerManager.getPlayerFromDiscordId(
+        CC_Player cc_player = CrackCityRaids.playerManager.getPlayerFromDiscordId(
                 Objects.requireNonNull(message.getMember()).getId());
 
         if(cc_player == null) {
@@ -30,7 +30,7 @@ public class MinecraftTextChannelListener extends ListenerAdapter {
                         sent.delete().queueAfter(30, TimeUnit.SECONDS);
                         message.delete().queueAfter(30, TimeUnit.SECONDS);
                     });
-        } else if(event.getChannel().getId().equals(CrackCityRaids.instance.discordManager.getMinecraftChatChannel().getId())) {
+        } else if(event.getChannel().getId().equals(CrackCityRaids.discordManager.getMinecraftChatChannel().getId())) {
             CrackCityRaids.instance.getServer().broadcastMessage(
                     ChatColor.BLUE + "[Discord Chat] " +  ChatColor.RESET + cc_player.displayName + ": " + content);
         } else if(event.getChannel().getId().equals(cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))) {

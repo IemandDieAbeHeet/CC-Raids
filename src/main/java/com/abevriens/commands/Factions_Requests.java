@@ -67,7 +67,7 @@ public class Factions_Requests {
             }
 
             OfflinePlayer request_player = Bukkit.getOfflinePlayer(UUID.fromString(list.get(j)));
-            CC_Player request_cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(request_player);
+            CC_Player request_cc_player = CrackCityRaids.playerManager.getCCPlayer(request_player);
 
             TextComponent playerNumber = new TextComponent(j + 1 + ": ");
             playerNumber.setColor(ChatColor.GOLD);

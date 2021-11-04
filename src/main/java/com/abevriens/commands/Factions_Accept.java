@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Factions_Accept {
@@ -38,7 +39,7 @@ public class Factions_Accept {
         for(String uuid : commandContext.cc_player.faction.playerJoinRequests) {
             offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
             if(offlinePlayer.getName().equals(name)) {
-                cc_requestingplayer = CrackCityRaids.instance.playerManager.getCCPlayer(offlinePlayer);
+                cc_requestingplayer = CrackCityRaids.playerManager.getCCPlayer(offlinePlayer);
                 break;
             }
         }
@@ -62,12 +63,12 @@ public class Factions_Accept {
                     "Je bent officïeel lid geworden van faction: " + commandContext.cc_player.faction.factionName);
 
             if(offlinePlayer.isOnline()) {
-                offlinePlayer.getPlayer().spigot().sendMessage(playerSuccessMsg.create());
+                Objects.requireNonNull(offlinePlayer.getPlayer()).spigot().sendMessage(playerSuccessMsg.create());
             }
 
             cc_requestingplayer.deleteRequests();
 
-            CrackCityRaids.instance.playerManager.setPlayerFaction(offlinePlayer, commandContext.cc_player.faction);
+            CrackCityRaids.playerManager.setPlayerFaction(offlinePlayer, commandContext.cc_player.faction);
         }
     }
 }

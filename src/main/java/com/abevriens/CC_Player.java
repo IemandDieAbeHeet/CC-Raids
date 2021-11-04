@@ -29,7 +29,7 @@ public class CC_Player {
      */
     public void deleteRequests() {
         for(String request : pendingRequests) {
-            Faction requestFaction = CrackCityRaids.instance.factionManager.getFaction(request);
+            Faction requestFaction = CrackCityRaids.factionManager.getFaction(request);
             requestFaction.playerJoinRequests.remove(uuid);
         }
         pendingRequests.clear();

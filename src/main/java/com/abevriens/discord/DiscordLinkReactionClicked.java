@@ -16,11 +16,11 @@ public class DiscordLinkReactionClicked extends ListenerAdapter {
     public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
         if(event.getUser() == null || event.getUser().isBot()) return;
         if(event.getReactionEmote().getEmoji().equals("\uD83D\uDC4D")) {
-            CC_Player requestingPlayer = CrackCityRaids.instance.playerManager.getCCPlayer(Bukkit.getOfflinePlayer(
-                    UUID.fromString(CrackCityRaids.instance.playerManager.getDiscordRequest(event.getUserId()))));
+            CC_Player requestingPlayer = CrackCityRaids.playerManager.getCCPlayer(Bukkit.getOfflinePlayer(
+                    UUID.fromString(CrackCityRaids.playerManager.getDiscordRequest(event.getUserId()))));
             requestingPlayer.discordId = event.getUserId();
-            CrackCityRaids.instance.dbHandler.updatePlayer(PlayerManager.CCToPOJO(requestingPlayer));
-            CrackCityRaids.instance.playerManager.addPlayer(
+            CrackCityRaids.dbHandler.updatePlayer(PlayerManager.CCToPOJO(requestingPlayer));
+            CrackCityRaids.playerManager.addPlayer(
                     Objects.requireNonNull(Bukkit.getPlayer(UUID.fromString(requestingPlayer.uuid))),
                     PlayerManager.CCToPOJO(requestingPlayer), requestingPlayer);
             String messageId = event.getMessageId();

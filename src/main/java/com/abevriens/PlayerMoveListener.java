@@ -93,7 +93,7 @@ public class PlayerMoveListener implements Listener {
         int yLoc = location.getBlockY();
         int zLoc = location.getBlockZ();
 
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionCore.factionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(factionCore.factionName);
         int blockMinX = factionCore.blockLocation.getBlockX() - faction.xSize/2;
         int blockMaxX = factionCore.blockLocation.getBlockX() + faction.xSize/2;
         int blockMinY = factionCore.blockLocation.getBlockY() - faction.ySize/2;

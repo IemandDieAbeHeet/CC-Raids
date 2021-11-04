@@ -27,7 +27,7 @@ public class Factions_List {
     }
 
     private void command_List() {
-        ArrayList<Faction> list = (ArrayList<Faction>) CrackCityRaids.instance.factionManager.factionList;
+        ArrayList<Faction> list = (ArrayList<Faction>) CrackCityRaids.factionManager.factionList;
 
         if(list.size() < 1) {
             commandContext.player.spigot().sendMessage(TextUtil.GenerateErrorMsg("Geen factions gevonden, ben de eerste" +

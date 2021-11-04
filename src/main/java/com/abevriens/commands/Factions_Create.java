@@ -48,7 +48,7 @@ public class Factions_Create {
             Faction faction = new Faction(
                     commandContext.pojo_player,
                     name,
-                    new ArrayList<CC_Player>() {
+                    new ArrayList<>() {
                         {
                             add(commandContext.cc_player);
                         }
@@ -66,17 +66,17 @@ public class Factions_Create {
             POJO_Faction pojo_faction = FactionManager.FactionToPOJO(faction);
             commandContext.pojo_player.factionName = faction.factionName;
             commandContext.cc_player.faction = faction;
-            CrackCityRaids.instance.dbHandler.insertFaction(pojo_faction);
-            CrackCityRaids.instance.dbHandler.updatePlayer(commandContext.pojo_player);
+            CrackCityRaids.dbHandler.insertFaction(pojo_faction);
+            CrackCityRaids.dbHandler.updatePlayer(commandContext.pojo_player);
             commandContext.factionManager.factionNameList.add(faction.factionName);
             commandContext.factionManager.factionList.add(faction);
 
-            RoleAction createRole = CrackCityRaids.instance.discordManager.getGuild().createRole();
+            RoleAction createRole = CrackCityRaids.discordManager.getGuild().createRole();
             Consumer<Role> roleCallback = (roleResponse) -> {
-                Faction callbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
+                Faction callbackFaction = CrackCityRaids.factionManager.getFaction(name);
                 callbackFaction.discordIdMap.put(DiscordIdEnum.ROLE, roleResponse.getId());
-                CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(callbackFaction));
-                CrackCityRaids.instance.discordManager.getGuild().addRoleToMember(commandContext.cc_player.discordId, roleResponse).queue();
+                CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(callbackFaction));
+                CrackCityRaids.discordManager.getGuild().addRoleToMember(commandContext.cc_player.discordId, roleResponse).queue();
                 Random rg = new Random();
                 float r = rg.nextFloat();
                 float g = rg.nextFloat();
@@ -86,22 +86,22 @@ public class Factions_Create {
                         .setHoisted(true)
                         .setName(name).queue();
 
-                ChannelAction<Category> createCategory = CrackCityRaids.instance.discordManager.getGuild().createCategory(
+                ChannelAction<Category> createCategory = CrackCityRaids.discordManager.getGuild().createCategory(
                                 "Faction: " + name)
-                        .addPermissionOverride(CrackCityRaids.instance.discordManager.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
+                        .addPermissionOverride(CrackCityRaids.discordManager.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                         .addPermissionOverride(roleResponse, EnumSet.of(Permission.VIEW_CHANNEL), null);
                 Consumer<Category> categoryCallback = (categoryResponse) -> {
-                    Faction categoryCallbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
+                    Faction categoryCallbackFaction = CrackCityRaids.factionManager.getFaction(name);
                     categoryCallbackFaction.discordIdMap.put(DiscordIdEnum.CATEGORY, categoryResponse.getId());
-                    CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(categoryCallbackFaction));
+                    CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(categoryCallbackFaction));
 
                     ChannelAction<TextChannel> createInfoChannel = categoryResponse.createTextChannel("info")
                             .addPermissionOverride(roleResponse, EnumSet.of(Permission.VIEW_CHANNEL),
                                     EnumSet.of(Permission.MESSAGE_WRITE));
                     Consumer<TextChannel> infoCallback = (infoResponse) -> {
-                        Faction infoCallbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
+                        Faction infoCallbackFaction = CrackCityRaids.factionManager.getFaction(name);
                         infoCallbackFaction.discordIdMap.put(DiscordIdEnum.INFO_CHANNEL, infoResponse.getId());
-                        CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(infoCallbackFaction));
+                        CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(infoCallbackFaction));
                         infoResponse.sendMessage("Dit is het info kanaal van jouw faction, hier krijg je bijvoorbeeld " +
                                 "notificaties binnen over mensen die je faction hebben betreden.").queue((message -> {
                                     message.delete().queueAfter(10, TimeUnit.MINUTES);
@@ -111,9 +111,9 @@ public class Factions_Create {
 
                     ChannelAction<TextChannel> createChatChannel = categoryResponse.createTextChannel("chat");
                     Consumer<TextChannel> chatCallback = (chatResponse) -> {
-                        Faction chatCallbackFaction = CrackCityRaids.instance.factionManager.getFaction(name);
+                        Faction chatCallbackFaction = CrackCityRaids.factionManager.getFaction(name);
                         chatCallbackFaction.discordIdMap.put(DiscordIdEnum.CHAT_CHANNEL, chatResponse.getId());
-                        CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(chatCallbackFaction));
+                        CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(chatCallbackFaction));
                     };
                     createChatChannel.queue(chatCallback);
 

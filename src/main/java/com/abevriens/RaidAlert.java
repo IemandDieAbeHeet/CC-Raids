@@ -51,8 +51,8 @@ public class RaidAlert {
         raidCountdown = maxRaidCountdown;
         raidCountdownStarted = true;
 
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
-        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+        Faction faction = CrackCityRaids.factionManager.getFaction(alertedFactionName);
+        TextChannel infoChannel = CrackCityRaids.discordManager.getGuild().getTextChannelById(
                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
 
         if(infoChannel == null) return;
@@ -84,8 +84,8 @@ public class RaidAlert {
                     raidCountdown--;
                     updateRaidTimerMessage();
                     POJO_Faction pojo_faction =
-                            FactionManager.FactionToPOJO(CrackCityRaids.instance.factionManager.getFaction(alertedFactionName));
-                    CrackCityRaids.instance.dbHandler.updateFaction(pojo_faction);
+                            FactionManager.FactionToPOJO(CrackCityRaids.factionManager.getFaction(alertedFactionName));
+                    CrackCityRaids.dbHandler.updateFaction(pojo_faction);
                 }
             }
         }, 0, 60 * 1000);
@@ -94,14 +94,14 @@ public class RaidAlert {
     public void runOpenTimer() {
         openCountdown = maxOpenCountdown;
         openCountdownStarted = true;
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
-        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+        Faction faction = CrackCityRaids.factionManager.getFaction(alertedFactionName);
+        TextChannel infoChannel = CrackCityRaids.discordManager.getGuild().getTextChannelById(
                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
 
         if(infoChannel == null) return;
 
         if(!openCountdownStarted) {
-            Role role = CrackCityRaids.instance.discordManager.getGuild().getRoleById(
+            Role role = CrackCityRaids.discordManager.getGuild().getRoleById(
                     faction.discordIdMap.get(DiscordIdEnum.ROLE));
 
             if(role != null) {
@@ -112,7 +112,7 @@ public class RaidAlert {
         }
 
         for(String playerName : enteredPlayerList) {
-            CC_Player player = CrackCityRaids.instance.playerManager.getCCPlayer(playerName);
+            CC_Player player = CrackCityRaids.playerManager.getCCPlayer(playerName);
             if(player != null) {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(player.uuid));
 
@@ -151,15 +151,15 @@ public class RaidAlert {
                     openCountdown--;
                     updateOpenTimerMessage();
                     POJO_Faction pojo_faction =
-                            FactionManager.FactionToPOJO(CrackCityRaids.instance.factionManager.getFaction(alertedFactionName));
-                    CrackCityRaids.instance.dbHandler.updateFaction(pojo_faction);
+                            FactionManager.FactionToPOJO(CrackCityRaids.factionManager.getFaction(alertedFactionName));
+                    CrackCityRaids.dbHandler.updateFaction(pojo_faction);
                 }
             }
         }, 0 , 60 * 1000);
     }
 
     public void updateRaidTimerMessage() {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(alertedFactionName);
         RaidAlertEmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(this, "Raid alert!");
         raidAlertEmbedBuilder.addTimerField(raidCountdown, "Raid begint in:");
         raidAlertEmbedBuilder.setColor(COLOR_ALERT);
@@ -168,7 +168,7 @@ public class RaidAlert {
     }
 
     public void updateOpenTimerMessage() {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(alertedFactionName);
         RaidAlertEmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(this, "Raid begonnen!");
         raidAlertEmbedBuilder.addTimerField(openCountdown, "Raid stopt over:");
         raidAlertEmbedBuilder.setColor(COLOR_OPEN);
@@ -180,11 +180,11 @@ public class RaidAlert {
         enteredFactionList.clear();
         enteredPlayerList.clear();
         playersAllowedToConfirm.clear();
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(alertedFactionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(alertedFactionName);
         RaidAlertEmbedBuilder raidAlertEmbedBuilder = new RaidAlertEmbedBuilder(this, "Raid is gestopt.");
         raidAlertEmbedBuilder.setColor(COLOR_END);
 
-        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+        TextChannel infoChannel = CrackCityRaids.discordManager.getGuild().getTextChannelById(
                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
 
         if(infoChannel == null) return;
@@ -197,7 +197,7 @@ public class RaidAlert {
     }
 
     private void editRaidAlertEmbed(RaidAlertEmbedBuilder raidAlertEmbedBuilder, Faction faction) {
-        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+        TextChannel infoChannel = CrackCityRaids.discordManager.getGuild().getTextChannelById(
                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
 
         String timerMessageId = faction.discordIdMap.get(DiscordIdEnum.TIMER);
@@ -216,7 +216,7 @@ public class RaidAlert {
 
         channel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
             faction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         });
     }
 
@@ -227,7 +227,7 @@ public class RaidAlert {
 
         channel.sendMessage(raidAlertEmbedBuilder.build()).queue(message -> {
             faction.discordIdMap.put(DiscordIdEnum.TIMER, message.getId());
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         });
     }
 }

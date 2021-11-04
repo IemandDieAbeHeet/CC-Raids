@@ -38,18 +38,18 @@ public class Factions_Delete {
 
             FactionCoreUtil.RemoveCore(commandContext);
 
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.instance.discordManager.getGuild().getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
+            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
 
             for(CC_Player factionMember : factionMembers) {
-                CrackCityRaids.instance.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
+                CrackCityRaids.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
                         FactionManager.emptyFaction);
                 factionMember.factionChatEnabled = false;
             }
 
-            CrackCityRaids.instance.dbHandler.deleteFaction(factionName);
+            CrackCityRaids.dbHandler.deleteFaction(factionName);
 
             ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
             commandContext.player.spigot().sendMessage(successMessage.create());

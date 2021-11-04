@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        PlayerManager playerManager = CrackCityRaids.instance.playerManager;
+        PlayerManager playerManager = CrackCityRaids.playerManager;
         Player player = event.getPlayer();
 
         if (playerManager.playerExists(player)) return;
@@ -29,6 +29,6 @@ public class PlayerJoinListener implements Listener {
         );
 
         playerManager.addPlayer(player, pojo_player, cc_player);
-        CrackCityRaids.instance.dbHandler.insertPlayer(pojo_player);
+        CrackCityRaids.dbHandler.insertPlayer(pojo_player);
     }
 }

@@ -19,7 +19,7 @@ public class Factions_Kick {
     }
 
     private void command_Kick() {
-        CC_Player cc_kickplayer = CrackCityRaids.instance.playerManager.getCCPlayer(name);
+        CC_Player cc_kickplayer = CrackCityRaids.playerManager.getCCPlayer(name);
 
         if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
@@ -46,7 +46,7 @@ public class Factions_Kick {
             commandContext.player.spigot().sendMessage(errorMessage.create());
         } else {
             OfflinePlayer offlineKickPlayer = Bukkit.getOfflinePlayer(UUID.fromString(cc_kickplayer.uuid));
-            CrackCityRaids.instance.playerManager.setPlayerFaction(offlineKickPlayer, FactionManager.emptyFaction);
+            CrackCityRaids.playerManager.setPlayerFaction(offlineKickPlayer, FactionManager.emptyFaction);
             cc_kickplayer.factionChatEnabled = false;
             ComponentBuilder successMsg = TextUtil.GenerateSuccessMsg( cc_kickplayer.displayName + " is uit de " +
                     "faction gekickt!");

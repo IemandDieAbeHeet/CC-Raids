@@ -19,7 +19,7 @@ public class Factions_SetOwner {
     }
 
     private void command_SetOwner() {
-        CC_Player cc_ownerplayer = CrackCityRaids.instance.playerManager.getCCPlayer(name);
+        CC_Player cc_ownerplayer = CrackCityRaids.playerManager.getCCPlayer(name);
 
         if(commandContext.cc_player.faction.isEmptyFaction()) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +

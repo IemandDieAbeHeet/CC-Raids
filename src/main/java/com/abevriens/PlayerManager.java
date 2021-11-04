@@ -17,11 +17,11 @@ public class PlayerManager {
     private final HashMap<String, String> playerDiscordRequests = new HashMap<>();
 
     public void LoadPlayers() {
-        for (POJO_Player pojo_player : CrackCityRaids.instance.dbHandler.playerCollection.find()) {
-            if (!CrackCityRaids.instance.factionManager.factionNameList.contains(pojo_player.factionName)) {
+        for (POJO_Player pojo_player : CrackCityRaids.dbHandler.playerCollection.find()) {
+            if (!CrackCityRaids.factionManager.factionNameList.contains(pojo_player.factionName)) {
                 pojo_player.factionName = FactionManager.emptyFaction.factionName;
             }
-            CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+            CrackCityRaids.dbHandler.updatePlayer(pojo_player);
             CC_Player cc_player = POJOToCC(pojo_player);
             OfflinePlayer player = POJOToPlayer(pojo_player);
 
@@ -79,18 +79,18 @@ public class PlayerManager {
 
         if(faction.isEmptyFaction()) {
             cc_player.faction.players.remove(cc_player);
-            Role role = CrackCityRaids.instance.discordManager.getGuild().getRoleById(cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE));
+            Role role = CrackCityRaids.discordManager.getGuild().getRoleById(cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE));
             if(role != null) {
-                CrackCityRaids.instance.discordManager.getGuild().removeRoleFromMember(cc_player.discordId, role).queue();
+                CrackCityRaids.discordManager.getGuild().removeRoleFromMember(cc_player.discordId, role).queue();
             }
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(cc_player.faction));
         } else {
             faction.players.add(cc_player);
-            Role role = CrackCityRaids.instance.discordManager.getGuild().getRoleById(faction.discordIdMap.get(DiscordIdEnum.ROLE));
+            Role role = CrackCityRaids.discordManager.getGuild().getRoleById(faction.discordIdMap.get(DiscordIdEnum.ROLE));
             if(role != null) {
-                CrackCityRaids.instance.discordManager.getGuild().addRoleToMember(cc_player.discordId, role).queue();
+                CrackCityRaids.discordManager.getGuild().addRoleToMember(cc_player.discordId, role).queue();
             }
-            CrackCityRaids.instance.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
+            CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(faction));
         }
 
         cc_player.faction = faction;
@@ -99,7 +99,7 @@ public class PlayerManager {
         CCPlayerHashMap.put(offlinePlayer, cc_player);
         POJOPlayerHashMap.put(offlinePlayer, pojo_player);
         CCPlayerStringHashMap.put(cc_player.displayName, cc_player);
-        CrackCityRaids.instance.dbHandler.updatePlayer(pojo_player);
+        CrackCityRaids.dbHandler.updatePlayer(pojo_player);
     }
 
     public static OfflinePlayer POJOToPlayer(POJO_Player pojo_player) {
@@ -107,7 +107,7 @@ public class PlayerManager {
     }
 
     public static CC_Player POJOToCC(POJO_Player pojo_player) {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(pojo_player.factionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(pojo_player.factionName);
 
         return new CC_Player(
             pojo_player.displayName,

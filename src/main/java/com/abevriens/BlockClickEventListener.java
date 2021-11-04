@@ -14,11 +14,14 @@ public class BlockClickEventListener implements Listener {
     @EventHandler
     public void onBlockClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
+        CC_Player cc_player = CrackCityRaids.playerManager.getCCPlayer(player);
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
+
+            if(block == null) return;
+
             if(block.getType() == Material.STRUCTURE_BLOCK) {
-                FactionCore factionCore = CrackCityRaids.instance.factionCoreManager.getFactionCore(block);
+                FactionCore factionCore = CrackCityRaids.factionCoreManager.getFactionCore(block);
                 if(factionCore == null) {
                     ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg("Kan de aangeklikte faction core " +
                             "niet vinden, waarschijnlijk is dit blok niet door een faction geplaatst");

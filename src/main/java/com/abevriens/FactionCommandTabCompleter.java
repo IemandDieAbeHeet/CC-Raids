@@ -78,7 +78,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
                 names.add(offlinePlayer.getName());
             }
 
-            CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
+            CC_Player cc_player = CrackCityRaids.playerManager.getCCPlayer(player);
             if (args.length == 1) {
                 if (cc_player.faction.isEmptyFaction()) {
                     return noFactionCommands;
@@ -96,12 +96,12 @@ public class FactionCommandTabCompleter implements TabCompleter {
                     case "join":
                         return GetJoinableFactionNames();
                     case "list":
-                        return GetPageStrings((int)Math.ceil((double) CrackCityRaids.instance.factionManager.factionList.size() / 8));
+                        return GetPageStrings((int)Math.ceil((double) CrackCityRaids.factionManager.factionList.size() / 8));
                     case "kick":
                     case "setowner":
                         return GetFactionMemberNames(cc_player);
                     case "info":
-                        return CrackCityRaids.instance.factionManager.factionNameList;
+                        return CrackCityRaids.factionManager.factionNameList;
                     case "accept":
                         return GetFactionJoinRequestNames(cc_player);
                     case "core":
@@ -154,7 +154,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
 
     private List<String> GetJoinableFactionNames() {
         List <String> names = new ArrayList<>();
-        for(Faction faction : CrackCityRaids.instance.factionManager.factionList) {
+        for(Faction faction : CrackCityRaids.factionManager.factionList) {
             if(faction.isJoinable()) {
                 names.add(faction.factionName);
             }

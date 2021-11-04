@@ -15,7 +15,7 @@ public class FactionManager {
 
     public void LoadFactions() {
         try {
-            Iterable<POJO_Faction> factions = CrackCityRaids.instance.dbHandler.factionCollection.find();
+            Iterable<POJO_Faction> factions = CrackCityRaids.dbHandler.factionCollection.find();
 
             for (POJO_Faction faction : factions) {
                 factionList.add(POJOToFaction(faction));
@@ -27,7 +27,7 @@ public class FactionManager {
                 //verwijder deze.
                 if(!faction.raidAlert.openCountdownStarted && !faction.raidAlert.raidCountdownStarted) {
                     if(faction.discordIdMap.get(DiscordIdEnum.TIMER) != null) {
-                        TextChannel infoChannel = CrackCityRaids.instance.discordManager.getGuild().getTextChannelById(
+                        TextChannel infoChannel = CrackCityRaids.discordManager.getGuild().getTextChannelById(
                                 faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL));
 
                         if(infoChannel == null) continue;
