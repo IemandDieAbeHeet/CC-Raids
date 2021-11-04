@@ -10,7 +10,6 @@ import java.util.Objects;
 
 public class CrackCityRaids extends JavaPlugin {
     public static CrackCityRaids instance;
-
     public static MongoDBHandler dbHandler;
     public static PlayerManager playerManager;
     public static FactionManager factionManager;
@@ -20,7 +19,6 @@ public class CrackCityRaids extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
         dbHandler = new MongoDBHandler();
         playerManager = new PlayerManager();
         factionManager = new FactionManager();
@@ -31,8 +29,8 @@ public class CrackCityRaids extends JavaPlugin {
             discordManager = new DiscordManager(configurationManager.getDiscordConfig().get("token").toString());
         } catch (LoginException e) {
             this.getLogger().warning("Couldn't connect to the Discord Bot!");
-            CrackCityRaids.instance.getLogger().warning(ChatColor.RED + "Disabling plugin...");
-            CrackCityRaids.instance.getPluginLoader().disablePlugin(CrackCityRaids.instance);
+            this.getLogger().warning(ChatColor.RED + "Disabling plugin...");
+            this.getPluginLoader().disablePlugin(this);
         }
 
         Objects.requireNonNull(this.getCommand("factions")).setExecutor(new FactionCommandHandler());
