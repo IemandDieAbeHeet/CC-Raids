@@ -19,6 +19,7 @@ public class CrackCityRaids extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         dbHandler = new MongoDBHandler();
         playerManager = new PlayerManager();
         factionManager = new FactionManager();

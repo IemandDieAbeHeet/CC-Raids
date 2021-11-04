@@ -2,9 +2,14 @@ package com.abevriens.commands;
 
 import com.abevriens.*;
 import com.abevriens.discord.DiscordIdEnum;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
@@ -20,39 +25,69 @@ public class Factions_Delete {
 
     public void command_Delete() {
         String factionName = commandContext.cc_player.faction.factionName;
-        if(factionName.equals(FactionManager.emptyFaction.factionName)) {
+        if (factionName.equals(FactionManager.emptyFaction.factionName)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je zit niet in een faction," +
                     " join er een met /factions join.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
-        }
-        if(!commandContext.cc_player.faction.factionOwner.uuid.equals(commandContext.cc_player.uuid)) {
+        } else if (!commandContext.cc_player.faction.factionOwner.uuid.equals(commandContext.cc_player.uuid)) {
             ComponentBuilder errorMessage = TextUtil.GenerateErrorMsg("Je bent niet de owner van de faction. Als je " +
                     "het echt graag wilt moet je aan " + commandContext.cc_player.faction.factionOwner.displayName +
                     " vragen of ze jou owner geven.");
             commandContext.player.spigot().sendMessage(errorMessage.create());
         } else {
-            commandContext.factionManager.factionList.remove(commandContext.cc_player.faction);
-            commandContext.factionManager.factionNameList.remove(factionName);
-
             ArrayList<CC_Player> factionMembers = new ArrayList<>(commandContext.cc_player.faction.players);
 
             FactionCoreUtil.RemoveCore(commandContext);
 
-            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getRoleById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getTextChannelById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL))).delete().queue();
-            Objects.requireNonNull(CrackCityRaids.discordManager.getGuild().getCategoryById(commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY))).delete().queue();
+            if (commandContext.cc_player.discordId != null && !commandContext.cc_player.faction.discordIdMap.isEmpty()) {
+                String roleId = commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.ROLE);
+                String infoChannelId = commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.INFO_CHANNEL);
+                String chatChannelId = commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CHAT_CHANNEL);
+                String categoryId = commandContext.cc_player.faction.discordIdMap.get(DiscordIdEnum.CATEGORY);
 
-            for(CC_Player factionMember : factionMembers) {
-                CrackCityRaids.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(UUID.fromString(factionMember.uuid)),
-                        FactionManager.emptyFaction);
-                factionMember.factionChatEnabled = false;
+                Guild guild = CrackCityRaids.discordManager.getGuild();
+
+                if (guild != null) {
+                    if (roleId != null && infoChannelId != null && chatChannelId != null && categoryId != null) {
+                        Role role = guild.getRoleById(roleId);
+                        TextChannel infoChannel = guild.getTextChannelById(infoChannelId);
+                        TextChannel chatChannel = guild.getTextChannelById(chatChannelId);
+                        Category category = guild.getCategoryById(categoryId);
+
+                        ComponentBuilder errorMsg = TextUtil.GenerateErrorMsg(
+                                "Er is iets fout gegaan tijdens het verwijderen van je faction.");
+                        if(role == null || infoChannel == null || chatChannel == null || category == null) {
+                            commandContext.player.spigot().sendMessage(errorMsg.create());
+                            return;
+                        }
+
+                        role.delete().submit()
+                            .thenCompose((v) -> infoChannel.delete().submit())
+                            .thenCompose((v) -> chatChannel.delete().submit())
+                            .thenCompose((v) -> category.delete().submit())
+                            .whenComplete((s, error) -> {
+                                if (error == null) {
+                                    commandContext.factionManager.factionList.remove(commandContext.cc_player.faction);
+                                    commandContext.factionManager.factionNameList.remove(factionName);
+
+                                    for (CC_Player factionMember : factionMembers) {
+                                        CrackCityRaids.playerManager.setPlayerFaction(Bukkit.getOfflinePlayer(
+                                                UUID.fromString(factionMember.uuid)), FactionManager.emptyFaction);
+                                        factionMember.factionChatEnabled = false;
+                                    }
+
+                                    CrackCityRaids.dbHandler.deleteFaction(factionName);
+
+                                    ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg(
+                                            "Faction is succesvol verwijderd!");
+                                    commandContext.player.spigot().sendMessage(successMessage.create());
+                                } else {
+                                    commandContext.player.spigot().sendMessage(errorMsg.create());
+                                }
+                            });
+                    }
+                }
             }
-
-            CrackCityRaids.dbHandler.deleteFaction(factionName);
-
-            ComponentBuilder successMessage = TextUtil.GenerateSuccessMsg("Faction is succesvol verwijderd!");
-            commandContext.player.spigot().sendMessage(successMessage.create());
         }
     }
 }

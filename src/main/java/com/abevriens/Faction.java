@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
+import java.time.Instant;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,8 @@ public class Faction {
     public EnumMap<DiscordIdEnum, String> discordIdMap;
 
     public RaidAlert raidAlert;
+
+    public boolean discordCreated = true;
 
     public Faction(POJO_Player _factionOwner, String _factionName, List<CC_Player> _players,
                    JoinStatus _joinStatus, List<String> _playerJoinRequests, FactionCore _factionCore,
