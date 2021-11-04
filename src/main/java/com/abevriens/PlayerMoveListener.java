@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,13 +18,15 @@ public class PlayerMoveListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
+        CC_Player cc_player = CrackCityRaids.playerManager.getCCPlayer(player);
 
-        FactionCore closestCore = CrackCityRaids.instance.factionCoreManager.getClosestFactionCore(event.getFrom());
+        FactionCore closestCore = CrackCityRaids.factionCoreManager.getClosestFactionCore(event.getFrom());
 
         if(closestCore == null) return;
 
-        Faction closestFaction = CrackCityRaids.instance.factionManager.getFaction(closestCore.factionName);
+        if(!player.getWorld().equals(Bukkit.getWorld("world"))) return;
+
+        Faction closestFaction = CrackCityRaids.factionManager.getFaction(closestCore.factionName);
 
         if(cc_player.faction == closestFaction) return;
 
