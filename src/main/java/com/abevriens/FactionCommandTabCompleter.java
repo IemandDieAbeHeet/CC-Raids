@@ -1,6 +1,5 @@
 package com.abevriens;
 
-import com.abevriens.commands.Factions_List;
 import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -16,25 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FactionCommandTabCompleter implements TabCompleter {
-    final ArrayList<String> allCommands = new ArrayList<String>() {
-        {
-            add("joinstatus");
-            add("requests");
-            add("join");
-            add("list");
-            add("kick");
-            add("create");
-            add("info");
-            add("accept");
-            add("leave");
-            add("help");
-            add("delete");
-            add("setowner");
-            add("link");
-        }
-    };
-
-    final ArrayList<String> noFactionCommands = new ArrayList<String>() {
+    final ArrayList<String> noFactionCommands = new ArrayList<>() {
         {
             add("join");
             add("list");
@@ -45,7 +26,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         }
     };
 
-    final ArrayList<String> normalFactionCommands = new ArrayList<String>() {
+    final ArrayList<String> normalFactionCommands = new ArrayList<>() {
         {
             add("requests");
             add("list");
@@ -55,7 +36,7 @@ public class FactionCommandTabCompleter implements TabCompleter {
         }
     };
 
-    final ArrayList<String> ownerCommands = new ArrayList<String>() {
+    final ArrayList<String> ownerCommands = new ArrayList<>() {
         {
             add("joinstatus");
             add("requests");
