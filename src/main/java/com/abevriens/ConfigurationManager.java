@@ -1,10 +1,8 @@
 package com.abevriens;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class ConfigurationManager {

@@ -6,9 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
-import java.time.Instant;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Faction {
@@ -63,12 +63,10 @@ public class Faction {
         for(CC_Player cc_player : players) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(cc_player.uuid));
             if(offlinePlayer.isOnline()) {
-                offlinePlayer.getPlayer().spigot().sendMessage(message.create());
+                Objects.requireNonNull(offlinePlayer.getPlayer()).spigot().sendMessage(message.create());
             }
         }
     }
-
-    public boolean isRaidable() { return !raidAlert.openCountdownStarted && raidAlert.openCountdown > 1;  }
 
     public boolean isEmptyFaction() {
         return factionName.equals(FactionManager.emptyFaction.factionName);

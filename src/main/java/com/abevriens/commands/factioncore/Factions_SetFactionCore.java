@@ -1,7 +1,6 @@
 package com.abevriens.commands.factioncore;
 
 import com.abevriens.FactionCoreUtil;
-import com.abevriens.FactionManager;
 import com.abevriens.TextUtil;
 import com.abevriens.commands.CommandContext;
 import net.md_5.bungee.api.chat.ComponentBuilder;

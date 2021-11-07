@@ -105,9 +105,8 @@ public class RaidAlert {
                     faction.discordIdMap.get(DiscordIdEnum.ROLE));
 
             if(role != null) {
-                infoChannel.sendMessage(role.getAsMention() + " de raid is gestart!").queue((message -> {
-                    message.delete().queueAfter(1, TimeUnit.MINUTES);
-                }));
+                infoChannel.sendMessage(role.getAsMention() + " de raid is gestart!").queue((message ->
+                        message.delete().queueAfter(1, TimeUnit.MINUTES)));
             }
         }
 
@@ -204,9 +203,8 @@ public class RaidAlert {
 
         if(infoChannel == null || timerMessageId == null) return;
 
-        infoChannel.retrieveMessageById(timerMessageId).queue(message -> {
-            message.editMessage(raidAlertEmbedBuilder.build()).queue();
-        });
+        infoChannel.retrieveMessageById(timerMessageId).queue(message ->
+                message.editMessage(raidAlertEmbedBuilder.build()).queue());
     }
 
     private void sendRaidAlertEmbed(TextChannel channel, Faction faction) {

@@ -9,9 +9,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Factions_Delete {

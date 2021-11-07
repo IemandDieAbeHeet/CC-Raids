@@ -13,7 +13,7 @@ public class FactionCoreManager {
     private final Map<Location, FactionCore> vectorFactionCoreHashMap = new HashMap<>();
 
     public void LoadFactionCores() {
-        for(Faction faction : CrackCityRaids.instance.factionManager.factionList) {
+        for(Faction faction : CrackCityRaids.factionManager.factionList) {
             factionCoreList.add(faction.factionCore);
             vectorFactionCoreHashMap.put(faction.factionCore.blockLocation, faction.factionCore);
         }

@@ -32,9 +32,7 @@ public class FactionManager {
 
                         if(infoChannel == null) continue;
                         infoChannel.retrieveMessageById(faction.discordIdMap.get(DiscordIdEnum.TIMER))
-                                .queue(found -> {
-                                    found.delete().queue();
-                                });
+                                .queue(found -> found.delete().queue());
                         faction.discordIdMap.remove(DiscordIdEnum.TIMER);
                     }
                 }

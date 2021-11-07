@@ -65,7 +65,7 @@ public class FactionCoreGUI implements Listener {
     }
 
     protected ItemStack generateMenuItem(FactionCoreGUIMenuItems menu, FactionCore factionCore) {
-        Faction faction = CrackCityRaids.instance.factionManager.getFaction(factionCore.factionName);
+        Faction faction = CrackCityRaids.factionManager.getFaction(factionCore.factionName);
         switch (menu) {
             case DECREASE_SIZE_X:
                 return createGUIItem(Material.RED_CONCRETE,
@@ -135,7 +135,7 @@ public class FactionCoreGUI implements Listener {
         if (clickedItem == null || clickedItem.getType().isAir()) return;
 
         final Player player = (Player) e.getWhoClicked();
-        CC_Player cc_player = CrackCityRaids.instance.playerManager.getCCPlayer(player);
+        CC_Player cc_player = CrackCityRaids.playerManager.getCCPlayer(player);
 
         FactionCoreGUIMenuItems navigation = menuItemMap.get(clickedItem);
         if (navigation != null) {
