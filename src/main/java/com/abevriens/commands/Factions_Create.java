@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.awt.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -104,9 +103,8 @@ public class Factions_Create {
                                     infoCallbackFaction.discordIdMap.put(DiscordIdEnum.INFO_CHANNEL, infoResponse.getId());
                                     CrackCityRaids.dbHandler.updateFaction(FactionManager.FactionToPOJO(infoCallbackFaction));
                                     infoResponse.sendMessage("Dit is het info kanaal van jouw faction, hier krijg je bijvoorbeeld " +
-                                            "notificaties binnen over mensen die je faction hebben betreden.").queue((message -> {
-                                        message.delete().queueAfter(10, TimeUnit.MINUTES);
-                                    }));
+                                            "notificaties binnen over mensen die je faction hebben betreden.").queue((message ->
+                                            message.delete().queueAfter(10, TimeUnit.MINUTES)));
                                 };
                                 createInfoChannel.queue(infoCallback);
 
