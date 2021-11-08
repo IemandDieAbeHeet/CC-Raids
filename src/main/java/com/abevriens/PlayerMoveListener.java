@@ -24,7 +24,7 @@ public class PlayerMoveListener implements Listener {
 
         if(closestCore == null) return;
 
-        if(!player.getWorld().equals(Bukkit.getWorld("world"))) return;
+        if(!player.getWorld().getName().equals("world")) return;
 
         Faction closestFaction = CrackCityRaids.factionManager.getFaction(closestCore.factionName);
 
