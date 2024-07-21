@@ -1,2 +1,2 @@
-# CrackCityRaids
-Minecraft raid management plugin for the CrackCity server.
+# CC-Raids
+Minecraft raid management plugin for the CC Minecraft server.
